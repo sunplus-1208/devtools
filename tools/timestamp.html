@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timestamp Converter - DevTools</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="../index.html" class="flex items-center">
+                        <i class="fas fa-arrow-left text-gray-500 mr-3 hover:text-gray-700"></i>
+                        <i class="fas fa-tools text-primary text-2xl mr-3"></i>
+                        <h1 class="text-xl font-bold text-gray-900">DevTools</h1>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="lang-zh" class="px-3 py-1 rounded-md bg-primary text-white text-sm font-medium" onclick="switchLang('zh')">中文</button>
+                    <button id="lang-en" class="px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium" onclick="switchLang('en')">EN</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="mb-6">
+            <h2 class="text-2xl font-bold text-gray-900" data-i18n="title">时间戳转换 / Timestamp Converter</h2>
+            <p class="text-gray-600 mt-1" data-i18n="subtitle">Unix 时间戳与日期时间互转</p>
+        </div>
+
+        <!-- Current Time -->
+        <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6 mb-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-semibold text-gray-900" data-i18n="current.title">当前时间</h3>
+                <button onclick="refreshNow()" class="px-4 py-2 bg-primary hover:bg-blue-600 text-white rounded-lg text-sm">
+                    <i class="fas fa-sync-alt mr-2"></i><span data-i18n="btn.refresh">刷新</span>
+                </button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="text-center p-4 bg-gray-50 rounded-lg">
+                    <div class="text-3xl font-mono font-bold text-primary" id="nowTimestamp"></div>
+                    <div class="text-sm text-gray-500 mt-1">Unix Timestamp (秒)</div>
+                </div>
+                <div class="text-center p-4 bg-gray-50 rounded-lg">
+                    <div class="text-3xl font-mono font-bold text-green-600" id="nowMs"></div>
+                    <div class="text-sm text-gray-500 mt-1">Unix Timestamp (毫秒)</div>
+                </div>
+                <div class="text-center p-4 bg-gray-50 rounded-lg">
+                    <div class="text-xl font-mono font-bold text-orange-600" id="nowDate"></div>
+                    <div class="text-sm text-gray-500 mt-1">ISO 8601</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Convert Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Timestamp to Date -->
+            <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6">
+                <h3 class="font-semibold text-gray-900 mb-4" data-i18n="ts2date.title">时间戳 → 日期</h3>
+                <div class="space-y-4">
+                    <input type="text" id="tsInput" class="w-full px-4 py-3 border border-gray-300 rounded-lg font-mono text-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="1704067200">
+                    <div class="flex gap-2">
+                        <button onclick="convertTsToDate('s')" class="flex-1 px-4 py-2 bg-primary hover:bg-blue-600 text-white rounded-lg text-sm">秒 (s)</button>
+                        <button onclick="convertTsToDate('ms')" class="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm">毫秒 (ms)</button>
+                    </div>
+                    <div id="tsResult" class="p-4 bg-gray-900 text-green-400 rounded-lg font-mono text-sm min-h-[100px] whitespace-pre-wrap"></div>
+                </div>
+            </div>
+
+            <!-- Date to Timestamp -->
+            <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6">
+                <h3 class="font-semibold text-gray-900 mb-4" data-i18n="date2ts.title">日期 → 时间戳</h3>
+                <div class="space-y-4">
+                    <input type="datetime-local" id="dateInput" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                    <div class="flex gap-2">
+                        <button onclick="convertDateToTs()" class="flex-1 px-4 py-2 bg-primary hover:bg-blue-600 text-white rounded-lg text-sm" data-i18n="btn.convert">转换</button>
+                        <button onclick="setNow()" class="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm" data-i18n="btn.now">当前时间</button>
+                    </div>
+                    <div id="dateResult" class="p-4 bg-gray-900 text-green-400 rounded-lg font-mono text-sm min-h-[100px] whitespace-pre-wrap"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const i18n = {
+            zh: {
+                'title': '时间戳转换 / Timestamp Converter',
+                'subtitle': 'Unix 时间戳与日期时间互转',
+                'current.title': '当前时间',
+                'btn.refresh': '刷新',
+                'ts2date.title': '时间戳 → 日期',
+                'date2ts.title': '日期 → 时间戳',
+                'btn.convert': '转换',
+                'btn.now': '当前时间'
+            },
+            en: {
+                'title': 'Timestamp Converter / 时间戳转换',
+                'subtitle': 'Convert between Unix timestamps and dates',
+                'current.title': 'Current Time',
+                'btn.refresh': 'Refresh',
+                'ts2date.title': 'Timestamp → Date',
+                'date2ts.title': 'Date → Timestamp',
+                'btn.convert': 'Convert',
+                'btn.now': 'Now'
+            }
+        };
+
+        let currentLang = 'zh';
+
+        function switchLang(lang) {
+            currentLang = lang;
+            document.getElementById('lang-zh').className = lang === 'zh' ? 'px-3 py-1 rounded-md bg-primary text-white text-sm font-medium' : 'px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium';
+            document.getElementById('lang-en').className = lang === 'en' ? 'px-3 py-1 rounded-md bg-primary text-white text-sm font-medium' : 'px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium';
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (i18n[lang][key]) el.textContent = i18n[lang][key];
+            });
+            localStorage.setItem('devtools-lang', lang);
+        }
+
+        const savedLang = localStorage.getItem('devtools-lang');
+        if (savedLang) switchLang(savedLang);
+
+        function refreshNow() {
+            const now = new Date();
+            document.getElementById('nowTimestamp').textContent = Math.floor(now.getTime() / 1000);
+            document.getElementById('nowMs').textContent = now.getTime();
+            document.getElementById('nowDate').textContent = now.toISOString();
+        }
+
+        function convertTsToDate(unit) {
+            const input = document.getElementById('tsInput').value.trim();
+            if (!input) return;
+            
+            const ts = parseInt(input);
+            const date = unit === 's' ? new Date(ts * 1000) : new Date(ts);
+            
+            const result = `ISO:      ${date.toISOString()}
+Local:    ${date.toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' })}
+UTC:      ${date.toUTCString()}
+Unix (s): ${Math.floor(date.getTime() / 1000)}
+Unix (ms): ${date.getTime()}`;
+            
+            document.getElementById('tsResult').textContent = result;
+        }
+
+        function convertDateToTs() {
+            const input = document.getElementById('dateInput').value;
+            if (!input) return;
+            
+            const date = new Date(input);
+            const ts = date.getTime();
+            
+            const result = `Unix Timestamp (秒):   ${Math.floor(ts / 1000)}
+Unix Timestamp (毫秒): ${ts}
+ISO 8601:             ${date.toISOString()}`;
+            
+            document.getElementById('dateResult').textContent = result;
+        }
+
+        function setNow() {
+            const now = new Date();
+            const offset = now.getTimezoneOffset() * 60000;
+            const local = new Date(now - offset);
+            document.getElementById('dateInput').value = local.toISOString().slice(0, 16);
+            convertDateToTs();
+        }
+
+        refreshNow();
+        setInterval(refreshNow, 1000);
+    </script>
+</body>
+</html>

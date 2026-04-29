@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regex Tester - DevTools</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { primary: '#3b82f6' }
+                }
+            }
+        }
+    </script>
+    <style>
+        .highlight { background-color: #fef08a; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="../index.html" class="flex items-center">
+                        <i class="fas fa-arrow-left text-gray-500 mr-3 hover:text-gray-700"></i>
+                        <i class="fas fa-tools text-primary text-2xl mr-3"></i>
+                        <h1 class="text-xl font-bold text-gray-900">DevTools</h1>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="lang-zh" class="px-3 py-1 rounded-md bg-primary text-white text-sm font-medium" onclick="switchLang('zh')">中文</button>
+                    <button id="lang-en" class="px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium" onclick="switchLang('en')">EN</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="mb-6">
+            <h2 class="text-2xl font-bold text-gray-900" data-i18n="title">正则测试器 / Regex Tester</h2>
+            <p class="text-gray-600 mt-1" data-i18n="subtitle">实时测试正则表达式匹配</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
+                <div class="bg-gray-50 px-4 py-3 border-b border-gray-100">
+                    <span class="font-medium text-gray-700" data-i18n="pattern.title">正则表达式 / Pattern</span>
+                </div>
+                <div class="p-4 space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="pattern.label">Pattern</label>
+                        <input id="pattern" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg font-mono text-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g. \d{3,4}-?\d{4,8}">
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <label class="flex items-center">
+                            <input id="flags-g" type="checkbox" class="mr-2" checked>
+                            <span class="text-sm text-gray-600">g</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input id="flags-i" type="checkbox" class="mr-2">
+                            <span class="text-sm text-gray-600">i</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input id="flags-m" type="checkbox" class="mr-2">
+                            <span class="text-sm text-gray-600">m</span>
+                        </label>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="test-string.label">Test String</label>
+                        <textarea id="testString" class="w-full h-48 px-3 py-2 border border-gray-300 rounded-lg font-mono text-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter text to test..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
+                <div class="bg-gray-50 px-4 py-3 border-b border-gray-100 flex justify-between items-center">
+                    <span class="font-medium text-gray-700" data-i18n="result.title">结果 / Result</span>
+                    <button onclick="copyResult()" class="text-xs px-3 py-1 bg-primary hover:bg-blue-600 text-white rounded" data-i18n="btn.copy">复制</button>
+                </div>
+                <pre id="result" class="w-full h-96 p-4 font-mono text-sm overflow-auto bg-gray-900 text-white whitespace-pre-wrap"></pre>
+            </div>
+        </div>
+
+        <div class="mt-6 flex flex-wrap gap-3">
+            <button onclick="testRegex()" class="px-6 py-2 bg-primary hover:bg-blue-600 text-white rounded-lg font-medium transition">
+                <i class="fas fa-play mr-2"></i><span data-i18n="btn.test">测试</span>
+            </button>
+            <button onclick="clearAll()" class="px-6 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition">
+                <i class="fas fa-trash mr-2"></i><span data-i18n="btn.clear">清空</span>
+            </button>
+        </div>
+
+        <div class="mt-6 bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+            <h3 class="font-medium text-gray-900 mb-3" data-i18n="cheatsheet.title">常用正则参考</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
+                <button onclick="insertPattern('\\d')" class="text-left px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded text-gray-700">\\d 数字</button>
+                <button onclick="insertPattern('\\w')" class="text-left px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded text-gray-700">\\w 字母数字下划线</button>
+                <button onclick="insertPattern('\\s')" class="text-left px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded text-gray-700">\\s 空白</button>
+                <button onclick="insertPattern('[a-zA-Z]')" class="text-left px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded text-gray-700">[a-z] 字母</button>
+                <button onclick="insertPattern('^\\w+')" class="text-left px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded text-gray-700">^开头</button>
+                <button onclick="insertPattern('\\w+$')" class="text-left px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded text-gray-700">$结尾</button>
+                <button onclick="insertPattern('.+')" class="text-left px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded text-gray-700">. 任意字符</button>
+                <button onclick="insertPattern('\\b\\w+\\b')" class="text-left px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded text-gray-700">\\b 单词边界</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const i18n = {
+            zh: {
+                'title': '正则测试器 / Regex Tester',
+                'subtitle': '实时测试正则表达式匹配',
+                'pattern.title': '正则表达式 / Pattern',
+                'pattern.label': 'Pattern',
+                'test-string.label': '测试文本',
+                'result.title': '结果 / Result',
+                'btn.copy': '复制',
+                'btn.test': '测试',
+                'btn.clear': '清空',
+                'cheatsheet.title': '常用正则参考',
+                'msg.no-match': '无匹配',
+                'msg.matches': '匹配',
+                'msg.error': '正则错误: '
+            },
+            en: {
+                'title': 'Regex Tester / 正则测试器',
+                'subtitle': 'Test regular expressions in real-time',
+                'pattern.title': 'Pattern / 正则表达式',
+                'pattern.label': 'Pattern',
+                'test-string.label': 'Test String',
+                'result.title': 'Result / 结果',
+                'btn.copy': 'Copy',
+                'btn.test': 'Test',
+                'btn.clear': 'Clear',
+                'cheatsheet.title': 'Common Patterns',
+                'msg.no-match': 'No match',
+                'msg.matches': 'matches',
+                'msg.error': 'Regex error: '
+            }
+        };
+
+        let currentLang = 'zh';
+        function switchLang(lang) {
+            currentLang = lang;
+            document.getElementById('lang-zh').className = lang === 'zh' 
+                ? 'px-3 py-1 rounded-md bg-primary text-white text-sm font-medium'
+                : 'px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium';
+            document.getElementById('lang-en').className = lang === 'en'
+                ? 'px-3 py-1 rounded-md bg-primary text-white text-sm font-medium'
+                : 'px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium';
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (i18n[lang][key]) el.textContent = i18n[lang][key];
+            });
+            localStorage.setItem('devtools-lang', lang);
+        }
+
+        const savedLang = localStorage.getItem('devtools-lang');
+        if (savedLang) switchLang(savedLang);
+
+        function insertPattern(p) {
+            document.getElementById('pattern').value += p;
+            testRegex();
+        }
+
+        function testRegex() {
+            const pattern = document.getElementById('pattern').value;
+            const testString = document.getElementById('testString').value;
+            const result = document.getElementById('result');
+            
+            if (!pattern || !testString) {
+                result.textContent = '';
+                return;
+            }
+
+            let flags = '';
+            if (document.getElementById('flags-g').checked) flags += 'g';
+            if (document.getElementById('flags-i').checked) flags += 'i';
+            if (document.getElementById('flags-m').checked) flags += 'm';
+
+            try {
+                const regex = new RegExp(pattern, flags);
+                let output = '';
+                let match;
+                let count = 0;
+                const matches = [];
+
+                if (flags.includes('g')) {
+                    while ((match = regex.exec(testString)) !== null) {
+                        matches.push({
+                            text: match[0],
+                            index: match.index,
+                            groups: match.slice(1)
+                        });
+                        count++;
+                        if (count > 100) break;
+                    }
+                } else {
+                    match = regex.exec(testString);
+                    if (match) {
+                        matches.push({
+                            text: match[0],
+                            index: match.index,
+                            groups: match.slice(1)
+                        });
+                        count = 1;
+                    }
+                }
+
+                if (count === 0) {
+                    output = i18n[currentLang]['msg.no-match'];
+                } else {
+                    output = `Found ${count} ${i18n[currentLang]['msg.matches']}:\n\n`;
+                    matches.forEach((m, i) => {
+                        output += `[${i + 1}] "${m.text}" at index ${m.index}\n`;
+                        if (m.groups.length > 0) {
+                            output += `    Groups: ${JSON.stringify(m.groups)}\n`;
+                        }
+                    });
+                    
+                    // Show highlighted text
+                    output += '\n--- Highlighted ---\n';
+                    let highlighted = testString;
+                    matches.reverse().forEach(m => {
+                        highlighted = highlighted.slice(0, m.index) + '\x1b[43m' + m.text + '\x1b[0m' + highlighted.slice(m.index + m.text.length);
+                    });
+                    output += highlighted;
+                }
+                result.textContent = output;
+            } catch (e) {
+                result.textContent = i18n[currentLang]['msg.error'] + e.message;
+            }
+        }
+
+        function clearAll() {
+            document.getElementById('pattern').value = '';
+            document.getElementById('testString').value = '';
+            document.getElementById('result').textContent = '';
+        }
+
+        function copyResult() {
+            navigator.clipboard.writeText(document.getElementById('result').textContent).then(() => {
+                alert(i18n[currentLang]['msg.copied'] || 'Copied!');
+            });
+        }
+
+        // Auto test on input change
+        document.getElementById('pattern').addEventListener('input', testRegex);
+        document.getElementById('testString').addEventListener('input', testRegex);
+    </script>
+</body>
+</html>
