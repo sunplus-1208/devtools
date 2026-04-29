@@ -10,16 +10,13 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: {
-                        primary: '#3b82f6',
-                    }
+                    colors: { primary: '#3b82f6' }
                 }
             }
         }
     </script>
 </head>
 <body class="bg-gray-50 min-h-screen">
-    <!-- Header -->
     <header class="bg-white shadow-sm sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
@@ -38,64 +35,75 @@
         </div>
     </header>
 
-    <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="mb-6">
             <h2 class="text-2xl font-bold text-gray-900" data-i18n="title">时间戳转换 / Timestamp Converter</h2>
-            <p class="text-gray-600 mt-1" data-i18n="subtitle">Unix 时间戳与日期时间互转</p>
+            <p class="text-gray-600 mt-1" data-i18n="subtitle">Unix 时间戳与日期互转</p>
         </div>
 
         <!-- Current Time -->
         <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6 mb-6">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="font-semibold text-gray-900" data-i18n="current.title">当前时间</h3>
-                <button onclick="refreshNow()" class="px-4 py-2 bg-primary hover:bg-blue-600 text-white rounded-lg text-sm">
-                    <i class="fas fa-sync-alt mr-2"></i><span data-i18n="btn.refresh">刷新</span>
-                </button>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="text-center p-4 bg-gray-50 rounded-lg">
-                    <div class="text-3xl font-mono font-bold text-primary" id="nowTimestamp"></div>
-                    <div class="text-sm text-gray-500 mt-1">Unix Timestamp (秒)</div>
+            <div class="flex items-center justify-between flex-wrap gap-4">
+                <div>
+                    <h3 class="text-sm font-medium text-gray-500 mb-1" data-i18n="current.title">当前时间 / Current Time</h3>
+                    <div id="currentTime" class="text-3xl font-bold text-gray-900 font-mono"></div>
+                    <div id="currentDate" class="text-lg text-gray-600 mt-1"></div>
                 </div>
-                <div class="text-center p-4 bg-gray-50 rounded-lg">
-                    <div class="text-3xl font-mono font-bold text-green-600" id="nowMs"></div>
-                    <div class="text-sm text-gray-500 mt-1">Unix Timestamp (毫秒)</div>
-                </div>
-                <div class="text-center p-4 bg-gray-50 rounded-lg">
-                    <div class="text-xl font-mono font-bold text-orange-600" id="nowDate"></div>
-                    <div class="text-sm text-gray-500 mt-1">ISO 8601</div>
+                <div class="text-right">
+                    <div class="text-sm text-gray-500 mb-1" data-i18n="current.unix">Unix 时间戳</div>
+                    <div id="currentTimestamp" class="text-2xl font-bold text-primary font-mono cursor-pointer" onclick="copyTimestamp()" title="Click to copy"></div>
+                    <div id="currentMs" class="text-sm text-gray-400 font-mono"></div>
                 </div>
             </div>
         </div>
 
-        <!-- Convert Section -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- Timestamp to Date -->
-            <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-900 mb-4" data-i18n="ts2date.title">时间戳 → 日期</h3>
-                <div class="space-y-4">
-                    <input type="text" id="tsInput" class="w-full px-4 py-3 border border-gray-300 rounded-lg font-mono text-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="1704067200">
-                    <div class="flex gap-2">
-                        <button onclick="convertTsToDate('s')" class="flex-1 px-4 py-2 bg-primary hover:bg-blue-600 text-white rounded-lg text-sm">秒 (s)</button>
-                        <button onclick="convertTsToDate('ms')" class="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm">毫秒 (ms)</button>
+            <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
+                <div class="bg-gray-50 px-4 py-3 border-b border-gray-100">
+                    <span class="font-medium text-gray-700" data-i18n="ts2date.title">时间戳 → 日期</span>
+                </div>
+                <div class="p-6 space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="ts2date.label">Timestamp (秒/毫秒)</label>
+                        <input id="tsInput" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg font-mono text-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g. 1745884800">
                     </div>
-                    <div id="tsResult" class="p-4 bg-gray-900 text-green-400 rounded-lg font-mono text-sm min-h-[100px] whitespace-pre-wrap"></div>
+                    <button onclick="tsToDate()" class="w-full px-4 py-2 bg-primary hover:bg-blue-600 text-white rounded-lg font-medium transition">
+                        <i class="fas fa-arrow-right mr-2"></i><span data-i18n="ts2date.btn">转换</span>
+                    </button>
+                    <div id="tsResult" class="bg-gray-50 rounded-lg p-4 font-mono text-sm hidden">
+                        <div id="tsResultLocal" class="mb-2"></div>
+                        <div id="tsResultUTC" class="text-gray-500"></div>
+                        <div id="tsResultRelative" class="text-primary mt-2"></div>
+                    </div>
                 </div>
             </div>
 
             <!-- Date to Timestamp -->
-            <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6">
-                <h3 class="font-semibold text-gray-900 mb-4" data-i18n="date2ts.title">日期 → 时间戳</h3>
-                <div class="space-y-4">
-                    <input type="datetime-local" id="dateInput" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                    <div class="flex gap-2">
-                        <button onclick="convertDateToTs()" class="flex-1 px-4 py-2 bg-primary hover:bg-blue-600 text-white rounded-lg text-sm" data-i18n="btn.convert">转换</button>
-                        <button onclick="setNow()" class="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm" data-i18n="btn.now">当前时间</button>
+            <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
+                <div class="bg-gray-50 px-4 py-3 border-b border-gray-100">
+                    <span class="font-medium text-gray-700" data-i18n="date2ts.title">日期 → 时间戳</span>
+                </div>
+                <div class="p-6 space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="date2ts.label">Date & Time</label>
+                        <input id="dateInput" type="datetime-local" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary">
                     </div>
-                    <div id="dateResult" class="p-4 bg-gray-900 text-green-400 rounded-lg font-mono text-sm min-h-[100px] whitespace-pre-wrap"></div>
+                    <button onclick="dateToTs()" class="w-full px-4 py-2 bg-primary hover:bg-blue-600 text-white rounded-lg font-medium transition">
+                        <i class="fas fa-arrow-right mr-2"></i><span data-i18n="date2ts.btn">转换</span>
+                    </button>
+                    <div id="dateResult" class="bg-gray-50 rounded-lg p-4 font-mono text-sm hidden">
+                        <div id="dateResultSec" class="mb-2 cursor-pointer" onclick="copyValue(this.textContent)"></div>
+                        <div id="dateResultMs" class="cursor-pointer" onclick="copyValue(this.textContent)"></div>
+                    </div>
                 </div>
             </div>
+        </div>
+
+        <!-- Quick Reference -->
+        <div class="mt-6 bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <h3 class="font-medium text-gray-900 mb-4" data-i18n="ref.title">常用时间戳参考</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm" id="refTable"></div>
         </div>
     </main>
 
@@ -103,89 +111,144 @@
         const i18n = {
             zh: {
                 'title': '时间戳转换 / Timestamp Converter',
-                'subtitle': 'Unix 时间戳与日期时间互转',
-                'current.title': '当前时间',
-                'btn.refresh': '刷新',
+                'subtitle': 'Unix 时间戳与日期互转',
+                'current.title': '当前时间 / Current Time',
+                'current.unix': 'Unix 时间戳',
                 'ts2date.title': '时间戳 → 日期',
+                'ts2date.label': 'Timestamp (秒/毫秒)',
+                'ts2date.btn': '转换',
                 'date2ts.title': '日期 → 时间戳',
-                'btn.convert': '转换',
-                'btn.now': '当前时间'
+                'date2ts.label': '日期时间',
+                'date2ts.btn': '转换',
+                'ref.title': '常用时间戳参考',
+                'msg.copied': '已复制',
+                'msg.local': '本地时间',
+                'msg.utc': 'UTC',
+                'msg.seconds': '秒',
+                'msg.milliseconds': '毫秒'
             },
             en: {
                 'title': 'Timestamp Converter / 时间戳转换',
                 'subtitle': 'Convert between Unix timestamps and dates',
-                'current.title': 'Current Time',
-                'btn.refresh': 'Refresh',
+                'current.title': 'Current Time / 当前时间',
+                'current.unix': 'Unix Timestamp',
                 'ts2date.title': 'Timestamp → Date',
+                'ts2date.label': 'Timestamp (seconds/milliseconds)',
+                'ts2date.btn': 'Convert',
                 'date2ts.title': 'Date → Timestamp',
-                'btn.convert': 'Convert',
-                'btn.now': 'Now'
+                'date2ts.label': 'Date & Time',
+                'date2ts.btn': 'Convert',
+                'ref.title': 'Common Timestamps Reference',
+                'msg.copied': 'Copied',
+                'msg.local': 'Local',
+                'msg.utc': 'UTC',
+                'msg.seconds': 'seconds',
+                'msg.milliseconds': 'milliseconds'
             }
         };
 
         let currentLang = 'zh';
-
         function switchLang(lang) {
             currentLang = lang;
-            document.getElementById('lang-zh').className = lang === 'zh' ? 'px-3 py-1 rounded-md bg-primary text-white text-sm font-medium' : 'px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium';
-            document.getElementById('lang-en').className = lang === 'en' ? 'px-3 py-1 rounded-md bg-primary text-white text-sm font-medium' : 'px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium';
+            document.getElementById('lang-zh').className = lang === 'zh' 
+                ? 'px-3 py-1 rounded-md bg-primary text-white text-sm font-medium'
+                : 'px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium';
+            document.getElementById('lang-en').className = lang === 'en'
+                ? 'px-3 py-1 rounded-md bg-primary text-white text-sm font-medium'
+                : 'px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium';
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if (i18n[lang][key]) el.textContent = i18n[lang][key];
             });
             localStorage.setItem('devtools-lang', lang);
         }
-
         const savedLang = localStorage.getItem('devtools-lang');
         if (savedLang) switchLang(savedLang);
 
-        function refreshNow() {
+        function updateClock() {
             const now = new Date();
-            document.getElementById('nowTimestamp').textContent = Math.floor(now.getTime() / 1000);
-            document.getElementById('nowMs').textContent = now.getTime();
-            document.getElementById('nowDate').textContent = now.toISOString();
+            document.getElementById('currentTime').textContent = now.toLocaleTimeString('zh-CN', { hour12: false });
+            document.getElementById('currentDate').textContent = now.toLocaleDateString('zh-CN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('currentTimestamp').textContent = Math.floor(now.getTime() / 1000);
+            document.getElementById('currentMs').textContent = now.getTime() + ' ms';
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        function tsToDate() {
+            let ts = document.getElementById('tsInput').value.trim();
+            if (!ts) return;
+            ts = parseInt(ts);
+            // Auto-detect seconds vs milliseconds
+            if (ts > 1e12) ts = Math.floor(ts);
+            else ts = ts * 1000;
+            
+            const date = new Date(ts);
+            if (isNaN(date.getTime())) return;
+            
+            document.getElementById('tsResultLocal').innerHTML = `<strong>${i18n[currentLang]['msg.local']}:</strong> ${date.toLocaleString('zh-CN')}`;
+            document.getElementById('tsResultUTC').innerHTML = `<strong>${i18n[currentLang]['msg.utc']}:</strong> ${date.toUTCString()}`;
+            
+            const diff = Date.now() - date.getTime();
+            const absDiff = Math.abs(diff);
+            let relative;
+            if (absDiff < 60000) relative = Math.floor(absDiff / 1000) + 's';
+            else if (absDiff < 3600000) relative = Math.floor(absDiff / 60000) + 'min';
+            else if (absDiff < 86400000) relative = Math.floor(absDiff / 3600000) + 'h';
+            else relative = Math.floor(absDiff / 86400000) + 'd';
+            relative = diff > 0 ? relative + ' ago' : 'in ' + relative;
+            document.getElementById('tsResultRelative').textContent = relative;
+            
+            document.getElementById('tsResult').classList.remove('hidden');
         }
 
-        function convertTsToDate(unit) {
-            const input = document.getElementById('tsInput').value.trim();
-            if (!input) return;
+        function dateToTs() {
+            const dateStr = document.getElementById('dateInput').value;
+            if (!dateStr) return;
+            const date = new Date(dateStr);
+            if (isNaN(date.getTime())) return;
             
-            const ts = parseInt(input);
-            const date = unit === 's' ? new Date(ts * 1000) : new Date(ts);
-            
-            const result = `ISO:      ${date.toISOString()}
-Local:    ${date.toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' })}
-UTC:      ${date.toUTCString()}
-Unix (s): ${Math.floor(date.getTime() / 1000)}
-Unix (ms): ${date.getTime()}`;
-            
-            document.getElementById('tsResult').textContent = result;
+            document.getElementById('dateResultSec').innerHTML = `<strong>${i18n[currentLang]['msg.seconds']}:</strong> ${Math.floor(date.getTime() / 1000)}`;
+            document.getElementById('dateResultMs').innerHTML = `<strong>${i18n[currentLang]['msg.milliseconds']}:</strong> ${date.getTime()}`;
+            document.getElementById('dateResult').classList.remove('hidden');
         }
 
-        function convertDateToTs() {
-            const input = document.getElementById('dateInput').value;
-            if (!input) return;
-            
-            const date = new Date(input);
-            const ts = date.getTime();
-            
-            const result = `Unix Timestamp (秒):   ${Math.floor(ts / 1000)}
-Unix Timestamp (毫秒): ${ts}
-ISO 8601:             ${date.toISOString()}`;
-            
-            document.getElementById('dateResult').textContent = result;
+        function copyTimestamp() {
+            navigator.clipboard.writeText(document.getElementById('currentTimestamp').textContent).then(() => {
+                alert(i18n[currentLang]['msg.copied']);
+            });
         }
 
-        function setNow() {
+        function copyValue(text) {
+            navigator.clipboard.writeText(text.replace(/^[^:]+:\s*/, '')).then(() => {
+                alert(i18n[currentLang]['msg.copied']);
+            });
+        }
+
+        // Reference table
+        function buildRefTable() {
             const now = new Date();
-            const offset = now.getTimezoneOffset() * 60000;
-            const local = new Date(now - offset);
-            document.getElementById('dateInput').value = local.toISOString().slice(0, 16);
-            convertDateToTs();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const refs = [
+                { label: 'Today 00:00', ts: Math.floor(today.getTime() / 1000) },
+                { label: 'Now', ts: Math.floor(now.getTime() / 1000) },
+                { label: 'Today 23:59', ts: Math.floor(new Date(today.getTime() + 86399000).getTime() / 1000) },
+                { label: '1h ago', ts: Math.floor((now.getTime() - 3600000) / 1000) },
+                { label: '24h ago', ts: Math.floor((now.getTime() - 86400000) / 1000) },
+                { label: '7d ago', ts: Math.floor((now.getTime() - 604800000) / 1000) },
+                { label: '30d ago', ts: Math.floor((now.getTime() - 2592000000) / 1000) },
+                { label: '1h later', ts: Math.floor((now.getTime() + 3600000) / 1000) },
+                { label: '24h later', ts: Math.floor((now.getTime() + 86400000) / 1000) },
+            ];
+            const container = document.getElementById('refTable');
+            container.innerHTML = refs.map(r => `
+                <div class="flex justify-between items-center bg-gray-50 rounded px-3 py-2 cursor-pointer hover:bg-gray-100" onclick="copyValue('${r.ts}')">
+                    <span class="text-gray-600">${r.label}</span>
+                    <span class="font-mono text-gray-900">${r.ts}</span>
+                </div>
+            `).join('');
         }
-
-        refreshNow();
-        setInterval(refreshNow, 1000);
+        buildRefTable();
     </script>
 </body>
 </html>

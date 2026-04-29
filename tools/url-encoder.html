@@ -10,16 +10,13 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: {
-                        primary: '#3b82f6',
-                    }
+                    colors: { primary: '#3b82f6' }
                 }
             }
         }
     </script>
 </head>
 <body class="bg-gray-50 min-h-screen">
-    <!-- Header -->
     <header class="bg-white shadow-sm sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
@@ -38,7 +35,6 @@
         </div>
     </header>
 
-    <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="mb-6">
             <h2 class="text-2xl font-bold text-gray-900" data-i18n="title">URL 编解码 / URL Encoder</h2>
@@ -46,53 +42,61 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Input Section -->
+            <!-- Input -->
             <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
                 <div class="bg-gray-50 px-4 py-3 border-b border-gray-100 flex justify-between items-center">
                     <span class="font-medium text-gray-700" data-i18n="input.title">输入 / Input</span>
                     <button onclick="clearInput()" class="text-xs px-3 py-1 bg-red-100 hover:bg-red-200 rounded text-red-700" data-i18n="btn.clear">清空</button>
                 </div>
-                <textarea id="input" class="w-full h-80 p-4 font-mono text-sm resize-none focus:outline-none" placeholder="https://example.com/path?query=你好&foo=bar"></textarea>
+                <textarea id="input" class="w-full h-80 p-4 font-mono text-sm resize-none focus:outline-none" placeholder="https://example.com/path?name=测试&lang=中文"></textarea>
             </div>
 
-            <!-- Output Section -->
+            <!-- Output -->
             <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
                 <div class="bg-gray-50 px-4 py-3 border-b border-gray-100 flex justify-between items-center">
                     <span class="font-medium text-gray-700" data-i18n="output.title">输出 / Output</span>
                     <button onclick="copyOutput()" class="text-xs px-3 py-1 bg-primary hover:bg-blue-600 text-white rounded" data-i18n="btn.copy">复制</button>
                 </div>
-                <textarea id="output" class="w-full h-80 p-4 font-mono text-sm resize-none focus:outline-none bg-gray-900 text-green-400" readonly></textarea>
+                <textarea id="output" class="w-full h-80 p-4 font-mono text-sm resize-none focus:outline-none bg-gray-50" readonly></textarea>
             </div>
         </div>
 
-        <!-- Action Buttons -->
+        <!-- Actions -->
         <div class="mt-6 flex flex-wrap gap-3">
-            <button onclick="encodeURI()" class="px-6 py-2 bg-primary hover:bg-blue-600 text-white rounded-lg font-medium transition">
-                <i class="fas fa-arrow-right mr-2"></i><span data-i18n="btn.encode">编码 (encodeURI)</span>
+            <button onclick="encodeURL()" class="px-6 py-2 bg-primary hover:bg-blue-600 text-white rounded-lg font-medium transition">
+                <i class="fas fa-lock mr-2"></i><span data-i18n="btn.encode">编码 (Encode)</span>
             </button>
-            <button onclick="decodeURI()" class="px-6 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition">
-                <i class="fas fa-arrow-left mr-2"></i><span data-i18n="btn.decode">解码 (decodeURI)</span>
+            <button onclick="decodeURL()" class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition">
+                <i class="fas fa-unlock mr-2"></i><span data-i18n="btn.decode">解码 (Decode)</span>
             </button>
-            <button onclick="encodeComponent()" class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition">
-                <i class="fas fa-arrow-right mr-2"></i><span data-i18n="btn.encodeComp">编码 (encodeURIComponent)</span>
+            <button onclick="encodeComponent()" class="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition">
+                <i class="fas fa-puzzle-piece mr-2"></i><span data-i18n="btn.encodeComponent">组件编码</span>
             </button>
             <button onclick="decodeComponent()" class="px-6 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition">
-                <i class="fas fa-arrow-left mr-2"></i><span data-i18n="btn.decodeComp">解码 (decodeURIComponent)</span>
+                <i class="fas fa-puzzle-piece mr-2"></i><span data-i18n="btn.decodeComponent">组件解码</span>
             </button>
         </div>
 
-        <!-- Info -->
-        <div class="mt-6 bg-white rounded-xl shadow-md border border-gray-100 p-6">
-            <h3 class="font-semibold text-gray-900 mb-4" data-i18n="info.title">编码区别</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                <div class="p-4 bg-blue-50 rounded-lg">
-                    <div class="font-medium text-blue-800 mb-2">encodeURI</div>
-                    <div class="text-gray-600">编码完整 URL，保留 <code class="bg-blue-100 px-1 rounded">:/?&=+$;,@</code> 等特殊字符</div>
-                </div>
-                <div class="p-4 bg-green-50 rounded-lg">
-                    <div class="font-medium text-green-800 mb-2">encodeURIComponent</div>
-                    <div class="text-gray-600">编码 URL 参数值，所有特殊字符都会被编码，适合作为查询参数值</div>
-                </div>
+        <!-- URL Parse Result -->
+        <div id="parseResult" class="mt-6 bg-white rounded-xl shadow-sm border border-gray-100 p-6 hidden">
+            <h3 class="font-medium text-gray-900 mb-3" data-i18n="parse.title">URL 解析结果</h3>
+            <div id="parsedFields" class="space-y-2 text-sm font-mono"></div>
+        </div>
+
+        <!-- Params Table -->
+        <div id="paramsTable" class="mt-6 bg-white rounded-xl shadow-sm border border-gray-100 p-6 hidden">
+            <h3 class="font-medium text-gray-900 mb-3" data-i18n="params.title">Query 参数</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="bg-gray-50">
+                            <th class="px-4 py-2 text-left text-gray-600" data-i18n="params.key">Key</th>
+                            <th class="px-4 py-2 text-left text-gray-600" data-i18n="params.value">Value</th>
+                            <th class="px-4 py-2 text-left text-gray-600" data-i18n="params.decoded">Decoded</th>
+                        </tr>
+                    </thead>
+                    <tbody id="paramsBody"></tbody>
+                </table>
             </div>
         </div>
     </main>
@@ -106,12 +110,17 @@
                 'output.title': '输出 / Output',
                 'btn.clear': '清空',
                 'btn.copy': '复制',
-                'btn.encode': '编码 (encodeURI)',
-                'btn.decode': '解码 (decodeURI)',
-                'btn.encodeComp': '编码 (encodeURIComponent)',
-                'btn.decodeComp': '解码 (decodeURIComponent)',
-                'info.title': '编码区别',
-                'msg.copied': '已复制到剪贴板'
+                'btn.encode': '编码 (Encode)',
+                'btn.decode': '解码 (Decode)',
+                'btn.encodeComponent': '组件编码',
+                'btn.decodeComponent': '组件解码',
+                'parse.title': 'URL 解析结果',
+                'params.title': 'Query 参数',
+                'params.key': 'Key',
+                'params.value': 'Value',
+                'params.decoded': '解码值',
+                'msg.copied': '已复制到剪贴板',
+                'msg.error': '解码失败：'
             },
             en: {
                 'title': 'URL Encoder / URL 编解码',
@@ -120,56 +129,57 @@
                 'output.title': 'Output / 输出',
                 'btn.clear': 'Clear',
                 'btn.copy': 'Copy',
-                'btn.encode': 'Encode (encodeURI)',
-                'btn.decode': 'Decode (decodeURI)',
-                'btn.encodeComp': 'Encode (encodeURIComponent)',
-                'btn.decodeComp': 'Decode (decodeURIComponent)',
-                'info.title': 'Encoding Difference',
-                'msg.copied': 'Copied to clipboard'
+                'btn.encode': 'Encode',
+                'btn.decode': 'Decode',
+                'btn.encodeComponent': 'Component Encode',
+                'btn.decodeComponent': 'Component Decode',
+                'parse.title': 'URL Parse Result',
+                'params.title': 'Query Parameters',
+                'params.key': 'Key',
+                'params.value': 'Value',
+                'params.decoded': 'Decoded',
+                'msg.copied': 'Copied to clipboard',
+                'msg.error': 'Decode failed: '
             }
         };
 
         let currentLang = 'zh';
-
         function switchLang(lang) {
             currentLang = lang;
-            document.getElementById('lang-zh').className = lang === 'zh' ? 'px-3 py-1 rounded-md bg-primary text-white text-sm font-medium' : 'px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium';
-            document.getElementById('lang-en').className = lang === 'en' ? 'px-3 py-1 rounded-md bg-primary text-white text-sm font-medium' : 'px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium';
+            document.getElementById('lang-zh').className = lang === 'zh' 
+                ? 'px-3 py-1 rounded-md bg-primary text-white text-sm font-medium'
+                : 'px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium';
+            document.getElementById('lang-en').className = lang === 'en'
+                ? 'px-3 py-1 rounded-md bg-primary text-white text-sm font-medium'
+                : 'px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium';
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if (i18n[lang][key]) el.textContent = i18n[lang][key];
             });
             localStorage.setItem('devtools-lang', lang);
         }
-
         const savedLang = localStorage.getItem('devtools-lang');
         if (savedLang) switchLang(savedLang);
 
-        function encodeURI_() {
+        function encodeURL() {
             const input = document.getElementById('input').value;
-            try {
-                document.getElementById('output').value = window.encodeURI(input);
-            } catch (e) {
-                document.getElementById('output').value = 'Error: ' + e.message;
-            }
+            document.getElementById('output').value = encodeURI(input);
+            parseURL(encodeURI(input));
         }
 
-        function decodeURI_() {
+        function decodeURL() {
             const input = document.getElementById('input').value;
             try {
-                document.getElementById('output').value = window.decodeURI(input);
+                document.getElementById('output').value = decodeURI(input);
+                parseURL(input);
             } catch (e) {
-                document.getElementById('output').value = 'Error: ' + e.message;
+                document.getElementById('output').value = i18n[currentLang]['msg.error'] + e.message;
             }
         }
 
         function encodeComponent() {
             const input = document.getElementById('input').value;
-            try {
-                document.getElementById('output').value = encodeURIComponent(input);
-            } catch (e) {
-                document.getElementById('output').value = 'Error: ' + e.message;
-            }
+            document.getElementById('output').value = encodeURIComponent(input);
         }
 
         function decodeComponent() {
@@ -177,18 +187,62 @@
             try {
                 document.getElementById('output').value = decodeURIComponent(input);
             } catch (e) {
-                document.getElementById('output').value = 'Error: ' + e.message;
+                document.getElementById('output').value = i18n[currentLang]['msg.error'] + e.message;
+            }
+        }
+
+        function parseURL(urlStr) {
+            try {
+                const url = new URL(urlStr);
+                const fields = [
+                    { key: 'Protocol', val: url.protocol },
+                    { key: 'Host', val: url.host },
+                    { key: 'Hostname', val: url.hostname },
+                    { key: 'Port', val: url.port || '(default)' },
+                    { key: 'Pathname', val: url.pathname },
+                    { key: 'Search', val: url.search || '(none)' },
+                    { key: 'Hash', val: url.hash || '(none)' },
+                    { key: 'Origin', val: url.origin },
+                ];
+                document.getElementById('parsedFields').innerHTML = fields.map(f => `
+                    <div class="flex">
+                        <span class="w-24 text-gray-500 flex-shrink-0">${f.key}</span>
+                        <span class="text-gray-900 break-all">${f.val}</span>
+                    </div>
+                `).join('');
+                document.getElementById('parseResult').classList.remove('hidden');
+
+                // Params
+                const params = new URLSearchParams(url.search);
+                if (params.toString()) {
+                    const body = document.getElementById('paramsBody');
+                    body.innerHTML = '';
+                    params.forEach((val, key) => {
+                        body.innerHTML += `<tr class="border-t border-gray-100">
+                            <td class="px-4 py-2 text-blue-600">${key}</td>
+                            <td class="px-4 py-2 text-gray-700">${val}</td>
+                            <td class="px-4 py-2 text-gray-500">${decodeURIComponent(val)}</td>
+                        </tr>`;
+                    });
+                    document.getElementById('paramsTable').classList.remove('hidden');
+                } else {
+                    document.getElementById('paramsTable').classList.add('hidden');
+                }
+            } catch (e) {
+                document.getElementById('parseResult').classList.add('hidden');
+                document.getElementById('paramsTable').classList.add('hidden');
             }
         }
 
         function clearInput() {
             document.getElementById('input').value = '';
             document.getElementById('output').value = '';
+            document.getElementById('parseResult').classList.add('hidden');
+            document.getElementById('paramsTable').classList.add('hidden');
         }
 
         function copyOutput() {
-            const output = document.getElementById('output').value;
-            navigator.clipboard.writeText(output).then(() => {
+            navigator.clipboard.writeText(document.getElementById('output').value).then(() => {
                 alert(i18n[currentLang]['msg.copied']);
             });
         }
