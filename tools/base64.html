@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,8 +28,8 @@
                     </a>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <button id="lang-zh" class="px-3 py-1 rounded-md bg-primary text-white text-sm font-medium" onclick="switchLang('zh')">中文</button>
-                    <button id="lang-en" class="px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium" onclick="switchLang('en')">EN</button>
+                    <button id="lang-zh" class="px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium" onclick="switchLang('zh')">中文</button>
+                    <button id="lang-en" class="px-3 py-1 rounded-md bg-primary text-white text-sm font-medium" onclick="switchLang('en')">EN</button>
                 </div>
             </div>
         </div>
@@ -37,16 +37,16 @@
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="mb-6">
-            <h2 class="text-2xl font-bold text-gray-900" data-i18n="title">Base64 编解码 / Base64 Encoder</h2>
-            <p class="text-gray-600 mt-1" data-i18n="subtitle">文本和文件的 Base64 转换</p>
+            <h2 class="text-2xl font-bold text-gray-900">Base64 Encoder</h2>
+            <p class="text-gray-600 mt-1">Encode and decode text and files to Base64</p>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- Input -->
             <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
                 <div class="bg-gray-50 px-4 py-3 border-b border-gray-100 flex justify-between items-center">
-                    <span class="font-medium text-gray-700" data-i18n="input.title">输入 / Input</span>
-                    <button onclick="clearInput()" class="text-xs px-3 py-1 bg-red-100 hover:bg-red-200 rounded text-red-700" data-i18n="btn.clear">清空</button>
+                    <span class="font-medium text-gray-700">Input</span>
+                    <button onclick="clearInput()" class="text-xs px-3 py-1 bg-red-100 hover:bg-red-200 rounded text-red-700">Clear</button>
                 </div>
                 <textarea id="input" class="w-full h-80 p-4 font-mono text-sm resize-none focus:outline-none" placeholder="Enter text or Base64 string..."></textarea>
             </div>
@@ -54,8 +54,8 @@
             <!-- Output -->
             <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
                 <div class="bg-gray-50 px-4 py-3 border-b border-gray-100 flex justify-between items-center">
-                    <span class="font-medium text-gray-700" data-i18n="output.title">输出 / Output</span>
-                    <button onclick="copyOutput()" class="text-xs px-3 py-1 bg-primary hover:bg-blue-600 text-white rounded" data-i18n="btn.copy">复制</button>
+                    <span class="font-medium text-gray-700">Output</span>
+                    <button onclick="copyOutput()" class="text-xs px-3 py-1 bg-primary hover:bg-blue-600 text-white rounded">Copy</button>
                 </div>
                 <textarea id="output" class="w-full h-80 p-4 font-mono text-sm resize-none focus:outline-none bg-gray-50" readonly></textarea>
             </div>
@@ -64,26 +64,24 @@
         <!-- Actions -->
         <div class="mt-6 flex flex-wrap gap-3">
             <button onclick="encodeBase64()" class="px-6 py-2 bg-primary hover:bg-blue-600 text-white rounded-lg font-medium transition">
-                <i class="fas fa-lock mr-2"></i><span data-i18n="btn.encode">编码 (Encode)</span>
+                <i class="fas fa-lock mr-2"></i>Encode
             </button>
             <button onclick="decodeBase64()" class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition">
-                <i class="fas fa-unlock mr-2"></i><span data-i18n="btn.decode">解码 (Decode)</span>
+                <i class="fas fa-unlock mr-2"></i>Decode
             </button>
             <button onclick="encodeURL()" class="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition">
-                <i class="fas fa-link mr-2"></i><span data-i18n="btn.url-encode">URL 安全编码</span>
+                <i class="fas fa-link mr-2"></i>URL Safe Encode
             </button>
         </div>
 
         <!-- File Upload -->
         <div class="mt-6 bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <h3 class="font-medium text-gray-900 mb-3" data-i18n="file.title">文件转 Base64 / File to Base64</h3>
+            <h3 class="font-medium text-gray-900 mb-3">File to Base64</h3>
             <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary transition">
                 <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-3"></i>
-                <p class="text-gray-500 mb-2" data-i18n="file.desc">拖拽文件到此处，或点击选择文件</p>
+                <p class="text-gray-500 mb-2">Drag file here, or click to select</p>
                 <input type="file" id="fileInput" class="hidden" onchange="encodeFile(this)">
-                <button onclick="document.getElementById('fileInput').click()" class="px-4 py-2 bg-primary hover:bg-blue-600 text-white rounded-lg text-sm">
-                    <span data-i18n="file.btn">选择文件</span>
-                </button>
+                <button onclick="document.getElementById('fileInput').click()" class="px-4 py-2 bg-primary hover:bg-blue-600 text-white rounded-lg text-sm">Select File</button>
             </div>
             <div id="fileInfo" class="hidden mt-3 text-sm text-gray-600"></div>
         </div>
@@ -92,33 +90,25 @@
     <script>
         const i18n = {
             zh: {
-                'title': 'Base64 编解码 / Base64 Encoder',
-                'subtitle': '文本和文件的 Base64 转换',
-                'input.title': '输入 / Input',
-                'output.title': '输出 / Output',
                 'btn.clear': '清空',
                 'btn.copy': '复制',
-                'btn.encode': '编码 (Encode)',
-                'btn.decode': '解码 (Decode)',
-                'btn.url-encode': 'URL 安全编码',
-                'file.title': '文件转 Base64 / File to Base64',
-                'file.desc': '拖拽文件到此处，或点击选择文件',
+                'btn.encode': '编码',
+                'btn.decode': '解码',
+                'btn.url-encode': 'URL安全编码',
+                'file.title': '文件转Base64',
+                'file.desc': '拖拽文件到此处，或点击选择',
                 'file.btn': '选择文件',
                 'msg.copied': '已复制到剪贴板',
-                'msg.decode-error': '解码失败：无效的 Base64 字符串',
+                'msg.decode-error': '解码失败：无效的Base64字符串',
                 'msg.file-size': '文件大小'
             },
             en: {
-                'title': 'Base64 Encoder / Base64 编解码',
-                'subtitle': 'Encode and decode text and files to Base64',
-                'input.title': 'Input / 输入',
-                'output.title': 'Output / 输出',
                 'btn.clear': 'Clear',
                 'btn.copy': 'Copy',
                 'btn.encode': 'Encode',
                 'btn.decode': 'Decode',
                 'btn.url-encode': 'URL Safe Encode',
-                'file.title': 'File to Base64 / 文件转 Base64',
+                'file.title': 'File to Base64',
                 'file.desc': 'Drag file here, or click to select',
                 'file.btn': 'Select File',
                 'msg.copied': 'Copied to clipboard',
@@ -127,7 +117,8 @@
             }
         };
 
-        let currentLang = 'zh';
+        let currentLang = 'en';
+
         function switchLang(lang) {
             currentLang = lang;
             document.getElementById('lang-zh').className = lang === 'zh' 
@@ -136,14 +127,11 @@
             document.getElementById('lang-en').className = lang === 'en'
                 ? 'px-3 py-1 rounded-md bg-primary text-white text-sm font-medium'
                 : 'px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium';
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (i18n[lang][key]) el.textContent = i18n[lang][key];
-            });
             localStorage.setItem('devtools-lang', lang);
         }
-        const savedLang = localStorage.getItem('devtools-lang');
-        if (savedLang) switchLang(savedLang);
+
+        const savedLang = localStorage.getItem('devtools-lang') || 'en';
+        if (savedLang === 'zh') switchLang('zh');
 
         function encodeBase64() {
             const input = document.getElementById('input').value;
@@ -161,7 +149,7 @@
                 const decoded = decodeURIComponent(escape(atob(input)));
                 document.getElementById('output').value = decoded;
             } catch (e) {
-                document.getElementById('output').value = i18n[currentLang]['msg.decode-error'];
+                document.getElementById('output').value = 'Decode failed: Invalid Base64 string';
             }
         }
 
@@ -188,7 +176,7 @@
                 const size = file.size < 1024 ? file.size + ' B' 
                     : file.size < 1048576 ? (file.size / 1024).toFixed(1) + ' KB'
                     : (file.size / 1048576).toFixed(1) + ' MB';
-                info.textContent = `${file.name} | ${i18n[currentLang]['msg.file-size']}: ${size}`;
+                info.textContent = `${file.name} | Size: ${size}`;
             };
             reader.readAsDataURL(file);
         }
@@ -201,7 +189,7 @@
 
         function copyOutput() {
             navigator.clipboard.writeText(document.getElementById('output').value).then(() => {
-                alert(i18n[currentLang]['msg.copied']);
+                alert('Copied to clipboard');
             });
         }
     </script>
