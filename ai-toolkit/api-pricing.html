@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Pricing - AI Toolkit Hub</title>
+    <meta name="description" content="Compare pricing across major AI APIs: OpenAI, Anthropic, Google, DeepSeek, and more.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>tailwind.config = { theme: { extend: { colors: { primary: '#6366f1' } } } } </script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="flex items-center">
+                        <i class="fas fa-arrow-left text-gray-500 mr-3 hover:text-gray-700"></i>
+                        <i class="fas fa-brain text-primary text-2xl mr-3"></i>
+                        <h1 class="text-xl font-bold text-gray-900">AI Toolkit Hub</h1>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="lang-zh" class="px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium" onclick="switchLang('zh')">中文</button>
+                    <button id="lang-en" class="px-3 py-1 rounded-md bg-primary text-white text-sm font-medium" onclick="switchLang('en')">EN</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-gray-900" data-i18n="title">API Pricing Comparison</h2>
+            <p class="text-gray-600 mt-1" data-i18n="subtitle">Prices in USD, updated 2026-05</p>
+        </div>
+
+        <!-- Provider Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8" id="providerCards"></div>
+
+        <!-- Detailed Table -->
+        <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-gray-600 font-medium" data-i18n="th.model">Model</th>
+                            <th class="px-4 py-3 text-center text-gray-600 font-medium" data-i18n="th.context">Context</th>
+                            <th class="px-4 py-3 text-center text-gray-600 font-medium" data-i18n="th.input">Input / 1M</th>
+                            <th class="px-4 py-3 text-center text-gray-600 font-medium" data-i18n="th.output">Output / 1M</th>
+                            <th class="px-4 py-3 text-center text-gray-600 font-medium hidden md:table-cell" data-i18n="th.free">Free Tier</th>
+                            <th class="px-4 py-3 text-center text-gray-600 font-medium hidden lg:table-cell" data-i18n="th.link">Link</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pricingTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Cost Calculator -->
+        <div class="mt-8 bg-white rounded-xl shadow-md border border-gray-100 p-6">
+            <h3 class="text-lg font-bold text-gray-900 mb-4"><i class="fas fa-calculator mr-2 text-primary"></i><span data-i18n="calc.title">Cost Calculator</span></h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="calc.input">Input tokens</label>
+                    <input id="calcInput" type="number" value="100000" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" oninput="calculate()">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="calc.output">Output tokens</label>
+                    <input id="calcOutput" type="number" value="50000" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" oninput="calculate()">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="calc.model">Model</label>
+                    <select id="calcModel" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" onchange="calculate()">
+                        <option value="gpt4o">GPT-4o</option>
+                        <option value="claude4s">Claude 4 Sonnet</option>
+                        <option value="gemini25p">Gemini 2.5 Pro</option>
+                        <option value="deepseekv3">DeepSeek V3</option>
+                        <option value="gpt4o-mini">GPT-4o mini</option>
+                    </select>
+                </div>
+            </div>
+            <div class="bg-indigo-50 rounded-lg p-4 text-center">
+                <div class="text-sm text-gray-600 mb-1" data-i18n="calc.est">Estimated Cost</div>
+                <div id="calcResult" class="text-3xl font-bold text-primary">$0.125</div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-white border-t border-gray-200 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-gray-500 text-sm">
+            <p>&copy; 2026 AI Toolkit Hub · <span data-i18n="footer">Prices in USD. Free tier limits vary. Always check official pricing pages.</span></p>
+        </div>
+    </footer>
+
+    <script>
+        const i18n = {
+            zh: { title: 'API 价格对比', subtitle: '美元计价，更新于 2026-05', th: {model:'模型',context:'上下文',input:'输入/1M',output:'输出/1M',free:'免费额度',link:'链接'}, calc: {title:'费用计算器',input:'输入 tokens',output:'输出 tokens',model:'模型',est:'预估费用'}, footer:'价格仅供参考，请以官方最新定价为准' },
+            en: { title: 'API Pricing Comparison', subtitle: 'Prices in USD, updated 2026-05', th: {model:'Model',context:'Context',input:'Input / 1M',output:'Output / 1M',free:'Free Tier',link:'Link'}, calc: {title:'Cost Calculator',input:'Input tokens',output:'Output tokens',model:'Model',est:'Estimated Cost'}, footer:'Prices in USD. Free tier limits vary. Always check official pricing pages.' }
+        };
+
+        const pricing = [
+            { provider: 'OpenAI', model: 'GPT-4.5', context: '128K', input: '$75.00', output: '$150.00', free: '✗', url: 'https://platform.openai.com/pricing' },
+            { provider: 'OpenAI', model: 'GPT-4o', context: '128K', input: '$2.50', output: '$10.00', free: '✗', url: 'https://platform.openai.com/pricing' },
+            { provider: 'OpenAI', model: 'GPT-4o mini', context: '128K', input: '$0.15', output: '$0.60', free: '✓', url: 'https://platform.openai.com/pricing' },
+            { provider: 'OpenAI', model: 'o4-mini', context: '128K', input: '$1.10', output: '$4.40', free: '✗', url: 'https://platform.openai.com/pricing' },
+            { provider: 'Anthropic', model: 'Claude 4 Opus', context: '200K', input: '$15.00', output: '$75.00', free: '✗', url: 'https://console.anthropic.com/pricing' },
+            { provider: 'Anthropic', model: 'Claude 4 Sonnet', context: '200K', input: '$3.00', output: '$15.00', free: '✓', url: 'https://console.anthropic.com/pricing' },
+            { provider: 'Google', model: 'Gemini 2.5 Pro', context: '1M', input: '$1.25', output: '$5.00', free: '✓', url: 'https://ai.google.dev/pricing' },
+            { provider: 'Google', model: 'Gemini 2.0 Flash', context: '1M', input: '$0.10', output: '$0.40', free: '✓', url: 'https://ai.google.dev/pricing' },
+            { provider: 'Google', model: 'Gemini 2.5 Flash', context: '1M', input: '$0.075', output: '$0.30', free: '✓', url: 'https://ai.google.dev/pricing' },
+            { provider: 'DeepSeek', model: 'DeepSeek V3', context: '64K', input: '$0.27', output: '$1.10', free: '✗', url: 'https://platform.deepseek.com/pricing' },
+            { provider: 'DeepSeek', model: 'DeepSeek R1', context: '64K', input: '$0.55', output: '$2.19', free: '✗', url: 'https://platform.deepseek.com/pricing' },
+            { provider: 'Mistral', model: 'Mistral Large 3', context: '128K', input: '$2.00', output: '$6.00', free: '✗', url: 'https://console.mistral.ai/pricing' },
+            { provider: 'Groq', model: 'Llama 4 Scout', context: '128K', input: '$0.07', output: '$0.07', free: '✓', url: 'https://console.groq.com' },
+            { provider: 'Groq', model: 'Llama 3.3 70B', context: '128K', input: '$0.59', output: '$0.79', free: '✓', url: 'https://console.groq.com' },
+            { provider: 'Together', model: 'Llama 4 Scout', context: '128K', input: '$0.30', output: '$0.30', free: '✗', url: 'https://together.ai' },
+        ];
+
+        const providers = [
+            { name: 'OpenAI', icon: 'fa-robot', color: 'bg-green-100 text-green-600', count: 4 },
+            { name: 'Anthropic', icon: 'fa-brain', color: 'bg-orange-100 text-orange-600', count: 2 },
+            { name: 'Google', icon: 'fa-gem', color: 'bg-blue-100 text-blue-600', count: 3 },
+            { name: 'DeepSeek', icon: 'fa-rocket', color: 'bg-cyan-100 text-cyan-600', count: 2 },
+        ];
+
+        const models = {
+            gpt4o: { input: 2.50, output: 10.00 },
+            claude4s: { input: 3.00, output: 15.00 },
+            gemini25p: { input: 1.25, output: 5.00 },
+            deepseekv3: { input: 0.27, output: 1.10 },
+            'gpt4o-mini': { input: 0.15, output: 0.60 },
+        };
+
+        let currentLang = 'en';
+
+        function render() {
+            document.getElementById('providerCards').innerHTML = providers.map(p => `
+                <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex items-center">
+                    <div class="w-10 h-10 ${p.color} rounded-lg flex items-center justify-center mr-3">
+                        <i class="fas ${p.icon}"></i>
+                    </div>
+                    <div>
+                        <div class="font-semibold text-gray-900">${p.name}</div>
+                        <div class="text-xs text-gray-500">${p.count} models</div>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('pricingTable').innerHTML = pricing.map(p => `
+                <tr class="border-t border-gray-100 hover:bg-gray-50">
+                    <td class="px-4 py-3">
+                        <div class="font-medium text-gray-900">${p.model}</div>
+                        <div class="text-xs text-gray-500">${p.provider}</div>
+                    </td>
+                    <td class="px-4 py-3 text-center text-gray-500">${p.context}</td>
+                    <td class="px-4 py-3 text-center font-mono text-green-600">${p.input}</td>
+                    <td class="px-4 py-3 text-center font-mono text-orange-600">${p.output}</td>
+                    <td class="px-4 py-3 text-center hidden md:table-cell">${p.free === '✓' ? '<span class="text-green-600"><i class="fas fa-check"></i></span>' : '<span class="text-gray-300"><i class="fas fa-times"></i></span>'}</td>
+                    <td class="px-4 py-3 text-center hidden lg:table-cell"><a href="${p.url}" target="_blank" class="text-primary hover:text-indigo-700"><i class="fas fa-external-link-alt"></i></a></td>
+                </tr>
+            `).join('');
+        }
+
+        function calculate() {
+            const input = parseInt(document.getElementById('calcInput').value) || 0;
+            const output = parseInt(document.getElementById('calcOutput').value) || 0;
+            const model = models[document.getElementById('calcModel').value];
+            const cost = (input / 1e6 * model.input) + (output / 1e6 * model.output);
+            document.getElementById('calcResult').textContent = '$' + cost.toFixed(4);
+        }
+
+        function switchLang(lang) {
+            currentLang = lang;
+            document.getElementById('lang-zh').className = lang === 'zh' ? 'px-3 py-1 rounded-md bg-primary text-white text-sm font-medium' : 'px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium';
+            document.getElementById('lang-en').className = lang === 'en' ? 'px-3 py-1 rounded-md bg-primary text-white text-sm font-medium' : 'px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium';
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const parts = el.getAttribute('data-i18n').split('.');
+                let val = i18n[lang];
+                for (const k of parts) val = val[k];
+                if (val) el.textContent = val;
+            });
+            localStorage.setItem('ai-toolkit-lang', lang);
+        }
+
+        const saved = localStorage.getItem('ai-toolkit-lang');
+        if (saved) switchLang(saved); else switchLang('en');
+        render();
+        calculate();
+    </script>
+</body>
+</html>

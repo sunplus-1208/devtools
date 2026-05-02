@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prompt Tools - AI Toolkit Hub</title>
+    <meta name="description" content="Curated prompt engineering tools: testing, optimization, versioning, and best practices.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>tailwind.config = { theme: { extend: { colors: { primary: '#6366f1' } } } } </script>
+    <style>.tool-card{transition:all .3s}.tool-card:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,0,0,.1)}</style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="flex items-center">
+                        <i class="fas fa-arrow-left text-gray-500 mr-3 hover:text-gray-700"></i>
+                        <i class="fas fa-brain text-primary text-2xl mr-3"></i>
+                        <h1 class="text-xl font-bold text-gray-900">AI Toolkit Hub</h1>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="lang-zh" class="px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium" onclick="switchLang('zh')">中文</button>
+                    <button id="lang-en" class="px-3 py-1 rounded-md bg-primary text-white text-sm font-medium" onclick="switchLang('en')">EN</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-gray-900" data-i18n="title">Prompt Engineering Tools</h2>
+            <p class="text-gray-600 mt-1" data-i18n="subtitle">Tools for testing, optimizing, and versioning prompts</p>
+        </div>
+
+        <!-- Tools Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12" id="toolsGrid"></div>
+
+        <!-- Best Practices -->
+        <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6">
+            <h3 class="text-xl font-bold text-gray-900 mb-4" data-i18n="practices.title">Prompt Best Practices</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="practicesList"></div>
+        </div>
+    </main>
+
+    <footer class="bg-white border-t border-gray-200 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-gray-500 text-sm">
+            <p>&copy; 2026 AI Toolkit Hub · <span data-i18n="footer">Tools updated 2026-05</span></p>
+        </div>
+    </footer>
+
+    <script>
+        const i18n = {
+            zh: { title: 'Prompt 工程工具', subtitle: '测试、优化、版本管理的提示词工具', practices: { title: '提示词最佳实践' }, footer: '数据更新于 2026-05' },
+            en: { title: 'Prompt Engineering Tools', subtitle: 'Tools for testing, optimizing, and versioning prompts', practices: { title: 'Prompt Best Practices' }, footer: 'Tools updated 2026-05' }
+        };
+
+        const tools = [
+            { name: 'PromptBase', desc: 'Marketplace of 100K+ prompts for ChatGPT, Midjourney, DALL-E. Find proven prompts for any task.', url: 'https://promptbase.com', icon: 'fa-database', color: 'bg-indigo-100 text-indigo-600', badge: 'Marketplace', badgeColor: 'bg-indigo-100 text-indigo-700' },
+            { name: 'PromptTools', desc: 'Open-source prompt testing and iteration tool by HumanLoop. Test prompts across multiple LLMs simultaneously.', url: 'https://prompttools.org', icon: 'fa-flask', color: 'bg-purple-100 text-purple-600', badge: 'Open Source', badgeColor: 'bg-purple-100 text-purple-700' },
+            { name: 'Dify', desc: 'No-code prompt IDE with versioning, analytics, and dataset integration. Visual prompt composition.', url: 'https://dify.ai', icon: 'fa-puzzle-piece', color: 'bg-green-100 text-green-600', badge: 'No-Code', badgeColor: 'bg-green-100 text-green-700' },
+            { name: 'Weights & Biases', desc: 'Prompt versioning, evaluation, and fine-tuning tracking. Monitor prompt performance over iterations.', url: 'https://wandb.ai', icon: 'fa-chart-line', color: 'bg-orange-100 text-orange-600', badge: 'MLOps', badgeColor: 'bg-orange-100 text-orange-700' },
+            { name: 'LangSmith', desc: 'Anthropic\'s evaluation platform. Trace, test, and monitor LLM applications. Dataset management for eval.', url: 'https://smith.langchain.com', icon: 'fa-microscope', color: 'bg-blue-100 text-blue-600', badge: 'LangChain', badgeColor: 'bg-blue-100 text-blue-700' },
+            { name: 'HumanLoop', desc: 'Prompt versioning, A/B testing, and fine-tuning data collection. Integrates with OpenAI and Anthropic.', url: 'https://humanloop.com', icon: 'fa-code-branch', color: 'bg-pink-100 text-pink-600', badge: 'Eval', badgeColor: 'bg-pink-100 text-pink-700' },
+            { name: 'Arize Phoenix', desc: 'Observability for LLM apps. Prompt tracing, span analysis, and quality evaluation dashboards.', url: 'https://arize.com/phoenix', icon: 'fa-satellite-dish', color: 'bg-cyan-100 text-cyan-600', badge: 'Observability', badgeColor: 'bg-cyan-100 text-cyan-700' },
+            { name: 'Prompt Engine', desc: 'Microsoft\'s open-source prompt management library. Versioning, templating, and dynamic parameters.', url: 'https://github.com/microsoft/prompt-engine', icon: 'fa-gears', color: 'bg-yellow-100 text-yellow-600', badge: 'Microsoft', badgeColor: 'bg-yellow-100 text-yellow-700' },
+            { name: 'GPTRunner', desc: 'Desktop app for prompt iteration. Supports chain-of-thought, few-shot, and structured output testing.', url: 'https://github.com/Narsil/gpt-runner', icon: 'fa-terminal', color: 'bg-teal-100 text-teal-600', badge: 'Desktop', badgeColor: 'bg-teal-100 text-teal-700' },
+        ];
+
+        const practices = [
+            { title: 'Be Specific & Structured', desc: 'Use XML tags, numbered lists, and clear section headers to separate instructions.' },
+            { title: 'Chain of Thought', desc: 'Add "think step by step" or "let\'s reason through this" to improve reasoning tasks.' },
+            { title: 'Few-Shot Examples', desc: 'Provide 2-5 examples of input-output pairs to guide the model\'s format and tone.' },
+            { title: 'Define Output Format', desc: 'Explicitly specify JSON schema, markdown tables, or bullet points for structured output.' },
+            { title: 'Iterate & Test', desc: 'Test prompts across different models and edge cases. Small wording changes matter.' },
+            { title: 'Role Assignment', desc: '"You are a senior backend engineer" or "Explain like I\'m 5" improves context relevance.' },
+        ];
+
+        let currentLang = 'en';
+
+        function render() {
+            document.getElementById('toolsGrid').innerHTML = tools.map(t => `
+                <a href="${t.url}" target="_blank" class="tool-card bg-white rounded-xl p-6 shadow-md border border-gray-100 block">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="w-12 h-12 ${t.color} rounded-lg flex items-center justify-center">
+                            <i class="fas ${t.icon} text-lg"></i>
+                        </div>
+                        <span class="text-xs px-2 py-1 rounded-full ${t.badgeColor}">${t.badge}</span>
+                    </div>
+                    <h3 class="font-bold text-gray-900 mb-2">${t.name}</h3>
+                    <p class="text-sm text-gray-600">${t.desc}</p>
+                </a>
+            `).join('');
+
+            document.getElementById('practicesList').innerHTML = practices.map(p => `
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h4 class="font-semibold text-gray-900 mb-1">${p.title}</h4>
+                    <p class="text-sm text-gray-600">${p.desc}</p>
+                </div>
+            `).join('');
+        }
+
+        function switchLang(lang) {
+            currentLang = lang;
+            document.getElementById('lang-zh').className = lang === 'zh' ? 'px-3 py-1 rounded-md bg-primary text-white text-sm font-medium' : 'px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium';
+            document.getElementById('lang-en').className = lang === 'en' ? 'px-3 py-1 rounded-md bg-primary text-white text-sm font-medium' : 'px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium';
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const parts = el.getAttribute('data-i18n').split('.');
+                let val = i18n[lang];
+                for (const k of parts) val = val[k];
+                if (val) el.textContent = val;
+            });
+            localStorage.setItem('ai-toolkit-lang', lang);
+        }
+
+        const saved = localStorage.getItem('ai-toolkit-lang');
+        if (saved) switchLang(saved); else switchLang('en');
+        render();
+    </script>
+</body>
+</html>

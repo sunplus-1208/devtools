@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Frameworks - AI Toolkit Hub</title>
+    <meta name="description" content="Explore top AI development frameworks: LangChain, LlamaIndex, CrewAI, AutoGen, and more.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>tailwind.config = { theme: { extend: { colors: { primary: '#6366f1' } } } } </script>
+    <style>.tool-card{transition:all .3s}.tool-card:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,0,0,.1)}</style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="flex items-center">
+                        <i class="fas fa-arrow-left text-gray-500 mr-3 hover:text-gray-700"></i>
+                        <i class="fas fa-brain text-primary text-2xl mr-3"></i>
+                        <h1 class="text-xl font-bold text-gray-900">AI Toolkit Hub</h1>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="lang-zh" class="px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium" onclick="switchLang('zh')">中文</button>
+                    <button id="lang-en" class="px-3 py-1 rounded-md bg-primary text-white text-sm font-medium" onclick="switchLang('en')">EN</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-gray-900" data-i18n="title">AI Frameworks</h2>
+            <p class="text-gray-600 mt-1" data-i18n="subtitle">Build AI applications with these popular frameworks</p>
+        </div>
+
+        <!-- Category Filters -->
+        <div class="mb-6 flex flex-wrap gap-2" id="filters">
+            <button onclick="filterBy('all')" class="filter-btn px-4 py-2 rounded-full bg-primary text-white text-sm font-medium" data-filter="all">All</button>
+            <button onclick="filterBy('agent')" class="filter-btn px-4 py-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 text-sm" data-filter="agent">Agents</button>
+            <button onclick="filterBy('rag')" class="filter-btn px-4 py-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 text-sm" data-filter="rag">RAG</button>
+            <button onclick="filterBy('orchestration')" class="filter-btn px-4 py-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 text-sm" data-filter="orchestration">Orchestration</button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="frameworkGrid"></div>
+
+        <!-- Comparison -->
+        <div class="mt-12">
+            <h3 class="text-xl font-bold text-gray-900 mb-4" data-i18n="compare.title">Framework Comparison</h3>
+            <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-gray-600 font-medium">Framework</th>
+                                <th class="px-4 py-3 text-center text-gray-600 font-medium hidden md:table-cell">Agents</th>
+                                <th class="px-4 py-3 text-center text-gray-600 font-medium hidden md:table-cell">RAG</th>
+                                <th class="px-4 py-3 text-center text-gray-600 font-medium hidden md:table-cell">Multi-Agent</th>
+                                <th class="px-4 py-3 text-center text-gray-600 font-medium hidden md:table-cell">Eval</th>
+                                <th class="px-4 py-3 text-center text-gray-600 font-medium hidden lg:table-cell">Learning Curve</th>
+                            </tr>
+                        </thead>
+                        <tbody id="compareTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-white border-t border-gray-200 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-gray-500 text-sm">
+            <p>&copy; 2026 AI Toolkit Hub · <span data-i18n="footer">Frameworks updated 2026-05</span></p>
+        </div>
+    </footer>
+
+    <script>
+        const i18n = {
+            zh: { 'title': 'AI 开发框架', 'subtitle': '主流 AI 应用开发框架一览', 'compare.title': '框架对比', 'footer': '数据更新于 2026-05' },
+            en: { 'title': 'AI Frameworks', 'subtitle': 'Build AI applications with these popular frameworks', 'compare.title': 'Framework Comparison', 'footer': 'Frameworks updated 2026-05' }
+        };
+
+        const frameworks = [
+            { name: 'LangChain', desc: 'The most popular framework for building LLM applications. Supports chains, agents, and RAG pipelines.', lang: 'Python, JS', github: 'langchain-ai/langchain', stars: '58k', category: ['orchestration', 'rag', 'agent'], badge: 'Most Popular', badgeColor: 'bg-indigo-100 text-indigo-700', url: 'https://python.langchain.com' },
+            { name: 'LangGraph', desc: 'Build complex multi-agent workflows as graphs. Extends LangChain with stateful, cyclic computations.', lang: 'Python, JS', github: 'langchain-ai/langgraph', stars: '12k', category: ['agent', 'orchestration'], badge: 'Trending', badgeColor: 'bg-purple-100 text-purple-700', url: 'https://langchain-ai.github.io/langgraph/' },
+            { name: 'LlamaIndex', desc: 'Data framework for LLM applications. Best-in-class RAG, document parsing, and query engines.', lang: 'Python, JS', github: 'run-llama/llama_index', stars: '38k', category: ['rag', 'orchestration'], badge: 'RAG Best', badgeColor: 'bg-green-100 text-green-700', url: 'https://www.llamaindex.ai' },
+            { name: 'CrewAI', desc: 'Multi-agent orchestration framework. Define agents with roles, goals, and tools. Simple and intuitive.', lang: 'Python', github: 'joaomdmoura/crewAI', stars: '22k', category: ['agent', 'orchestration'], badge: 'Easy to Use', badgeColor: 'bg-orange-100 text-orange-700', url: 'https://www.crewai.com' },
+            { name: 'AutoGen', desc: 'Microsoft\'s open-source framework for building AI agents. Supports multi-agent conversation and task decomposition.', lang: 'Python', github: 'microsoft/autogen', stars: '33k', category: ['agent', 'orchestration'], badge: 'Microsoft', badgeColor: 'bg-blue-100 text-blue-700', url: 'https://microsoft.github.io/autogen/' },
+            { name: 'Dify', desc: 'Open-source LLM app development platform. No-code/low-code. Supports RAG, agent, and workflow.', lang: 'Python, Docker', github: 'langgenius/dify', stars: '58k', category: ['orchestration', 'rag', 'agent'], badge: 'Open Source', badgeColor: 'bg-green-100 text-green-700', url: 'https://dify.ai' },
+            { name: 'Flowise', desc: 'Drag-and-drop UI for building LangChain flows. No coding required for basic workflows.', lang: 'TypeScript', github: 'FlowiseAI/Flowise', stars: '23k', category: ['orchestration'], badge: 'No Code', badgeColor: 'bg-pink-100 text-pink-700', url: 'https://flowiseai.com' },
+            { name: 'Haystack', desc: 'End-to-end LLM framework by deepset. Excellent for production RAG pipelines.', lang: 'Python', github: 'deepset-ai/haystack', stars: '15k', category: ['rag', 'orchestration'], badge: 'Production', badgeColor: 'bg-yellow-100 text-yellow-700', url: 'https://haystack.deepset.ai' },
+            { name: 'Instructor', desc: 'Structured output for LLMs. Use functions and Pydantic to get reliable typed responses.', lang: 'Python, JS', github: 'jxnl/instructor', stars: '11k', category: ['orchestration'], badge: 'Structured', badgeColor: 'bg-cyan-100 text-cyan-700', url: 'https://jxnl.github.io/instructor/' },
+        ];
+
+        const comparisons = [
+            { name: 'LangChain', agents: '✓', rag: '✓', multiAgent: '✓', eval: '✓', curve: 'Medium' },
+            { name: 'LangGraph', agents: '✓✓', rag: '✓', multiAgent: '✓✓', eval: '✓', curve: 'Medium' },
+            { name: 'LlamaIndex', agents: '✓', rag: '✓✓', multiAgent: '✓', eval: '✓', curve: 'Easy' },
+            { name: 'CrewAI', agents: '✓✓', rag: '✗', multiAgent: '✓✓', eval: '✗', curve: 'Easy' },
+            { name: 'AutoGen', agents: '✓✓', rag: '✗', multiAgent: '✓✓', eval: '✓', curve: 'Hard' },
+            { name: 'Dify', agents: '✓', rag: '✓✓', multiAgent: '✓', eval: '✓', curve: 'Very Easy' },
+        ];
+
+        let currentLang = 'en', currentFilter = 'all';
+
+        function filterBy(f) {
+            currentFilter = f;
+            document.querySelectorAll('.filter-btn').forEach(b => b.className = b.dataset.filter === f ? 'filter-btn px-4 py-2 rounded-full bg-primary text-white text-sm font-medium' : 'filter-btn px-4 py-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 text-sm');
+            render();
+        }
+
+        function render() {
+            const filtered = currentFilter === 'all' ? frameworks : frameworks.filter(f => f.category.includes(currentFilter));
+            document.getElementById('frameworkGrid').innerHTML = filtered.map(f => `
+                <div class="tool-card bg-white rounded-xl p-6 shadow-md border border-gray-100">
+                    <div class="flex items-start justify-between mb-3">
+                        <h3 class="font-bold text-gray-900">${f.name}</h3>
+                        <span class="text-xs px-2 py-1 rounded-full ${f.badgeColor}">${f.badge}</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-3">${f.desc}</p>
+                    <div class="flex items-center gap-3 text-xs text-gray-500 mb-3">
+                        <span><i class="fab fa-github mr-1"></i>${f.stars}</span>
+                        <span><i class="fas fa-code mr-1"></i>${f.lang}</span>
+                    </div>
+                    <a href="${f.url}" target="_blank" class="text-sm text-primary hover:text-indigo-700 font-medium">
+                        Docs <i class="fas fa-external-link-alt ml-1"></i>
+                    </a>
+                </div>
+            `).join('');
+
+            document.getElementById('compareTable').innerHTML = comparisons.map(r => `
+                <tr class="border-t border-gray-100">
+                    <td class="px-4 py-3 font-medium text-gray-900">${r.name}</td>
+                    <td class="px-4 py-3 text-center hidden md:table-cell">${r.agents}</td>
+                    <td class="px-4 py-3 text-center hidden md:table-cell">${r.rag}</td>
+                    <td class="px-4 py-3 text-center hidden md:table-cell">${r.multiAgent}</td>
+                    <td class="px-4 py-3 text-center hidden md:table-cell">${r.eval}</td>
+                    <td class="px-4 py-3 text-center hidden lg:table-cell text-gray-500">${r.curve}</td>
+                </tr>
+            `).join('');
+        }
+
+        function switchLang(lang) {
+            currentLang = lang;
+            document.getElementById('lang-zh').className = lang === 'zh' ? 'px-3 py-1 rounded-md bg-primary text-white text-sm font-medium' : 'px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium';
+            document.getElementById('lang-en').className = lang === 'en' ? 'px-3 py-1 rounded-md bg-primary text-white text-sm font-medium' : 'px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium';
+            document.querySelectorAll('[data-i18n]').forEach(el => { const k = el.getAttribute('data-i18n'); if (i18n[lang][k]) el.textContent = i18n[lang][k]; });
+            localStorage.setItem('ai-toolkit-lang', lang);
+        }
+
+        const saved = localStorage.getItem('ai-toolkit-lang');
+        if (saved) switchLang(saved); else switchLang('en');
+        render();
+    </script>
+</body>
+</html>
