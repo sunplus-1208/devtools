@@ -71,11 +71,11 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="calc.model">Model</label>
                     <select id="calcModel" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" onchange="calculate()">
-                        <option value="gpt4o">GPT-4o</option>
-                        <option value="claude4s">Claude 4 Sonnet</option>
+                        <option value="gpt55">GPT-5.5</option>
+                        <option value="claude4s">Claude Sonnet 4.6</option>
                         <option value="gemini25p">Gemini 2.5 Pro</option>
-                        <option value="deepseekv3">DeepSeek V3</option>
-                        <option value="gpt4o-mini">GPT-4o mini</option>
+                        <option value="deepseekv4f">DeepSeek V4-Flash</option>
+                        <option value="gpt54nano">GPT-5.4 nano</option>
                     </select>
                 </div>
             </div>
@@ -99,36 +99,37 @@
         };
 
         const pricing = [
-            { provider: 'OpenAI', model: 'GPT-4.5', context: '128K', input: '$75.00', output: '$150.00', free: '✗', url: 'https://platform.openai.com/pricing' },
-            { provider: 'OpenAI', model: 'GPT-4o', context: '128K', input: '$2.50', output: '$10.00', free: '✗', url: 'https://platform.openai.com/pricing' },
-            { provider: 'OpenAI', model: 'GPT-4o mini', context: '128K', input: '$0.15', output: '$0.60', free: '✓', url: 'https://platform.openai.com/pricing' },
-            { provider: 'OpenAI', model: 'o4-mini', context: '128K', input: '$1.10', output: '$4.40', free: '✗', url: 'https://platform.openai.com/pricing' },
-            { provider: 'Anthropic', model: 'Claude 4 Opus', context: '200K', input: '$15.00', output: '$75.00', free: '✗', url: 'https://console.anthropic.com/pricing' },
-            { provider: 'Anthropic', model: 'Claude 4 Sonnet', context: '200K', input: '$3.00', output: '$15.00', free: '✓', url: 'https://console.anthropic.com/pricing' },
+            { provider: 'OpenAI', model: 'GPT-5.5', context: '128K', input: '$2.50', output: '$15.00', free: '✗', url: 'https://platform.openai.com/pricing' },
+            { provider: 'OpenAI', model: 'GPT-5.4', context: '128K', input: '$2.50', output: '$15.00', free: '✗', url: 'https://platform.openai.com/pricing' },
+            { provider: 'OpenAI', model: 'GPT-5.4 mini', context: '128K', input: '$0.75', output: '$4.50', free: '✓', url: 'https://platform.openai.com/pricing' },
+            { provider: 'OpenAI', model: 'GPT-5.4 nano', context: '128K', input: '$0.20', output: '$1.25', free: '✓', url: 'https://platform.openai.com/pricing' },
+            { provider: 'Anthropic', model: 'Claude Opus 4.7', context: '1M', input: '$4.00', output: '$20.00', free: '✗', url: 'https://console.anthropic.com/pricing' },
+            { provider: 'Anthropic', model: 'Claude Sonnet 4.6', context: '200K', input: '$2.40', output: '$12.00', free: '✓', url: 'https://console.anthropic.com/pricing' },
+            { provider: 'Anthropic', model: 'Claude Haiku 4.5', context: '200K', input: '$0.80', output: '$4.00', free: '✓', url: 'https://console.anthropic.com/pricing' },
             { provider: 'Google', model: 'Gemini 2.5 Pro', context: '1M', input: '$1.25', output: '$5.00', free: '✓', url: 'https://ai.google.dev/pricing' },
-            { provider: 'Google', model: 'Gemini 2.0 Flash', context: '1M', input: '$0.10', output: '$0.40', free: '✓', url: 'https://ai.google.dev/pricing' },
             { provider: 'Google', model: 'Gemini 2.5 Flash', context: '1M', input: '$0.075', output: '$0.30', free: '✓', url: 'https://ai.google.dev/pricing' },
-            { provider: 'DeepSeek', model: 'DeepSeek V3', context: '64K', input: '$0.27', output: '$1.10', free: '✗', url: 'https://platform.deepseek.com/pricing' },
+            { provider: 'Google', model: 'Gemini 2.5 Deep Think', context: '1M', input: '$2.50', output: '$10.00', free: '✗', url: 'https://ai.google.dev/pricing' },
+            { provider: 'DeepSeek', model: 'DeepSeek V4-Pro', context: '1M', input: '$0.55', output: '$2.19', free: '✗', url: 'https://platform.deepseek.com/pricing' },
+            { provider: 'DeepSeek', model: 'DeepSeek V4-Flash', context: '128K', input: '$0.14', output: '$0.28', free: '✓', url: 'https://platform.deepseek.com/pricing' },
             { provider: 'DeepSeek', model: 'DeepSeek R1', context: '64K', input: '$0.55', output: '$2.19', free: '✗', url: 'https://platform.deepseek.com/pricing' },
             { provider: 'Mistral', model: 'Mistral Large 3', context: '128K', input: '$2.00', output: '$6.00', free: '✗', url: 'https://console.mistral.ai/pricing' },
-            { provider: 'Groq', model: 'Llama 4 Scout', context: '128K', input: '$0.07', output: '$0.07', free: '✓', url: 'https://console.groq.com' },
-            { provider: 'Groq', model: 'Llama 3.3 70B', context: '128K', input: '$0.59', output: '$0.79', free: '✓', url: 'https://console.groq.com' },
-            { provider: 'Together', model: 'Llama 4 Scout', context: '128K', input: '$0.30', output: '$0.30', free: '✗', url: 'https://together.ai' },
+            { provider: 'Groq', model: 'Llama 4 Behemoth', context: '128K', input: '$0.07', output: '$0.07', free: '✓', url: 'https://console.groq.com' },
+            { provider: 'Together', model: 'Qwen3 235B', context: '128K', input: '$0.30', output: '$0.30', free: '✗', url: 'https://together.ai' },
         ];
 
         const providers = [
             { name: 'OpenAI', icon: 'fa-robot', color: 'bg-green-100 text-green-600', count: 4 },
-            { name: 'Anthropic', icon: 'fa-brain', color: 'bg-orange-100 text-orange-600', count: 2 },
+            { name: 'Anthropic', icon: 'fa-brain', color: 'bg-orange-100 text-orange-600', count: 3 },
             { name: 'Google', icon: 'fa-gem', color: 'bg-blue-100 text-blue-600', count: 3 },
-            { name: 'DeepSeek', icon: 'fa-rocket', color: 'bg-cyan-100 text-cyan-600', count: 2 },
+            { name: 'DeepSeek', icon: 'fa-rocket', color: 'bg-cyan-100 text-cyan-600', count: 3 },
         ];
 
         const models = {
-            gpt4o: { input: 2.50, output: 10.00 },
-            claude4s: { input: 3.00, output: 15.00 },
+            gpt55: { input: 2.50, output: 15.00 },
+            claude4s: { input: 2.40, output: 12.00 },
             gemini25p: { input: 1.25, output: 5.00 },
-            deepseekv3: { input: 0.27, output: 1.10 },
-            'gpt4o-mini': { input: 0.15, output: 0.60 },
+            deepseekv4f: { input: 0.14, output: 0.28 },
+            'gpt54nano': { input: 0.20, output: 1.25 },
         };
 
         let currentLang = 'en';
