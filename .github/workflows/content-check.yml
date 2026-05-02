@@ -1,0 +1,45 @@
+name: Content Quality Check
+
+on:
+  push:
+    paths:
+      - 'blog/**/*.html'
+      - 'ai-toolkit/**/*.html'
+  pull_request:
+    paths:
+      - 'blog/**/*.html'
+      - 'ai-toolkit/**/*.html'
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Check for Chinese text in EN pages
+        run: |
+          ERRORS=0
+          for file in $(git diff --name-only HEAD~1 || find blog ai-toolkit -name '*.html'); do
+            if [ -f "$file" ]; then
+              if grep -n '[一-龥]' "$file" | grep -v 'zh:' | grep -v '中文' | grep -v '//' | grep -v '/*'; then
+                echo "ERROR: $file contains visible Chinese text in EN mode"
+                ERRORS=$((ERRORS + 1))
+              fi
+            fi
+          done
+          if [ $ERRORS -gt 0 ]; then
+            exit 1
+          fi
+          echo "✅ No visible Chinese text in EN pages"
+      
+      - name: Check required elements
+        run: |
+          for file in $(find blog -name '*.html' -not -name 'index.html'); do
+            if ! grep -q 'Last updated\|最后更新\|Updated:' "$file"; then
+              echo "WARNING: $file missing last-updated timestamp"
+            fi
+            if ! grep -q 'href="http' "$file"; then
+              echo "WARNING: $file has no external links"
+            fi
+          done
+          echo "✅ Required elements check complete"
