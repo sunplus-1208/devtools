@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Navigation - AI Toolkit Hub</title>
+    <meta name="description" content="Curated directory of AI tools and products: coding, writing, design, video, audio, research and more.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>tailwind.config={theme:{extend:{colors:{primary:'#6366f1'}}}}</script>
+    <style>.tool-card{transition:all .3s}.tool-card:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,.08)}</style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="flex items-center">
+                        <i class="fas fa-arrow-left text-gray-500 mr-3 hover:text-gray-700"></i>
+                        <i class="fas fa-brain text-primary text-2xl mr-3"></i>
+                        <h1 class="text-xl font-bold text-gray-900">AI Toolkit Hub</h1>
+                    </a>
+                </div>
+                <div class="flex items-center gap-2">
+                    <input id="searchBox" type="text" placeholder="Search tools..." class="px-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary w-48" oninput="search(this.value)">
+                    <button id="lang-zh" class="px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium" onclick="switchLang('zh')">中文</button>
+                    <button id="lang-en" class="px-3 py-1 rounded-md bg-primary text-white text-sm font-medium" onclick="switchLang('en')">EN</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-gray-900" data-i18n="title">AI Navigation</h2>
+            <p class="text-gray-600 mt-1" data-i18n="subtitle">Curated directory of AI tools and products</p>
+        </div>
+
+        <div id="categories"></div>
+    </main>
+
+    <footer class="bg-white border-t border-gray-200 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-gray-500 text-sm">
+            <p>&copy; 2026 AI Toolkit Hub · <span data-i18n="footer">Updated 2026-05</span></p>
+        </div>
+    </footer>
+
+    <script>
+        const i18n = {
+            zh: { title: 'AI 导航', subtitle: '精选 AI 工具与产品目录', footer: '更新于 2026-05' },
+            en: { title: 'AI Navigation', subtitle: 'Curated directory of AI tools and products', footer: 'Updated 2026-05' }
+        };
+
+        const categories = [
+            { name: 'Coding', icon: 'fa-code', color: 'indigo', tools: [
+                { name: 'Cursor', desc: 'AI-first code editor with deep codebase understanding', url: 'https://cursor.sh' },
+                { name: 'GitHub Copilot', desc: 'AI pair programmer integrated into VS Code', url: 'https://github.com/features/copilot' },
+                { name: 'Claude Code', desc: 'Terminal-based AI coding agent', url: 'https://docs.anthropic.com/claude-code' },
+                { name: 'Replit', desc: 'Browser-based IDE with AI agent', url: 'https://replit.com' },
+                { name: 'v0.dev', desc: 'AI-powered UI component generator', url: 'https://v0.dev' },
+            ]},
+            { name: 'Writing', icon: 'fa-pen-fancy', color: 'orange', tools: [
+                { name: 'Notion AI', desc: 'AI writing assistant built into Notion', url: 'https://notion.so/product/ai' },
+                { name: 'Jasper', desc: 'AI content marketing platform', url: 'https://jasper.ai' },
+                { name: 'Copy.ai', desc: 'AI copywriting for marketing', url: 'https://copy.ai' },
+                { name: 'Lex', desc: 'AI-powered writing editor', url: 'https://lex.page' },
+                { name: 'Grammarly', desc: 'AI writing assistant for grammar & style', url: 'https://grammarly.com' },
+            ]},
+            { name: 'Design', icon: 'fa-palette', color: 'pink', tools: [
+                { name: 'Figma AI', desc: 'AI features for design in Figma', url: 'https://figma.com/ai' },
+                { name: 'Midjourney', desc: 'AI image generation', url: 'https://midjourney.com' },
+                { name: 'DALL-E 4', desc: 'OpenAI image generation', url: 'https://openai.com/dall-e-4' },
+                { name: 'Ideogram', desc: 'AI image generation with text rendering', url: 'https://ideogram.ai' },
+                { name: 'Canva AI', desc: 'AI design tools in Canva', url: 'https://canva.com/ai' },
+            ]},
+            { name: 'Video', icon: 'fa-video', color: 'red', tools: [
+                { name: 'Runway', desc: 'AI video generation and editing', url: 'https://runway.ml' },
+                { name: 'Pika', desc: 'AI video creation platform', url: 'https://pika.art' },
+                { name: 'Sora', desc: 'OpenAI text-to-video model', url: 'https://openai.com/sora' },
+                { name: 'Descript', desc: 'AI video editing with transcription', url: 'https://descript.com' },
+                { name: 'Synthesia', desc: 'AI avatar video creation', url: 'https://synthesia.io' },
+            ]},
+            { name: 'Audio', icon: 'fa-music', color: 'purple', tools: [
+                { name: 'ElevenLabs', desc: 'AI voice cloning and TTS', url: 'https://elevenlabs.io' },
+                { name: 'Suno', desc: 'AI music generation', url: 'https://suno.ai' },
+                { name: 'Udio', desc: 'AI music creation', url: 'https://udio.com' },
+                { name: 'Whisper', desc: 'OpenAI speech recognition', url: 'https://openai.com/whisper' },
+                { name: 'Podcastle', desc: 'AI podcast creation', url: 'https://podcastle.ai' },
+            ]},
+            { name: 'Research', icon: 'fa-flask', color: 'teal', tools: [
+                { name: 'Perplexity', desc: 'AI-powered search engine', url: 'https://perplexity.ai' },
+                { name: 'Elicit', desc: 'AI research assistant for papers', url: 'https://elicit.com' },
+                { name: 'Consensus', desc: 'AI academic search', url: 'https://consensus.app' },
+                { name: 'Semantic Scholar', desc: 'AI-powered paper discovery', url: 'https://semanticscholar.org' },
+                { name: 'Connected Papers', desc: 'Visual paper exploration', url: 'https://connectedpapers.com' },
+            ]},
+            { name: 'Productivity', icon: 'fa-rocket', color: 'green', tools: [
+                { name: 'ChatGPT', desc: 'OpenAI conversational AI', url: 'https://chat.openai.com' },
+                { name: 'Claude', desc: 'Anthropic conversational AI', url: 'https://claude.ai' },
+                { name: 'Gemini', desc: 'Google conversational AI', url: 'https://gemini.google.com' },
+                { name: 'Zapier AI', desc: 'AI automation workflows', url: 'https://zapier.com/ai' },
+                { name: 'Raycast AI', desc: 'AI-powered launcher for Mac', url: 'https://raycast.com' },
+            ]},
+            { name: 'Agents', icon: 'fa-robot', color: 'cyan', tools: [
+                { name: 'AutoGPT', desc: 'Autonomous AI agent', url: 'https://github.com/Significant-Gravitas/AutoGPT' },
+                { name: 'CrewAI', desc: 'Multi-agent orchestration', url: 'https://crewai.com' },
+                { name: 'LangGraph', desc: 'Build agents with graphs', url: 'https://langchain-ai.github.io/langgraph' },
+                { name: 'Dify', desc: 'No-code agent builder', url: 'https://dify.ai' },
+                { name: 'GPT Researcher', desc: 'AI research agent', url: 'https://gptr.dev' },
+            ]},
+        ];
+
+        let currentLang = 'en', searchTerm = '';
+
+        function search(term) {
+            searchTerm = term.toLowerCase();
+            render();
+        }
+
+        function render() {
+            const container = document.getElementById('categories');
+            container.innerHTML = categories.map(cat => {
+                const filtered = cat.tools.filter(t => !searchTerm || t.name.toLowerCase().includes(searchTerm) || t.desc.toLowerCase().includes(searchTerm));
+                if (filtered.length === 0) return '';
+                return `
+                <div class="mb-10">
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 bg-${cat.color}-100 text-${cat.color}-600 rounded-lg flex items-center justify-center mr-3">
+                            <i class="fas ${cat.icon}"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900">${cat.name}</h3>
+                        <span class="ml-2 text-sm text-gray-400">${filtered.length}</span>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+                        ${filtered.map(t => `
+                        <a href="${t.url}" target="_blank" class="tool-card bg-white rounded-xl p-4 shadow-sm border border-gray-100 block">
+                            <h4 class="font-semibold text-gray-900 mb-1">${t.name}</h4>
+                            <p class="text-xs text-gray-500">${t.desc}</p>
+                        </a>
+                        `).join('')}
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        function switchLang(lang) {
+            currentLang = lang;
+            document.getElementById('lang-zh').className = lang === 'zh' ? 'px-3 py-1 rounded-md bg-primary text-white text-sm font-medium' : 'px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium';
+            document.getElementById('lang-en').className = lang === 'en' ? 'px-3 py-1 rounded-md bg-primary text-white text-sm font-medium' : 'px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium';
+            document.querySelectorAll('[data-i18n]').forEach(el => { const k = el.getAttribute('data-i18n'); if (i18n[lang][k]) el.textContent = i18n[lang][k]; });
+            localStorage.setItem('ai-toolkit-lang', lang);
+        }
+
+        const saved = localStorage.getItem('ai-toolkit-lang');
+        if (saved) switchLang(saved); else switchLang('en');
+        render();
+    </script>
+</body>
+</html>

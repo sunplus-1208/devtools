@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Benchmark - AI Toolkit Hub</title>
+    <meta name="description" content="Compare LLM benchmarks: LMArena ELO, MMLU, HumanEval, MATH and more. Updated rankings for 2026.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>tailwind.config={theme:{extend:{colors:{primary:'#6366f1'}}}}</script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="flex items-center">
+                        <i class="fas fa-arrow-left text-gray-500 mr-3 hover:text-gray-700"></i>
+                        <i class="fas fa-brain text-primary text-2xl mr-3"></i>
+                        <h1 class="text-xl font-bold text-gray-900">AI Toolkit Hub</h1>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="lang-zh" class="px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium" onclick="switchLang('zh')">中文</button>
+                    <button id="lang-en" class="px-3 py-1 rounded-md bg-primary text-white text-sm font-medium" onclick="switchLang('en')">EN</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-gray-900" data-i18n="title">Model Benchmark</h2>
+            <p class="text-gray-600 mt-1" data-i18n="subtitle">LLM performance rankings across key benchmarks</p>
+        </div>
+
+        <!-- Benchmark Tabs -->
+        <div class="mb-6 flex flex-wrap gap-2">
+            <button onclick="switchBenchmark('arena')" class="bench-btn px-4 py-2 rounded-full bg-primary text-white text-sm font-medium" data-bench="arena">LMArena ELO</button>
+            <button onclick="switchBenchmark('mmlu')" class="bench-btn px-4 py-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 text-sm" data-bench="mmlu">MMLU</button>
+            <button onclick="switchBenchmark('humaneval')" class="bench-btn px-4 py-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 text-sm" data-bench="humaneval">HumanEval</button>
+            <button onclick="switchBenchmark('math')" class="bench-btn px-4 py-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 text-sm" data-bench="math">MATH</button>
+        </div>
+
+        <!-- Chart -->
+        <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6 mb-8">
+            <h3 class="text-lg font-bold text-gray-900 mb-4" id="chartTitle">LMArena ELO Ranking</h3>
+            <canvas id="benchmarkChart" height="400"></canvas>
+        </div>
+
+        <!-- Data Table -->
+        <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-gray-600 font-medium" data-i18n="th.rank">Rank</th>
+                            <th class="px-4 py-3 text-left text-gray-600 font-medium" data-i18n="th.model">Model</th>
+                            <th class="px-4 py-3 text-center text-gray-600 font-medium" id="thScore">ELO</th>
+                            <th class="px-4 py-3 text-center text-gray-600 font-medium hidden md:table-cell" data-i18n="th.votes">Votes</th>
+                            <th class="px-4 py-3 text-center text-gray-600 font-medium hidden lg:table-cell" data-i18n="th.org">Organization</th>
+                        </tr>
+                    </thead>
+                    <tbody id="benchmarkTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Benchmark Info -->
+        <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <h4 class="font-bold text-gray-900 mb-2"><i class="fas fa-info-circle text-primary mr-2"></i>LMArena</h4>
+                <p class="text-sm text-gray-600">Crowdsourced ELO rating based on human preference. Users vote on model responses in blind tests. Most comprehensive real-world benchmark.</p>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <h4 class="font-bold text-gray-900 mb-2"><i class="fas fa-info-circle text-primary mr-2"></i>MMLU</h4>
+                <p class="text-sm text-gray-600">Massive Multitask Language Understanding. 57 subjects from STEM to humanities. Tests broad knowledge and reasoning.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-white border-t border-gray-200 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-gray-500 text-sm">
+            <p>&copy; 2026 AI Toolkit Hub · <span data-i18n="footer">Data from LMArena & official papers</span></p>
+        </div>
+    </footer>
+
+    <script>
+        const i18n = {
+            zh: { title: '模型评测排名', subtitle: '主流 LLM 基准测试对比', th: {rank:'排名',model:'模型',score:'得分',votes:'投票数',org:'机构'}, footer: '数据来源: LMArena 及官方论文' },
+            en: { title: 'Model Benchmark', subtitle: 'LLM performance rankings across key benchmarks', th: {rank:'Rank',model:'Model',score:'Score',votes:'Votes',org:'Organization'}, footer: 'Data from LMArena & official papers' }
+        };
+
+        const benchmarks = {
+            arena: {
+                title: 'LMArena ELO Ranking',
+                scoreLabel: 'ELO',
+                data: [
+                    { rank: 1, model: 'Gemini 2.5 Pro', score: 1430, votes: '1.2M', org: 'Google' },
+                    { rank: 2, model: 'GPT-5.5', score: 1425, votes: '1.5M', org: 'OpenAI' },
+                    { rank: 3, model: 'Claude Opus 4.7', score: 1418, votes: '980K', org: 'Anthropic' },
+                    { rank: 4, model: 'GPT-5.4', score: 1410, votes: '1.1M', org: 'OpenAI' },
+                    { rank: 5, model: 'Claude Sonnet 4.6', score: 1402, votes: '1.3M', org: 'Anthropic' },
+                    { rank: 6, model: 'DeepSeek V4-Pro', score: 1395, votes: '420K', org: 'DeepSeek' },
+                    { rank: 7, model: 'Gemini 2.5 Deep Think', score: 1390, votes: '380K', org: 'Google' },
+                    { rank: 8, model: 'Llama 4 Behemoth', score: 1378, votes: '520K', org: 'Meta' },
+                    { rank: 9, model: 'Qwen3 235B', score: 1365, votes: '340K', org: 'Alibaba' },
+                    { rank: 10, model: 'DeepSeek R1', score: 1358, votes: '580K', org: 'DeepSeek' },
+                ]
+            },
+            mmlu: {
+                title: 'MMLU Pro Score',
+                scoreLabel: 'Score',
+                data: [
+                    { rank: 1, model: 'Claude Opus 4.7', score: 92.5, votes: '-', org: 'Anthropic' },
+                    { rank: 2, model: 'GPT-5.5', score: 92.1, votes: '-', org: 'OpenAI' },
+                    { rank: 3, model: 'Gemini 2.5 Pro', score: 91.8, votes: '-', org: 'Google' },
+                    { rank: 4, model: 'GPT-5.4', score: 91.2, votes: '-', org: 'OpenAI' },
+                    { rank: 5, model: 'DeepSeek V4-Pro', score: 90.8, votes: '-', org: 'DeepSeek' },
+                    { rank: 6, model: 'Claude Sonnet 4.6', score: 90.3, votes: '-', org: 'Anthropic' },
+                    { rank: 7, model: 'Gemini 2.5 Deep Think', score: 89.7, votes: '-', org: 'Google' },
+                    { rank: 8, model: 'Qwen3 235B', score: 88.9, votes: '-', org: 'Alibaba' },
+                    { rank: 9, model: 'Llama 4 Behemoth', score: 88.2, votes: '-', org: 'Meta' },
+                    { rank: 10, model: 'GPT-5.4 nano', score: 85.5, votes: '-', org: 'OpenAI' },
+                ]
+            },
+            humaneval: {
+                title: 'HumanEval Pass@1',
+                scoreLabel: 'Pass@1 %',
+                data: [
+                    { rank: 1, model: 'Claude Opus 4.7', score: 96.3, votes: '-', org: 'Anthropic' },
+                    { rank: 2, model: 'GPT-5.5', score: 95.8, votes: '-', org: 'OpenAI' },
+                    { rank: 3, model: 'Gemini 2.5 Pro', score: 95.2, votes: '-', org: 'Google' },
+                    { rank: 4, model: 'Claude Sonnet 4.6', score: 94.5, votes: '-', org: 'Anthropic' },
+                    { rank: 5, model: 'GPT-5.4', score: 93.8, votes: '-', org: 'OpenAI' },
+                    { rank: 6, model: 'DeepSeek V4-Pro', score: 92.1, votes: '-', org: 'DeepSeek' },
+                    { rank: 7, model: 'Qwen3 235B', score: 91.4, votes: '-', org: 'Alibaba' },
+                    { rank: 8, model: 'Gemini 2.5 Flash', score: 90.2, votes: '-', org: 'Google' },
+                    { rank: 9, model: 'DeepSeek V4-Flash', score: 88.7, votes: '-', org: 'DeepSeek' },
+                    { rank: 10, model: 'GPT-5.4 mini', score: 87.5, votes: '-', org: 'OpenAI' },
+                ]
+            },
+            math: {
+                title: 'MATH-500 Score',
+                scoreLabel: 'Score %',
+                data: [
+                    { rank: 1, model: 'Gemini 2.5 Deep Think', score: 98.2, votes: '-', org: 'Google' },
+                    { rank: 2, model: 'Claude Opus 4.7', score: 96.8, votes: '-', org: 'Anthropic' },
+                    { rank: 3, model: 'DeepSeek R1', score: 96.2, votes: '-', org: 'DeepSeek' },
+                    { rank: 4, model: 'GPT-5.5', score: 95.5, votes: '-', org: 'OpenAI' },
+                    { rank: 5, model: 'Gemini 2.5 Pro', score: 94.8, votes: '-', org: 'Google' },
+                    { rank: 6, model: 'DeepSeek V4-Pro', score: 93.2, votes: '-', org: 'DeepSeek' },
+                    { rank: 7, model: 'GPT-5.4', score: 91.8, votes: '-', org: 'OpenAI' },
+                    { rank: 8, model: 'Claude Sonnet 4.6', score: 90.5, votes: '-', org: 'Anthropic' },
+                    { rank: 9, model: 'Qwen3 235B', score: 89.2, votes: '-', org: 'Alibaba' },
+                    { rank: 10, model: 'Llama 4 Behemoth', score: 85.6, votes: '-', org: 'Meta' },
+                ]
+            }
+        };
+
+        let currentBench = 'arena';
+        let currentLang = 'en';
+        let chart = null;
+
+        function switchBenchmark(b) {
+            currentBench = b;
+            document.querySelectorAll('.bench-btn').forEach(btn => btn.className = btn.dataset.bench === b ? 'bench-btn px-4 py-2 rounded-full bg-primary text-white text-sm font-medium' : 'bench-btn px-4 py-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 text-sm');
+            render();
+        }
+
+        function render() {
+            const bench = benchmarks[currentBench];
+            document.getElementById('chartTitle').textContent = bench.title;
+            document.getElementById('thScore').textContent = bench.scoreLabel;
+            document.getElementById('benchmarkTable').innerHTML = bench.data.map(d => `
+                <tr class="border-t border-gray-100 hover:bg-gray-50">
+                    <td class="px-4 py-3 text-center font-bold ${d.rank <= 3 ? 'text-indigo-600' : 'text-gray-500'}">#${d.rank}</td>
+                    <td class="px-4 py-3 font-medium text-gray-900">${d.model}</td>
+                    <td class="px-4 py-3 text-center font-mono ${d.rank <= 3 ? 'text-green-600 font-bold' : 'text-gray-700'}">${d.score}</td>
+                    <td class="px-4 py-3 text-center text-gray-500 hidden md:table-cell">${d.votes}</td>
+                    <td class="px-4 py-3 text-center text-gray-500 hidden lg:table-cell">${d.org}</td>
+                </tr>
+            `).join('');
+
+            // Update chart
+            const ctx = document.getElementById('benchmarkChart').getContext('2d');
+            if (chart) chart.destroy();
+            chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: bench.data.map(d => d.model),
+                    datasets: [{
+                        label: bench.scoreLabel,
+                        data: bench.data.map(d => d.score),
+                        backgroundColor: bench.data.map((d, i) => i < 3 ? '#6366f1' : '#94a3b8'),
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { beginAtZero: false, min: currentBench === 'arena' ? 1300 : 80 },
+                        y: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        function switchLang(lang) {
+            currentLang = lang;
+            document.getElementById('lang-zh').className = lang === 'zh' ? 'px-3 py-1 rounded-md bg-primary text-white text-sm font-medium' : 'px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium';
+            document.getElementById('lang-en').className = lang === 'en' ? 'px-3 py-1 rounded-md bg-primary text-white text-sm font-medium' : 'px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium';
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const parts = el.getAttribute('data-i18n').split('.');
+                let val = i18n[lang];
+                for (const k of parts) val = val[k];
+                if (val) el.textContent = val;
+            });
+            localStorage.setItem('ai-toolkit-lang', lang);
+        }
+
+        const saved = localStorage.getItem('ai-toolkit-lang');
+        if (saved) switchLang(saved); else switchLang('en');
+        render();
+    </script>
+</body>
+</html>
