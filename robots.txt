@@ -1,3 +1,4 @@
 User-agent: *
 Allow: /
+
 Sitemap: https://devtools-ten-tau.vercel.app/sitemap.xml
