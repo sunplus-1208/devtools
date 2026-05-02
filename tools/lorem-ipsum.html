@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lorem Ipsum Generator - DevTools</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { primary: '#3b82f6' } } }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="../index.html" class="flex items-center">
+                        <i class="fas fa-arrow-left text-gray-500 mr-3 hover:text-gray-700"></i>
+                        <i class="fas fa-tools text-primary text-2xl mr-3"></i>
+                        <h1 class="text-xl font-bold text-gray-900">DevTools</h1>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="lang-zh" class="px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium" onclick="switchLang('zh')">中文</button>
+                    <button id="lang-en" class="px-3 py-1 rounded-md bg-primary text-white text-sm font-medium" onclick="switchLang('en')">EN</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="mb-6">
+            <h2 class="text-2xl font-bold text-gray-900">Lorem Ipsum Generator</h2>
+            <p class="text-gray-600 mt-1">Generate placeholder text for design and development</p>
+        </div>
+
+        <!-- Controls -->
+        <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Type</label>
+                    <select id="type" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-primary text-sm">
+                        <option value="paragraphs">Paragraphs</option>
+                        <option value="sentences">Sentences</option>
+                        <option value="words">Words</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Amount</label>
+                    <input id="amount" type="number" value="3" min="1" max="100" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-primary text-sm">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Start with</label>
+                    <select id="startWith" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-primary text-sm">
+                        <option value="yes">Lorem ipsum dolor...</option>
+                        <option value="no">Random start</option>
+                    </select>
+                </div>
+                <div class="flex items-end">
+                    <button onclick="generate()" class="w-full px-6 py-2 bg-primary hover:bg-blue-600 text-white rounded-lg font-medium transition">
+                        <i class="fas fa-sync-alt mr-2"></i>Generate
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Output -->
+        <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
+            <div class="bg-gray-50 px-4 py-3 border-b border-gray-100 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <span class="font-medium text-gray-700">Output</span>
+                    <span id="wordCount" class="text-xs text-gray-400"></span>
+                </div>
+                <button onclick="copyOutput()" class="text-xs px-3 py-1 bg-primary hover:bg-blue-600 text-white rounded">Copy</button>
+            </div>
+            <div id="output" class="p-6 text-gray-700 leading-relaxed max-h-[500px] overflow-y-auto" style="min-height: 200px;">
+                Click Generate to create placeholder text
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let currentLang = 'en';
+
+        function switchLang(lang) {
+            currentLang = lang;
+            document.getElementById('lang-zh').className = lang === 'zh'
+                ? 'px-3 py-1 rounded-md bg-primary text-white text-sm font-medium'
+                : 'px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium';
+            document.getElementById('lang-en').className = lang === 'en'
+                ? 'px-3 py-1 rounded-md bg-primary text-white text-sm font-medium'
+                : 'px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium';
+            localStorage.setItem('devtools-lang', lang);
+        }
+
+        const savedLang = localStorage.getItem('devtools-lang') || 'en';
+        if (savedLang === 'zh') switchLang('zh');
+
+        const WORDS = [
+            'lorem','ipsum','dolor','sit','amet','consectetur','adipiscing','elit','sed','do',
+            'eiusmod','tempor','incididunt','ut','labore','et','dolore','magna','aliqua','enim',
+            'ad','minim','veniam','quis','nostrud','exercitation','ullamco','laboris','nisi',
+            'aliquip','ex','ea','commodo','consequat','duis','aute','irure','in','reprehenderit',
+            'voluptate','velit','esse','cillum','fugiat','nulla','pariatur','excepteur','sint',
+            'occaecat','cupidatat','non','proident','sunt','culpa','qui','officia','deserunt',
+            'mollit','anim','id','est','laborum','ac','accumsan','aliquet','ante','arcu','at',
+            'auctor','augue','bibendum','blandit','condimentum','congue','cras','curabitur',
+            'cursus','dapibus','diam','dictum','dignissim','donec','dui','efficitur','egestas',
+            'elementum','eros','facilisis','faucibus','felis','fermentum','finibus','fringilla',
+            'fusce','gravida','habitant','hendrerit','iaculis','imperdiet','integer','interdum',
+            'justo','lacinia','lacus','laoreet','lectus','leo','libero','ligula','lobortis',
+            'luctus','maecenas','massa','mattis','mauris','maximus','metus','mi','morbi','nam',
+            'natoque','nec','neque','nibh','nullam','nunc','odio','orci','ornare','pellentesque',
+            'pharetra','phasellus','placerat','platea','porta','porttitor','posuere','praesent',
+            'pretium','proin','pulvinar','purus','quam','risus','rutrum','sagittis','sapien',
+            'scelerisque','semper','sollicitudin','suscipit','tellus','tincidunt','tortor',
+            'tristique','turpis','ultrices','ultricies','urna','varius','vehicula','vel','vestibulum',
+            'vitae','vivamus','viverra','volutpat','vulputate'
+        ];
+
+        const LOREM_START = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
+
+        function randWord() { return WORDS[Math.floor(Math.random() * WORDS.length)]; }
+
+        function randSentence(minLen = 6, maxLen = 16) {
+            const len = minLen + Math.floor(Math.random() * (maxLen - minLen));
+            const words = Array.from({length: len}, randWord);
+            words[0] = words[0].charAt(0).toUpperCase() + words[0].slice(1);
+            return words.join(' ') + '.';
+        }
+
+        function randParagraph() {
+            const count = 3 + Math.floor(Math.random() * 5);
+            return Array.from({length: count}, () => randSentence()).join(' ');
+        }
+
+        function generate() {
+            const type = document.getElementById('type').value;
+            const amount = Math.min(parseInt(document.getElementById('amount').value) || 1, 100);
+            const startWith = document.getElementById('startWith').value === 'yes';
+            let result = '';
+
+            switch (type) {
+                case 'paragraphs': {
+                    const paras = Array.from({length: amount}, randParagraph);
+                    if (startWith && paras.length > 0) {
+                        paras[0] = LOREM_START + ' ' + paras[0];
+                    }
+                    result = paras.join('\n\n');
+                    break;
+                }
+                case 'sentences': {
+                    const sents = Array.from({length: amount}, () => randSentence());
+                    if (startWith && sents.length > 0) {
+                        sents[0] = LOREM_START;
+                    }
+                    result = sents.join(' ');
+                    break;
+                }
+                case 'words': {
+                    const words = Array.from({length: amount}, randWord);
+                    if (startWith && words.length >= 2) {
+                        words[0] = 'lorem';
+                        words[1] = 'ipsum';
+                    }
+                    result = words.join(' ');
+                    break;
+                }
+            }
+
+            document.getElementById('output').textContent = result;
+            const wc = result.split(/\s+/).filter(Boolean).length;
+            document.getElementById('wordCount').textContent = wc + ' words';
+        }
+
+        function copyOutput() {
+            const text = document.getElementById('output').textContent;
+            if (text && !text.startsWith('Click')) navigator.clipboard.writeText(text);
+        }
+
+        // Generate on load
+        generate();
+    </script>
+</body>
+</html>

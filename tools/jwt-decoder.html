@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JWT Decoder - DevTools</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { primary: '#3b82f6' } } }
+        }
+    </script>
+    <style>
+        .jwt-header { background: #fef3c7; border-left: 4px solid #f59e0b; }
+        .jwt-payload { background: #dbeafe; border-left: 4px solid #3b82f6; }
+        .jwt-signature { background: #fce7f3; border-left: 4px solid #ec4899; }
+        .json-key { color: #059669; }
+        .json-string { color: #d97706; }
+        .json-number { color: #2563eb; }
+        .json-bool { color: #7c3aed; }
+        .json-null { color: #6b7280; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="../index.html" class="flex items-center">
+                        <i class="fas fa-arrow-left text-gray-500 mr-3 hover:text-gray-700"></i>
+                        <i class="fas fa-tools text-primary text-2xl mr-3"></i>
+                        <h1 class="text-xl font-bold text-gray-900">DevTools</h1>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="lang-zh" class="px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium" onclick="switchLang('zh')">中文</button>
+                    <button id="lang-en" class="px-3 py-1 rounded-md bg-primary text-white text-sm font-medium" onclick="switchLang('en')">EN</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="mb-6">
+            <h2 class="text-2xl font-bold text-gray-900">JWT Decoder</h2>
+            <p class="text-gray-600 mt-1">Decode and inspect JSON Web Tokens</p>
+        </div>
+
+        <!-- Input -->
+        <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden mb-6">
+            <div class="bg-gray-50 px-4 py-3 border-b border-gray-100 flex justify-between items-center">
+                <span class="font-medium text-gray-700">Encoded Token</span>
+                <div class="flex gap-2">
+                    <button onclick="pasteToken()" class="text-xs px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded text-gray-700">Paste</button>
+                    <button onclick="clearInput()" class="text-xs px-3 py-1 bg-red-100 hover:bg-red-200 rounded text-red-700">Clear</button>
+                </div>
+            </div>
+            <textarea id="tokenInput" class="w-full h-32 p-4 font-mono text-sm resize-none focus:outline-none break-all" placeholder="Paste your JWT token here (e.g. eyJhbGciOiJIUzI1NiIs...)"></textarea>
+        </div>
+
+        <!-- Color-coded token display -->
+        <div id="tokenDisplay" class="hidden mb-6">
+            <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
+                <div class="bg-gray-50 px-4 py-3 border-b border-gray-100">
+                    <span class="font-medium text-gray-700">Token Breakdown</span>
+                </div>
+                <div class="p-4 font-mono text-sm break-all leading-relaxed">
+                    <span id="tokenPart0" class="bg-yellow-200 px-1 rounded"></span><span class="text-gray-400">.</span><span id="tokenPart1" class="bg-blue-200 px-1 rounded"></span><span class="text-gray-400">.</span><span id="tokenPart2" class="bg-pink-200 px-1 rounded"></span>
+                </div>
+                <div class="px-4 pb-3 flex gap-4 text-xs">
+                    <span class="flex items-center"><span class="w-3 h-3 bg-yellow-200 rounded mr-1"></span> Header</span>
+                    <span class="flex items-center"><span class="w-3 h-3 bg-blue-200 rounded mr-1"></span> Payload</span>
+                    <span class="flex items-center"><span class="w-3 h-3 bg-pink-200 rounded mr-1"></span> Signature</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Decoded sections -->
+        <div id="decodedSections" class="hidden space-y-4">
+            <!-- Header -->
+            <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
+                <div class="jwt-header px-4 py-3 flex justify-between items-center">
+                    <span class="font-medium text-gray-800">HEADER</span>
+                    <button onclick="copySection('headerJson')" class="text-xs px-3 py-1 bg-white hover:bg-gray-100 rounded text-gray-700">Copy</button>
+                </div>
+                <pre id="headerJson" class="p-4 text-sm font-mono overflow-x-auto"></pre>
+            </div>
+
+            <!-- Payload -->
+            <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
+                <div class="jwt-payload px-4 py-3 flex justify-between items-center">
+                    <span class="font-medium text-gray-800">PAYLOAD</span>
+                    <button onclick="copySection('payloadJson')" class="text-xs px-3 py-1 bg-white hover:bg-gray-100 rounded text-gray-700">Copy</button>
+                </div>
+                <pre id="payloadJson" class="p-4 text-sm font-mono overflow-x-auto"></pre>
+            </div>
+
+            <!-- Signature -->
+            <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
+                <div class="jwt-signature px-4 py-3 flex justify-between items-center">
+                    <span class="font-medium text-gray-800">SIGNATURE</span>
+                    <button onclick="copySection('signatureText')" class="text-xs px-3 py-1 bg-white hover:bg-gray-100 rounded text-gray-700">Copy</button>
+                </div>
+                <div id="signatureText" class="p-4 text-sm font-mono break-all text-gray-600"></div>
+            </div>
+
+            <!-- Claims -->
+            <div id="claimsSection" class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
+                <div class="bg-gray-50 px-4 py-3 border-b border-gray-100">
+                    <span class="font-medium text-gray-700">Registered Claims</span>
+                </div>
+                <div id="claimsBody" class="p-4 space-y-2 text-sm"></div>
+            </div>
+        </div>
+
+        <!-- Error -->
+        <div id="errorMsg" class="hidden mt-4 bg-red-50 border border-red-200 rounded-lg p-4 text-red-700 text-sm"></div>
+    </main>
+
+    <script>
+        let currentLang = 'en';
+
+        function switchLang(lang) {
+            currentLang = lang;
+            document.getElementById('lang-zh').className = lang === 'zh'
+                ? 'px-3 py-1 rounded-md bg-primary text-white text-sm font-medium'
+                : 'px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium';
+            document.getElementById('lang-en').className = lang === 'en'
+                ? 'px-3 py-1 rounded-md bg-primary text-white text-sm font-medium'
+                : 'px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium';
+            localStorage.setItem('devtools-lang', lang);
+        }
+
+        const savedLang = localStorage.getItem('devtools-lang') || 'en';
+        if (savedLang === 'zh') switchLang('zh');
+
+        // Auto-decode on input
+        document.getElementById('tokenInput').addEventListener('input', decodeJWT);
+
+        function b64UrlDecode(str) {
+            str = str.replace(/-/g, '+').replace(/_/g, '/');
+            while (str.length % 4) str += '=';
+            return decodeURIComponent(atob(str).split('').map(c =>
+                '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+            ).join(''));
+        }
+
+        function decodeJWT() {
+            const token = document.getElementById('tokenInput').value.trim();
+            const errorMsg = document.getElementById('errorMsg');
+            const decoded = document.getElementById('decodedSections');
+            const display = document.getElementById('tokenDisplay');
+
+            if (!token) {
+                errorMsg.classList.add('hidden');
+                decoded.classList.add('hidden');
+                display.classList.add('hidden');
+                return;
+            }
+
+            const parts = token.split('.');
+            if (parts.length !== 3) {
+                errorMsg.textContent = 'Invalid JWT: must have 3 parts separated by dots';
+                errorMsg.classList.remove('hidden');
+                decoded.classList.add('hidden');
+                display.classList.add('hidden');
+                return;
+            }
+
+            try {
+                const header = JSON.parse(b64UrlDecode(parts[0]));
+                const payload = JSON.parse(b64UrlDecode(parts[1]));
+
+                // Token display
+                document.getElementById('tokenPart0').textContent = parts[0];
+                document.getElementById('tokenPart1').textContent = parts[1];
+                document.getElementById('tokenPart2').textContent = parts[2];
+                display.classList.remove('hidden');
+
+                // Header
+                document.getElementById('headerJson').innerHTML = syntaxHighlight(JSON.stringify(header, null, 2));
+
+                // Payload
+                document.getElementById('payloadJson').innerHTML = syntaxHighlight(JSON.stringify(payload, null, 2));
+
+                // Signature
+                document.getElementById('signatureText').textContent = parts[2];
+
+                // Claims
+                renderClaims(payload);
+
+                errorMsg.classList.add('hidden');
+                decoded.classList.remove('hidden');
+            } catch (e) {
+                errorMsg.textContent = 'Decode failed: ' + e.message;
+                errorMsg.classList.remove('hidden');
+                decoded.classList.add('hidden');
+                display.classList.add('hidden');
+            }
+        }
+
+        function syntaxHighlight(json) {
+            return json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                .replace(/"([^"]+)":/g, '<span class="json-key">"$1"</span>:')
+                .replace(/: "([^"]*)"/g, ': <span class="json-string">"$1"</span>')
+                .replace(/: (\d+\.?\d*)/g, ': <span class="json-number">$1</span>')
+                .replace(/: (true|false)/g, ': <span class="json-bool">$1</span>')
+                .replace(/: null/g, ': <span class="json-null">null</span>');
+        }
+
+        function renderClaims(payload) {
+            const claims = {
+                'iss': { name: 'Issuer', desc: 'Who issued the token' },
+                'sub': { name: 'Subject', desc: 'Subject of the token' },
+                'aud': { name: 'Audience', desc: 'Intended recipient' },
+                'exp': { name: 'Expiration', desc: 'Token expiration time', type: 'time' },
+                'nbf': { name: 'Not Before', desc: 'Token not valid before', type: 'time' },
+                'iat': { name: 'Issued At', desc: 'When token was issued', type: 'time' },
+                'jti': { name: 'JWT ID', desc: 'Unique identifier' }
+            };
+
+            const body = document.getElementById('claimsBody');
+            body.innerHTML = '';
+            let hasClaims = false;
+
+            for (const [key, info] of Object.entries(claims)) {
+                if (payload[key] !== undefined) {
+                    hasClaims = true;
+                    let value = payload[key];
+                    let extra = '';
+                    if (info.type === 'time') {
+                        const date = new Date(value * 1000);
+                        extra = `<span class="text-gray-400 ml-2">(${date.toLocaleString()})</span>`;
+                        if (key === 'exp') {
+                            const now = Date.now() / 1000;
+                            if (value < now) extra += `<span class="text-red-500 ml-2">[EXPIRED]</span>`;
+                            else extra += `<span class="text-green-600 ml-2">[VALID for ${Math.floor((value - now) / 3600)}h ${Math.floor(((value - now) % 3600) / 60)}m]</span>`;
+                        }
+                    }
+                    body.innerHTML += `
+                        <div class="flex items-start gap-3 p-2 bg-gray-50 rounded">
+                            <div class="flex-shrink-0">
+                                <span class="font-mono text-blue-600 text-xs bg-blue-50 px-2 py-1 rounded">${key}</span>
+                            </div>
+                            <div>
+                                <span class="font-medium text-gray-700">${info.name}</span>
+                                <span class="text-gray-400 text-xs ml-2">${info.desc}</span>
+                                <div class="font-mono text-sm mt-1">${value}${extra}</div>
+                            </div>
+                        </div>`;
+                }
+            }
+
+            document.getElementById('claimsSection').classList.toggle('hidden', !hasClaims);
+        }
+
+        function pasteToken() {
+            navigator.clipboard.readText().then(text => {
+                document.getElementById('tokenInput').value = text;
+                decodeJWT();
+            }).catch(() => {});
+        }
+
+        function clearInput() {
+            document.getElementById('tokenInput').value = '';
+            document.getElementById('decodedSections').classList.add('hidden');
+            document.getElementById('tokenDisplay').classList.add('hidden');
+            document.getElementById('errorMsg').classList.add('hidden');
+        }
+
+        function copySection(id) {
+            const text = document.getElementById(id).textContent;
+            navigator.clipboard.writeText(text);
+        }
+    </script>
+</body>
+</html>

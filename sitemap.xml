@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://devtools-ten-tau.vercel.app/</loc><priority>1.0</priority></url>
+  <url><loc>https://devtools-ten-tau.vercel.app/tools/json-formatter.html</loc><priority>0.8</priority></url>
+  <url><loc>https://devtools-ten-tau.vercel.app/tools/regex-tester.html</loc><priority>0.8</priority></url>
+  <url><loc>https://devtools-ten-tau.vercel.app/tools/color-picker.html</loc><priority>0.8</priority></url>
+  <url><loc>https://devtools-ten-tau.vercel.app/tools/base64.html</loc><priority>0.8</priority></url>
+  <url><loc>https://devtools-ten-tau.vercel.app/tools/timestamp.html</loc><priority>0.8</priority></url>
+  <url><loc>https://devtools-ten-tau.vercel.app/tools/url-encoder.html</loc><priority>0.8</priority></url>
+  <url><loc>https://devtools-ten-tau.vercel.app/tools/jwt-decoder.html</loc><priority>0.8</priority></url>
+  <url><loc>https://devtools-ten-tau.vercel.app/tools/hash-generator.html</loc><priority>0.8</priority></url>
+  <url><loc>https://devtools-ten-tau.vercel.app/tools/uuid-generator.html</loc><priority>0.8</priority></url>
+  <url><loc>https://devtools-ten-tau.vercel.app/tools/lorem-ipsum.html</loc><priority>0.8</priority></url>
+  <url><loc>https://devtools-ten-tau.vercel.app/tools/diff-checker.html</loc><priority>0.8</priority></url>
+  <url><loc>https://devtools-ten-tau.vercel.app/tools/cron-parser.html</loc><priority>0.8</priority></url>
+  <url><loc>https://devtools-ten-tau.vercel.app/tools/qr-code.html</loc><priority>0.8</priority></url>
+</urlset>

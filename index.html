@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DevTools - Developer Tools</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -25,6 +26,9 @@
         .tool-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        .tool-card.hidden-card {
+            display: none;
         }
     </style>
 </head>
@@ -54,7 +58,12 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 class="text-4xl font-bold mb-4">Developer Toolbox</h2>
             <p class="text-xl text-blue-100 mb-2">开发者工具箱</p>
-            <p class="text-lg text-blue-200 max-w-2xl mx-auto">Simple and efficient online development tools to boost your productivity</p>
+            <p class="text-lg text-blue-200 max-w-2xl mx-auto mb-8">Simple and efficient online development tools to boost your productivity</p>
+            <!-- Search -->
+            <div class="max-w-lg mx-auto relative">
+                <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-blue-300"></i>
+                <input id="searchInput" type="text" class="w-full pl-12 pr-4 py-3 rounded-xl bg-white/20 backdrop-blur text-white placeholder-blue-200 border border-white/30 focus:outline-none focus:bg-white/30 focus:border-white/50" placeholder="Search tools..." oninput="filterTools()">
+            </div>
         </div>
     </section>
 
@@ -62,9 +71,9 @@
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <h3 class="text-2xl font-bold text-gray-900 mb-8">Tools</h3>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div id="toolsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <!-- JSON Formatter -->
-            <a href="tools/json-formatter.html" class="tool-card bg-white rounded-xl p-6 shadow-md border border-gray-100">
+            <a href="tools/json-formatter.html" class="tool-card bg-white rounded-xl p-6 shadow-md border border-gray-100" data-name="json formatter format validate minify" data-zh="json格式化验证压缩">
                 <div class="flex items-center mb-4">
                     <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
                         <i class="fas fa-code text-blue-600 text-xl"></i>
@@ -78,7 +87,7 @@
             </a>
 
             <!-- Regex Tester -->
-            <a href="tools/regex-tester.html" class="tool-card bg-white rounded-xl p-6 shadow-md border border-gray-100">
+            <a href="tools/regex-tester.html" class="tool-card bg-white rounded-xl p-6 shadow-md border border-gray-100" data-name="regex regular expression test match" data-zh="正则表达式测试匹配">
                 <div class="flex items-center mb-4">
                     <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
                         <i class="fas fa-search text-green-600 text-xl"></i>
@@ -92,7 +101,7 @@
             </a>
 
             <!-- Color Picker -->
-            <a href="tools/color-picker.html" class="tool-card bg-white rounded-xl p-6 shadow-md border border-gray-100">
+            <a href="tools/color-picker.html" class="tool-card bg-white rounded-xl p-6 shadow-md border border-gray-100" data-name="color picker hex rgb hsl palette" data-zh="颜色选择器转换调色板">
                 <div class="flex items-center mb-4">
                     <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
                         <i class="fas fa-palette text-purple-600 text-xl"></i>
@@ -106,7 +115,7 @@
             </a>
 
             <!-- Base64 -->
-            <a href="tools/base64.html" class="tool-card bg-white rounded-xl p-6 shadow-md border border-gray-100">
+            <a href="tools/base64.html" class="tool-card bg-white rounded-xl p-6 shadow-md border border-gray-100" data-name="base64 encode decode url safe" data-zh="base64编解码">
                 <div class="flex items-center mb-4">
                     <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mr-4">
                         <i class="fas fa-exchange-alt text-orange-600 text-xl"></i>
@@ -120,7 +129,7 @@
             </a>
 
             <!-- Timestamp -->
-            <a href="tools/timestamp.html" class="tool-card bg-white rounded-xl p-6 shadow-md border border-gray-100">
+            <a href="tools/timestamp.html" class="tool-card bg-white rounded-xl p-6 shadow-md border border-gray-100" data-name="timestamp unix epoch date time convert" data-zh="时间戳转换日期">
                 <div class="flex items-center mb-4">
                     <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mr-4">
                         <i class="fas fa-clock text-red-600 text-xl"></i>
@@ -134,7 +143,7 @@
             </a>
 
             <!-- URL Encoder -->
-            <a href="tools/url-encoder.html" class="tool-card bg-white rounded-xl p-6 shadow-md border border-gray-100">
+            <a href="tools/url-encoder.html" class="tool-card bg-white rounded-xl p-6 shadow-md border border-gray-100" data-name="url encode decode percent component" data-zh="url编解码">
                 <div class="flex items-center mb-4">
                     <div class="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center mr-4">
                         <i class="fas fa-link text-teal-600 text-xl"></i>
@@ -146,6 +155,110 @@
                 </div>
                 <p class="text-gray-600 text-sm">URL encoding and decoding tool</p>
             </a>
+
+            <!-- JWT Decoder -->
+            <a href="tools/jwt-decoder.html" class="tool-card bg-white rounded-xl p-6 shadow-md border border-gray-100" data-name="jwt json web token decode inspect verify" data-zh="jwt令牌解码验证">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center mr-4">
+                        <i class="fas fa-key text-amber-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-900">JWT Decoder</h4>
+                        <p class="text-sm text-gray-500">JWT令牌解码</p>
+                    </div>
+                </div>
+                <p class="text-gray-600 text-sm">Decode and inspect JSON Web Tokens</p>
+            </a>
+
+            <!-- Hash Generator -->
+            <a href="tools/hash-generator.html" class="tool-card bg-white rounded-xl p-6 shadow-md border border-gray-100" data-name="hash md5 sha1 sha256 sha512 generator" data-zh="哈希生成器md5sha">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center mr-4">
+                        <i class="fas fa-fingerprint text-emerald-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-900">Hash Generator</h4>
+                        <p class="text-sm text-gray-500">哈希生成器</p>
+                    </div>
+                </div>
+                <p class="text-gray-600 text-sm">Generate MD5, SHA-1, SHA-256, SHA-512 hashes</p>
+            </a>
+
+            <!-- UUID Generator -->
+            <a href="tools/uuid-generator.html" class="tool-card bg-white rounded-xl p-6 shadow-md border border-gray-100" data-name="uuid guid generator unique id" data-zh="uuid guid生成器">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-cyan-100 rounded-lg flex items-center justify-center mr-4">
+                        <i class="fas fa-barcode text-cyan-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-900">UUID Generator</h4>
+                        <p class="text-sm text-gray-500">UUID生成器</p>
+                    </div>
+                </div>
+                <p class="text-gray-600 text-sm">Generate UUID/GUID with multiple formats</p>
+            </a>
+
+            <!-- Lorem Ipsum -->
+            <a href="tools/lorem-ipsum.html" class="tool-card bg-white rounded-xl p-6 shadow-md border border-gray-100" data-name="lorem ipsum placeholder text generator" data-zh="占位文本生成器">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center mr-4">
+                        <i class="fas fa-paragraph text-pink-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-900">Lorem Ipsum</h4>
+                        <p class="text-sm text-gray-500">占位文本生成</p>
+                    </div>
+                </div>
+                <p class="text-gray-600 text-sm">Generate placeholder text for design and development</p>
+            </a>
+
+            <!-- Diff Checker -->
+            <a href="tools/diff-checker.html" class="tool-card bg-white rounded-xl p-6 shadow-md border border-gray-100" data-name="diff compare text difference checker" data-zh="文本差异对比">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mr-4">
+                        <i class="fas fa-not-equal text-indigo-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-900">Diff Checker</h4>
+                        <p class="text-sm text-gray-500">文本差异对比</p>
+                    </div>
+                </div>
+                <p class="text-gray-600 text-sm">Compare two texts and find differences</p>
+            </a>
+
+            <!-- Cron Parser -->
+            <a href="tools/cron-parser.html" class="tool-card bg-white rounded-xl p-6 shadow-md border border-gray-100" data-name="cron expression parser schedule" data-zh="cron表达式解析定时任务">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-violet-100 rounded-lg flex items-center justify-center mr-4">
+                        <i class="fas fa-calendar-alt text-violet-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-900">Cron Parser</h4>
+                        <p class="text-sm text-gray-500">Cron表达式解析</p>
+                    </div>
+                </div>
+                <p class="text-gray-600 text-sm">Parse and generate cron expressions with descriptions</p>
+            </a>
+
+            <!-- QR Code -->
+            <a href="tools/qr-code.html" class="tool-card bg-white rounded-xl p-6 shadow-md border border-gray-100" data-name="qr code generator url wifi" data-zh="二维码生成器">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-sky-100 rounded-lg flex items-center justify-center mr-4">
+                        <i class="fas fa-qrcode text-sky-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-900">QR Code Generator</h4>
+                        <p class="text-sm text-gray-500">二维码生成器</p>
+                    </div>
+                </div>
+                <p class="text-gray-600 text-sm">Generate QR codes from text, URLs, or any content</p>
+            </a>
+        </div>
+
+        <!-- No results -->
+        <div id="noResults" class="hidden text-center py-12 text-gray-400">
+            <i class="fas fa-search text-4xl mb-3"></i>
+            <p>No tools found matching your search</p>
         </div>
     </section>
 
@@ -165,13 +278,15 @@
                 'hero.title': '开发者工具箱',
                 'hero.subtitle': 'Developer Toolbox',
                 'hero.desc': '简洁高效的在线开发工具，助力编程效率提升',
-                'tools.title': '常用工具 / Tools',
+                'search.placeholder': '搜索工具...',
+                'tools.title': '常用工具',
                 'footer.text': '开源免费，欢迎使用'
             },
             en: {
                 'hero.title': 'Developer Toolbox',
                 'hero.subtitle': '开发者工具箱',
                 'hero.desc': 'Simple and efficient online development tools to boost your productivity',
+                'search.placeholder': 'Search tools...',
                 'tools.title': 'Tools',
                 'footer.text': 'Open source and free to use'
             }
@@ -193,7 +308,7 @@
             // Update hero section
             const heroTitle = document.querySelector('.bg-gradient-to-r h2');
             const heroSubtitle = document.querySelector('.bg-gradient-to-r p:nth-child(2)');
-            const heroDesc = document.querySelector('.bg-gradient-to-r p:last-child');
+            const heroDesc = document.querySelector('.bg-gradient-to-r p:nth-child(3)');
             
             if (lang === 'en') {
                 heroTitle.textContent = 'Developer Toolbox';
@@ -204,12 +319,33 @@
                 heroSubtitle.textContent = 'Developer Toolbox';
                 heroDesc.textContent = '简洁高效的在线开发工具，助力编程效率提升';
             }
+
+            // Update search placeholder
+            document.getElementById('searchInput').placeholder = i18n[lang]['search.placeholder'];
             
             // Update footer
-            document.querySelector('footer p').textContent = '&copy; 2026 DevTools. ' + i18n[lang]['footer.text'];
+            document.querySelector('footer p').textContent = '© 2026 DevTools. ' + i18n[lang]['footer.text'];
             
             // Save preference
             localStorage.setItem('devtools-lang', lang);
+        }
+
+        // Search / filter tools
+        function filterTools() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            const cards = document.querySelectorAll('.tool-card');
+            let visible = 0;
+
+            cards.forEach(card => {
+                const name = card.dataset.name || '';
+                const zh = card.dataset.zh || '';
+                const text = card.textContent.toLowerCase();
+                const match = !query || name.includes(query) || zh.includes(query) || text.includes(query);
+                card.classList.toggle('hidden-card', !match);
+                if (match) visible++;
+            });
+
+            document.getElementById('noResults').classList.toggle('hidden', visible > 0);
         }
 
         // Load saved preference or default to English

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UUID Generator - DevTools</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { primary: '#3b82f6' } } }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="../index.html" class="flex items-center">
+                        <i class="fas fa-arrow-left text-gray-500 mr-3 hover:text-gray-700"></i>
+                        <i class="fas fa-tools text-primary text-2xl mr-3"></i>
+                        <h1 class="text-xl font-bold text-gray-900">DevTools</h1>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="lang-zh" class="px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium" onclick="switchLang('zh')">中文</button>
+                    <button id="lang-en" class="px-3 py-1 rounded-md bg-primary text-white text-sm font-medium" onclick="switchLang('en')">EN</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="mb-6">
+            <h2 class="text-2xl font-bold text-gray-900">UUID Generator</h2>
+            <p class="text-gray-600 mt-1">Generate UUID/GUID with multiple formats</p>
+        </div>
+
+        <!-- Controls -->
+        <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Version</label>
+                    <select id="version" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-primary text-sm">
+                        <option value="v4">v4 (Random)</option>
+                        <option value="v1">v1 (Timestamp)</option>
+                        <option value="nil">Nil UUID</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
+                    <input id="quantity" type="number" value="1" min="1" max="100" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-primary text-sm">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Format</label>
+                    <select id="format" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-primary text-sm">
+                        <option value="lowercase">lowercase</option>
+                        <option value="uppercase">UPPERCASE</option>
+                        <option value="no-dash">No dashes</option>
+                        <option value="braces">{braces}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mt-4 flex flex-wrap gap-3">
+                <button onclick="generate()" class="px-6 py-2 bg-primary hover:bg-blue-600 text-white rounded-lg font-medium transition">
+                    <i class="fas fa-sync-alt mr-2"></i>Generate
+                </button>
+                <button onclick="copyAll()" class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition">
+                    <i class="fas fa-copy mr-2"></i>Copy All
+                </button>
+                <button onclick="clearOutput()" class="px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg font-medium transition">
+                    <i class="fas fa-trash mr-2"></i>Clear
+                </button>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
+            <div class="bg-gray-50 px-4 py-3 border-b border-gray-100 flex justify-between items-center">
+                <span class="font-medium text-gray-700">Generated UUIDs</span>
+                <span id="count" class="text-xs text-gray-500">0</span>
+            </div>
+            <div id="results" class="divide-y divide-gray-100 max-h-96 overflow-y-auto">
+                <div class="p-8 text-center text-gray-400">Click Generate to create UUIDs</div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let currentLang = 'en';
+
+        function switchLang(lang) {
+            currentLang = lang;
+            document.getElementById('lang-zh').className = lang === 'zh'
+                ? 'px-3 py-1 rounded-md bg-primary text-white text-sm font-medium'
+                : 'px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium';
+            document.getElementById('lang-en').className = lang === 'en'
+                ? 'px-3 py-1 rounded-md bg-primary text-white text-sm font-medium'
+                : 'px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium';
+            localStorage.setItem('devtools-lang', lang);
+        }
+
+        const savedLang = localStorage.getItem('devtools-lang') || 'en';
+        if (savedLang === 'zh') switchLang('zh');
+
+        function uuidv4() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+                const r = Math.random() * 16 | 0;
+                return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+            });
+        }
+
+        function uuidv1() {
+            const now = Date.now();
+            const hex = now.toString(16).padStart(12, '0');
+            const clock = (Math.random() * 0x3fff | 0).toString(16).padStart(4, '0');
+            const node = Array.from({length: 6}, () => (Math.random() * 256 | 0).toString(16).padStart(2, '0')).join('');
+            return `${hex.slice(-8)}-${hex.slice(-12, -8).replace(/^/, '1')}-1${clock.slice(1)}-${(0x8 | Math.random() * 4 | 0).toString(16)}${Array.from({length: 3}, () => (Math.random() * 16 | 0).toString(16)).join('')}-${node}`;
+        }
+
+        function formatUUID(uuid) {
+            const format = document.getElementById('format').value;
+            switch (format) {
+                case 'uppercase': return uuid.toUpperCase();
+                case 'no-dash': return uuid.replace(/-/g, '');
+                case 'braces': return '{' + uuid + '}';
+                default: return uuid;
+            }
+        }
+
+        let generated = [];
+
+        function generate() {
+            const version = document.getElementById('version').value;
+            const quantity = Math.min(parseInt(document.getElementById('quantity').value) || 1, 100);
+
+            const newUuids = [];
+            for (let i = 0; i < quantity; i++) {
+                let uuid;
+                switch (version) {
+                    case 'v4': uuid = uuidv4(); break;
+                    case 'v1': uuid = uuidv1(); break;
+                    case 'nil': uuid = '00000000-0000-0000-0000-000000000000'; break;
+                }
+                newUuids.push(formatUUID(uuid));
+            }
+
+            generated = [...newUuids, ...generated];
+            renderResults();
+        }
+
+        function renderResults() {
+            const container = document.getElementById('results');
+            document.getElementById('count').textContent = generated.length;
+
+            if (generated.length === 0) {
+                container.innerHTML = '<div class="p-8 text-center text-gray-400">Click Generate to create UUIDs</div>';
+                return;
+            }
+
+            container.innerHTML = generated.map((uuid, i) => `
+                <div class="flex items-center justify-between px-4 py-3 hover:bg-gray-50 group">
+                    <span class="font-mono text-sm text-gray-700 select-all">${uuid}</span>
+                    <button onclick="copyOne(${i})" class="opacity-0 group-hover:opacity-100 text-xs px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded transition">Copy</button>
+                </div>
+            `).join('');
+        }
+
+        function copyOne(index) {
+            navigator.clipboard.writeText(generated[index]);
+        }
+
+        function copyAll() {
+            if (generated.length === 0) return;
+            navigator.clipboard.writeText(generated.join('\n'));
+        }
+
+        function clearOutput() {
+            generated = [];
+            renderResults();
+        }
+    </script>
+</body>
+</html>

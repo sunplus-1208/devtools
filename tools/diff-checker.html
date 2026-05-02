@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diff Checker - DevTools</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { primary: '#3b82f6' } } }
+        }
+    </script>
+    <style>
+        .diff-add { background: #dcfce7; color: #166534; }
+        .diff-del { background: #fee2e2; color: #991b1b; }
+        .diff-line-num { min-width: 3rem; color: #9ca3af; user-select: none; }
+        .diff-content { font-family: 'Consolas', 'Monaco', monospace; font-size: 13px; white-space: pre-wrap; word-break: break-all; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="../index.html" class="flex items-center">
+                        <i class="fas fa-arrow-left text-gray-500 mr-3 hover:text-gray-700"></i>
+                        <i class="fas fa-tools text-primary text-2xl mr-3"></i>
+                        <h1 class="text-xl font-bold text-gray-900">DevTools</h1>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="lang-zh" class="px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium" onclick="switchLang('zh')">中文</button>
+                    <button id="lang-en" class="px-3 py-1 rounded-md bg-primary text-white text-sm font-medium" onclick="switchLang('en')">EN</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="mb-6">
+            <h2 class="text-2xl font-bold text-gray-900">Diff Checker</h2>
+            <p class="text-gray-600 mt-1">Compare two texts and find differences</p>
+        </div>
+
+        <!-- Input -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
+                <div class="bg-red-50 px-4 py-3 border-b border-red-100 flex justify-between items-center">
+                    <span class="font-medium text-red-700">Original</span>
+                    <button onclick="document.getElementById('textA').value=''" class="text-xs px-3 py-1 bg-red-100 hover:bg-red-200 rounded text-red-700">Clear</button>
+                </div>
+                <textarea id="textA" class="w-full h-64 p-4 font-mono text-sm resize-none focus:outline-none" placeholder="Paste original text here..."></textarea>
+            </div>
+            <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
+                <div class="bg-green-50 px-4 py-3 border-b border-green-100 flex justify-between items-center">
+                    <span class="font-medium text-green-700">Modified</span>
+                    <button onclick="document.getElementById('textB').value=''" class="text-xs px-3 py-1 bg-green-100 hover:bg-green-200 rounded text-green-700">Clear</button>
+                </div>
+                <textarea id="textB" class="w-full h-64 p-4 font-mono text-sm resize-none focus:outline-none" placeholder="Paste modified text here..."></textarea>
+            </div>
+        </div>
+
+        <div class="mb-6 flex flex-wrap gap-3 items-center">
+            <button onclick="computeDiff()" class="px-6 py-2 bg-primary hover:bg-blue-600 text-white rounded-lg font-medium transition">
+                <i class="fas fa-not-equal mr-2"></i>Compare
+            </button>
+            <label class="flex items-center gap-2 text-sm text-gray-600">
+                <input type="checkbox" id="ignoreWhitespace" class="rounded"> Ignore whitespace
+            </label>
+            <label class="flex items-center gap-2 text-sm text-gray-600">
+                <input type="checkbox" id="ignoreCase" class="rounded"> Ignore case
+            </label>
+        </div>
+
+        <!-- Stats -->
+        <div id="diffStats" class="hidden mb-4 flex gap-4 text-sm">
+            <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full"><i class="fas fa-plus mr-1"></i><span id="addCount">0</span> added</span>
+            <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full"><i class="fas fa-minus mr-1"></i><span id="delCount">0</span> removed</span>
+            <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full"><i class="fas fa-equals mr-1"></i><span id="sameCount">0</span> unchanged</span>
+        </div>
+
+        <!-- Result -->
+        <div id="diffResult" class="hidden bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
+            <div class="bg-gray-50 px-4 py-3 border-b border-gray-100 flex justify-between items-center">
+                <span class="font-medium text-gray-700">Diff Result</span>
+                <button onclick="copyDiff()" class="text-xs px-3 py-1 bg-primary hover:bg-blue-600 text-white rounded">Copy</button>
+            </div>
+            <div id="diffOutput" class="p-0 overflow-x-auto max-h-[500px] overflow-y-auto"></div>
+        </div>
+    </main>
+
+    <script>
+        let currentLang = 'en';
+
+        function switchLang(lang) {
+            currentLang = lang;
+            document.getElementById('lang-zh').className = lang === 'zh'
+                ? 'px-3 py-1 rounded-md bg-primary text-white text-sm font-medium'
+                : 'px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium';
+            document.getElementById('lang-en').className = lang === 'en'
+                ? 'px-3 py-1 rounded-md bg-primary text-white text-sm font-medium'
+                : 'px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium';
+            localStorage.setItem('devtools-lang', lang);
+        }
+
+        const savedLang = localStorage.getItem('devtools-lang') || 'en';
+        if (savedLang === 'zh') switchLang('zh');
+
+        // Simple LCS-based diff
+        function computeDiff() {
+            let textA = document.getElementById('textA').value;
+            let textB = document.getElementById('textB').value;
+
+            if (document.getElementById('ignoreWhitespace').checked) {
+                textA = textA.replace(/\s+/g, ' ').trim();
+                textB = textB.replace(/\s+/g, ' ').trim();
+            }
+
+            const ignoreCase = document.getElementById('ignoreCase').checked;
+            const linesA = textA.split('\n');
+            const linesB = textB.split('\n');
+
+            // Build LCS table
+            const m = linesA.length, n = linesB.length;
+            const dp = Array.from({length: m + 1}, () => new Array(n + 1).fill(0));
+
+            for (let i = 1; i <= m; i++) {
+                for (let j = 1; j <= n; j++) {
+                    const a = ignoreCase ? linesA[i-1].toLowerCase() : linesA[i-1];
+                    const b = ignoreCase ? linesB[j-1].toLowerCase() : linesB[j-1];
+                    if (a === b) dp[i][j] = dp[i-1][j-1] + 1;
+                    else dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+                }
+            }
+
+            // Backtrack to find diff
+            const result = [];
+            let i = m, j = n;
+            while (i > 0 || j > 0) {
+                if (i > 0 && j > 0) {
+                    const a = ignoreCase ? linesA[i-1].toLowerCase() : linesA[i-1];
+                    const b = ignoreCase ? linesB[j-1].toLowerCase() : linesB[j-1];
+                    if (a === b) {
+                        result.unshift({type: 'same', lineA: i, lineB: j, text: linesA[i-1]});
+                        i--; j--;
+                        continue;
+                    }
+                }
+                if (j > 0 && (i === 0 || dp[i][j-1] >= dp[i-1][j])) {
+                    result.unshift({type: 'add', lineB: j, text: linesB[j-1]});
+                    j--;
+                } else {
+                    result.unshift({type: 'del', lineA: i, text: linesA[i-1]});
+                    i--;
+                }
+            }
+
+            renderDiff(result);
+        }
+
+        function renderDiff(diff) {
+            let addCount = 0, delCount = 0, sameCount = 0;
+            let html = '';
+
+            for (const entry of diff) {
+                const escaped = entry.text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                if (entry.type === 'same') {
+                    sameCount++;
+                    html += `<div class="flex border-b border-gray-50">
+                        <span class="diff-line-num px-2 py-1 text-right bg-gray-50 border-r border-gray-100">${entry.lineA}</span>
+                        <span class="diff-line-num px-2 py-1 text-right bg-gray-50 border-r border-gray-100">${entry.lineB}</span>
+                        <span class="diff-content px-3 py-1 flex-1">&nbsp;${escaped}</span>
+                    </div>`;
+                } else if (entry.type === 'add') {
+                    addCount++;
+                    html += `<div class="flex border-b border-gray-50 diff-add">
+                        <span class="diff-line-num px-2 py-1 text-right bg-green-50 border-r border-green-100"></span>
+                        <span class="diff-line-num px-2 py-1 text-right bg-green-50 border-r border-green-100">${entry.lineB}</span>
+                        <span class="diff-content px-3 py-1 flex-1">+${escaped}</span>
+                    </div>`;
+                } else {
+                    delCount++;
+                    html += `<div class="flex border-b border-gray-50 diff-del">
+                        <span class="diff-line-num px-2 py-1 text-right bg-red-50 border-r border-red-100">${entry.lineA}</span>
+                        <span class="diff-line-num px-2 py-1 text-right bg-red-50 border-r border-red-100"></span>
+                        <span class="diff-content px-3 py-1 flex-1">-${escaped}</span>
+                    </div>`;
+                }
+            }
+
+            document.getElementById('diffOutput').innerHTML = html;
+            document.getElementById('diffResult').classList.remove('hidden');
+            document.getElementById('diffStats').classList.remove('hidden');
+            document.getElementById('addCount').textContent = addCount;
+            document.getElementById('delCount').textContent = delCount;
+            document.getElementById('sameCount').textContent = sameCount;
+        }
+
+        function copyDiff() {
+            const text = document.getElementById('diffOutput').innerText;
+            navigator.clipboard.writeText(text);
+        }
+    </script>
+</body>
+</html>

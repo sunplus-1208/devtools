@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator - DevTools</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { primary: '#3b82f6' } } }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="../index.html" class="flex items-center">
+                        <i class="fas fa-arrow-left text-gray-500 mr-3 hover:text-gray-700"></i>
+                        <i class="fas fa-tools text-primary text-2xl mr-3"></i>
+                        <h1 class="text-xl font-bold text-gray-900">DevTools</h1>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="lang-zh" class="px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium" onclick="switchLang('zh')">中文</button>
+                    <button id="lang-en" class="px-3 py-1 rounded-md bg-primary text-white text-sm font-medium" onclick="switchLang('en')">EN</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="mb-6">
+            <h2 class="text-2xl font-bold text-gray-900">QR Code Generator</h2>
+            <p class="text-gray-600 mt-1">Generate QR codes from text, URLs, or any content</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Input -->
+            <div class="space-y-4">
+                <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Content</label>
+                    <textarea id="qrInput" class="w-full h-32 p-3 border border-gray-200 rounded-lg font-mono text-sm resize-none focus:outline-none focus:border-primary" placeholder="Enter URL or text..." oninput="generateQR()">https://devtools-ten-tau.vercel.app</textarea>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6">
+                    <h3 class="font-medium text-gray-900 mb-3">Options</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Size</label>
+                            <select id="qrSize" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-primary" onchange="generateQR()">
+                                <option value="128">128 x 128</option>
+                                <option value="200">200 x 200</option>
+                                <option value="256" selected>256 x 256</option>
+                                <option value="400">400 x 400</option>
+                                <option value="512">512 x 512</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Error Correction</label>
+                            <select id="qrLevel" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-primary" onchange="generateQR()">
+                                <option value="L">Low (7%)</option>
+                                <option value="M" selected>Medium (15%)</option>
+                                <option value="Q">Quartile (25%)</option>
+                                <option value="H">High (30%)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Foreground</label>
+                            <input id="qrFg" type="color" value="#000000" class="w-full h-10 border border-gray-200 rounded-lg cursor-pointer" onchange="generateQR()">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">Background</label>
+                            <input id="qrBg" type="color" value="#ffffff" class="w-full h-10 border border-gray-200 rounded-lg cursor-pointer" onchange="generateQR()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick templates -->
+                <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6">
+                    <h3 class="font-medium text-gray-900 mb-3">Quick Templates</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="setTemplate('url')" class="px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded text-sm">URL</button>
+                        <button onclick="setTemplate('email')" class="px-3 py-1 bg-green-100 hover:bg-green-200 text-green-700 rounded text-sm">Email</button>
+                        <button onclick="setTemplate('phone')" class="px-3 py-1 bg-purple-100 hover:bg-purple-200 text-purple-700 rounded text-sm">Phone</button>
+                        <button onclick="setTemplate('wifi')" class="px-3 py-1 bg-orange-100 hover:bg-orange-200 text-orange-700 rounded text-sm">WiFi</button>
+                        <button onclick="setTemplate('text')" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded text-sm">Plain Text</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Output -->
+            <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-medium text-gray-900">QR Code</h3>
+                    <button onclick="downloadQR()" class="text-xs px-3 py-1 bg-primary hover:bg-blue-600 text-white rounded">Download PNG</button>
+                </div>
+                <div class="flex justify-center items-center p-8 bg-white border-2 border-dashed border-gray-200 rounded-lg" style="min-height: 300px;">
+                    <div id="qrOutput"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let currentLang = 'en';
+        let qrInstance = null;
+
+        function switchLang(lang) {
+            currentLang = lang;
+            document.getElementById('lang-zh').className = lang === 'zh'
+                ? 'px-3 py-1 rounded-md bg-primary text-white text-sm font-medium'
+                : 'px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium';
+            document.getElementById('lang-en').className = lang === 'en'
+                ? 'px-3 py-1 rounded-md bg-primary text-white text-sm font-medium'
+                : 'px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium';
+            localStorage.setItem('devtools-lang', lang);
+        }
+
+        const savedLang = localStorage.getItem('devtools-lang') || 'en';
+        if (savedLang === 'zh') switchLang('zh');
+
+        function generateQR() {
+            const text = document.getElementById('qrInput').value;
+            if (!text) return;
+
+            const size = parseInt(document.getElementById('qrSize').value);
+            const level = document.getElementById('qrLevel').value;
+            const fg = document.getElementById('qrFg').value;
+            const bg = document.getElementById('qrBg').value;
+
+            const container = document.getElementById('qrOutput');
+            container.innerHTML = '';
+
+            qrInstance = new QRCode(container, {
+                text: text,
+                width: size,
+                height: size,
+                colorDark: fg,
+                colorLight: bg,
+                correctLevel: QRCode.CorrectLevel[level]
+            });
+        }
+
+        function downloadQR() {
+            const canvas = document.querySelector('#qrOutput canvas');
+            if (!canvas) return;
+            const link = document.createElement('a');
+            link.download = 'qrcode.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        function setTemplate(type) {
+            const input = document.getElementById('qrInput');
+            switch (type) {
+                case 'url': input.value = 'https://example.com'; break;
+                case 'email': input.value = 'mailto:hello@example.com'; break;
+                case 'phone': input.value = 'tel:+1234567890'; break;
+                case 'wifi': input.value = 'WIFI:T:WPA;S:NetworkName;P:Password;;'; break;
+                case 'text': input.value = 'Hello, World!'; break;
+            }
+            generateQR();
+        }
+
+        // Generate on load
+        setTimeout(generateQR, 100);
+    </script>
+</body>
+</html>

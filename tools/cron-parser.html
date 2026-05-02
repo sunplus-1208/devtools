@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cron Expression Parser - DevTools</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { primary: '#3b82f6' } } }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="../index.html" class="flex items-center">
+                        <i class="fas fa-arrow-left text-gray-500 mr-3 hover:text-gray-700"></i>
+                        <i class="fas fa-tools text-primary text-2xl mr-3"></i>
+                        <h1 class="text-xl font-bold text-gray-900">DevTools</h1>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="lang-zh" class="px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium" onclick="switchLang('zh')">中文</button>
+                    <button id="lang-en" class="px-3 py-1 rounded-md bg-primary text-white text-sm font-medium" onclick="switchLang('en')">EN</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="mb-6">
+            <h2 class="text-2xl font-bold text-gray-900">Cron Expression Parser</h2>
+            <p class="text-gray-600 mt-1">Parse and generate cron expressions with human-readable descriptions</p>
+        </div>
+
+        <!-- Input -->
+        <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6 mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Cron Expression</label>
+            <div class="flex gap-3">
+                <input id="cronInput" type="text" class="flex-1 px-4 py-2 border border-gray-200 rounded-lg font-mono text-lg focus:outline-none focus:border-primary" placeholder="* * * * *" value="*/5 * * * *">
+                <button onclick="parseCron()" class="px-6 py-2 bg-primary hover:bg-blue-600 text-white rounded-lg font-medium transition">Parse</button>
+            </div>
+            <div class="flex gap-2 mt-2 text-xs text-gray-400">
+                <span>min</span><span>hour</span><span>day</span><span>month</span><span>weekday</span>
+            </div>
+        </div>
+
+        <!-- Common presets -->
+        <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6 mb-6">
+            <h3 class="font-medium text-gray-900 mb-3">Common Presets</h3>
+            <div class="flex flex-wrap gap-2">
+                <button onclick="setCron('* * * * *')" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded text-sm">Every minute</button>
+                <button onclick="setCron('*/5 * * * *')" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded text-sm">Every 5 min</button>
+                <button onclick="setCron('0 * * * *')" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded text-sm">Hourly</button>
+                <button onclick="setCron('0 0 * * *')" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded text-sm">Daily midnight</button>
+                <button onclick="setCron('0 9 * * *')" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded text-sm">Daily 9 AM</button>
+                <button onclick="setCron('0 0 * * 1')" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded text-sm">Weekly Monday</button>
+                <button onclick="setCron('0 0 1 * *')" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded text-sm">Monthly</button>
+                <button onclick="setCron('0 0 1 1 *')" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded text-sm">Yearly</button>
+                <button onclick="setCron('*/30 * * * *')" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded text-sm">Every 30 min</button>
+                <button onclick="setCron('0 9 * * 1-5')" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded text-sm">Weekdays 9 AM</button>
+            </div>
+        </div>
+
+        <!-- Parse result -->
+        <div id="parseResult" class="hidden space-y-6">
+            <!-- Description -->
+            <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6">
+                <h3 class="font-medium text-gray-900 mb-3">Description</h3>
+                <p id="description" class="text-lg text-primary font-medium"></p>
+            </div>
+
+            <!-- Field breakdown -->
+            <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6">
+                <h3 class="font-medium text-gray-900 mb-3">Field Breakdown</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="bg-gray-50">
+                                <th class="px-4 py-2 text-left text-gray-600">Field</th>
+                                <th class="px-4 py-2 text-left text-gray-600">Value</th>
+                                <th class="px-4 py-2 text-left text-gray-600">Meaning</th>
+                            </tr>
+                        </thead>
+                        <tbody id="fieldBreakdown"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Next runs -->
+            <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6">
+                <h3 class="font-medium text-gray-900 mb-3">Next 5 Executions</h3>
+                <div id="nextRuns" class="space-y-2 text-sm font-mono"></div>
+            </div>
+        </div>
+
+        <!-- Error -->
+        <div id="errorMsg" class="hidden mt-4 bg-red-50 border border-red-200 rounded-lg p-4 text-red-700 text-sm"></div>
+    </main>
+
+    <script>
+        let currentLang = 'en';
+
+        function switchLang(lang) {
+            currentLang = lang;
+            document.getElementById('lang-zh').className = lang === 'zh'
+                ? 'px-3 py-1 rounded-md bg-primary text-white text-sm font-medium'
+                : 'px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium';
+            document.getElementById('lang-en').className = lang === 'en'
+                ? 'px-3 py-1 rounded-md bg-primary text-white text-sm font-medium'
+                : 'px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium';
+            localStorage.setItem('devtools-lang', lang);
+        }
+
+        const savedLang = localStorage.getItem('devtools-lang') || 'en';
+        if (savedLang === 'zh') switchLang('zh');
+
+        function setCron(expr) {
+            document.getElementById('cronInput').value = expr;
+            parseCron();
+        }
+
+        function parseField(field, min, max) {
+            if (field === '*') return { type: 'every', meaning: `Every ${min === 0 ? 'value' : 'value'}` };
+
+            if (field.startsWith('*/')) {
+                const step = parseInt(field.slice(2));
+                return { type: 'step', meaning: `Every ${step} ${min === 0 ? 'minutes' : 'values'} starting from ${min}` };
+            }
+
+            if (field.includes('-')) {
+                const [start, end] = field.split('-').map(Number);
+                return { type: 'range', meaning: `From ${start} through ${end}` };
+            }
+
+            if (field.includes(',')) {
+                return { type: 'list', meaning: `At ${field.split(',').join(', ')}` };
+            }
+
+            return { type: 'exact', meaning: `Exactly ${field}` };
+        }
+
+        function parseCron() {
+            const input = document.getElementById('cronInput').value.trim();
+            const parts = input.split(/\s+/);
+            const errorMsg = document.getElementById('errorMsg');
+
+            if (parts.length < 5) {
+                errorMsg.textContent = 'Invalid cron expression: must have 5 fields (min hour day month weekday)';
+                errorMsg.classList.remove('hidden');
+                document.getElementById('parseResult').classList.add('hidden');
+                return;
+            }
+
+            errorMsg.classList.add('hidden');
+
+            const fields = [
+                { name: 'Minute', value: parts[0], min: 0, max: 59 },
+                { name: 'Hour', value: parts[1], min: 0, max: 23 },
+                { name: 'Day of Month', value: parts[2], min: 1, max: 31 },
+                { name: 'Month', value: parts[3], min: 1, max: 12 },
+                { name: 'Day of Week', value: parts[4], min: 0, max: 6 },
+            ];
+
+            const months = ['', 'January','February','March','April','May','June','July','August','September','October','November','December'];
+            const weekdays = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+            // Build description
+            let desc = buildDescription(parts, months, weekdays);
+            document.getElementById('description').textContent = desc;
+
+            // Field breakdown
+            const tbody = document.getElementById('fieldBreakdown');
+            tbody.innerHTML = fields.map((f, i) => {
+                const parsed = parseField(f.value, f.min, f.max);
+                let meaning = parsed.meaning;
+                if (i === 3 && f.value !== '*') {
+                    try { meaning += ` (${f.value.split(',').map(v => months[parseInt(v)] || v).join(', ')})`; } catch(e) {}
+                }
+                if (i === 4 && f.value !== '*') {
+                    try { meaning += ` (${f.value.split(',').map(v => weekdays[parseInt(v)] || v).join(', ')})`; } catch(e) {}
+                }
+                return `<tr class="border-t border-gray-100">
+                    <td class="px-4 py-2 font-medium text-gray-700">${f.name}</td>
+                    <td class="px-4 py-2 font-mono text-primary">${f.value}</td>
+                    <td class="px-4 py-2 text-gray-600">${meaning}</td>
+                </tr>`;
+            }).join('');
+
+            // Next 5 runs
+            const nextRuns = getNextRuns(parts, 5);
+            document.getElementById('nextRuns').innerHTML = nextRuns.map((d, i) =>
+                `<div class="flex items-center gap-3 p-2 bg-gray-50 rounded">
+                    <span class="text-gray-400 w-6">${i+1}.</span>
+                    <span class="text-gray-700">${d.toLocaleString()}</span>
+                    <span class="text-gray-400 text-xs">(${getRelativeTime(d)})</span>
+                </div>`
+            ).join('');
+
+            document.getElementById('parseResult').classList.remove('hidden');
+        }
+
+        function buildDescription(parts, months, weekdays) {
+            const [min, hour, dom, month, dow] = parts;
+            let desc = 'Runs ';
+
+            if (min === '*') desc += 'every minute';
+            else if (min.startsWith('*/')) desc += `every ${min.slice(2)} minutes`;
+            else desc += `at minute ${min}`;
+
+            if (hour !== '*') {
+                if (hour.startsWith('*/')) desc += ` every ${hour.slice(2)} hours`;
+                else desc += ` past hour ${hour}`;
+            }
+
+            if (dom !== '*') desc += `, on day ${dom}`;
+            if (month !== '*') {
+                try { desc += ` of ${months[parseInt(month)]}`; } catch(e) { desc += ` of month ${month}`; }
+            }
+            if (dow !== '*') {
+                try { desc += `, on ${weekdays[parseInt(dow)]}`; } catch(e) { desc += `, on weekday ${dow}`; }
+            }
+
+            return desc;
+        }
+
+        function getNextRuns(parts, count) {
+            const results = [];
+            let date = new Date();
+            date.setSeconds(0, 0);
+            date.setMinutes(date.getMinutes() + 1);
+
+            const maxIter = 525600; // max 1 year of minutes
+            let iter = 0;
+
+            while (results.length < count && iter < maxIter) {
+                if (matchesCron(date, parts)) {
+                    results.push(new Date(date));
+                }
+                date.setMinutes(date.getMinutes() + 1);
+                iter++;
+            }
+
+            return results;
+        }
+
+        function matchesCron(date, parts) {
+            const [min, hour, dom, month, dow] = parts;
+            return matchesField(date.getMinutes(), min, 0, 59) &&
+                   matchesField(date.getHours(), hour, 0, 23) &&
+                   matchesField(date.getDate(), dom, 1, 31) &&
+                   matchesField(date.getMonth() + 1, month, 1, 12) &&
+                   matchesField(date.getDay(), dow, 0, 6);
+        }
+
+        function matchesField(value, field, min, max) {
+            if (field === '*') return true;
+            if (field.startsWith('*/')) {
+                const step = parseInt(field.slice(2));
+                return value % step === 0;
+            }
+            if (field.includes('-')) {
+                const [start, end] = field.split('-').map(Number);
+                return value >= start && value <= end;
+            }
+            if (field.includes(',')) {
+                return field.split(',').map(Number).includes(value);
+            }
+            return value === parseInt(field);
+        }
+
+        function getRelativeTime(date) {
+            const diff = date - new Date();
+            const mins = Math.floor(diff / 60000);
+            if (mins < 60) return `in ${mins}m`;
+            const hours = Math.floor(mins / 60);
+            if (hours < 24) return `in ${hours}h ${mins % 60}m`;
+            const days = Math.floor(hours / 24);
+            return `in ${days}d ${hours % 24}h`;
+        }
+
+        // Parse on load
+        parseCron();
+    </script>
+</body>
+</html>
