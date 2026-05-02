@@ -25,6 +25,7 @@
         .tag { display: inline-block; padding: 2px 8px; border-radius: 9999px; font-size: 11px; font-weight: 500; }
         .fade-in { animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     </style>
 </head>
 <body class="bg-slate-50 min-h-screen">
@@ -95,7 +96,7 @@
         // --- LLM Providers ---
         { name: 'OpenAI', desc: 'GPT-4o, GPT-4, DALL·E, Whisper — the leading LLM API provider.', url: 'https://openai.com', cat: 'LLM Providers', tags: ['API', 'GPT', 'Chat'], icon: 'fa-robot', color: 'emerald' },
         { name: 'Anthropic', desc: 'Claude models with 200K context — strong at reasoning and safety.', url: 'https://anthropic.com', cat: 'LLM Providers', tags: ['API', 'Claude'], icon: 'fa-shield-halved', color: 'orange' },
-        { name: 'Google AI', desc: 'Gemini models — multimodal, with Vertex AI and AI Studio.', url: 'https://ai.google', cat: 'LLM Providers', tags: ['API', 'Gemini', 'Multimodal'], icon: 'fa-google', color: 'blue' },
+        { name: 'Google AI', desc: 'Gemini models — multimodal, with Vertex AI and AI Studio.', url: 'https://ai.google', cat: 'LLM Providers', tags: ['API', 'Gemini', 'Multimodal'], icon: 'fa-google', iconPrefix: 'fab', color: 'blue' },
         { name: 'Mistral AI', desc: 'Open-weight models (Mistral, Mixtral) — strong European LLM provider.', url: 'https://mistral.ai', cat: 'LLM Providers', tags: ['API', 'Open Weight', 'EU'], icon: 'fa-wind', color: 'sky' },
         { name: 'Cohere', desc: 'Enterprise-focused LLMs — RAG, search, and embeddings.', url: 'https://cohere.com', cat: 'LLM Providers', tags: ['API', 'RAG', 'Enterprise'], icon: 'fa-database', color: 'violet' },
         { name: 'Together AI', desc: 'Serverless inference for 100+ open-source models at low cost.', url: 'https://together.ai', cat: 'LLM Providers', tags: ['Inference', 'Open Source'], icon: 'fa-people-group', color: 'teal' },
@@ -106,7 +107,7 @@
         { name: 'Hugging Face', desc: 'The GitHub of ML — 500K+ models, datasets, and Spaces.', url: 'https://huggingface.co', cat: 'Open Source Models', tags: ['Hub', 'Datasets', 'Spaces'], icon: 'fa-face-smile', color: 'yellow' },
         { name: 'Ollama', desc: 'Run LLMs locally — Llama 3, Mistral, Phi, Gemma, and more.', url: 'https://ollama.com', cat: 'Open Source Models', tags: ['Local', 'CLI', 'Privacy'], icon: 'fa-desktop', color: 'slate' },
         { name: 'LM Studio', desc: 'Desktop app to run any GGUF model locally with chat UI.', url: 'https://lmstudio.ai', cat: 'Open Source Models', tags: ['Local', 'GUI'], icon: 'fa-window-maximize', color: 'indigo' },
-        { name: 'Llama (Meta)', desc: 'Meta\'s open-weight LLM family — Llama 3, Llama 3.1, and beyond.', url: 'https://llama.meta.com', cat: 'Open Source Models', tags: ['Open Weight', 'Meta'], icon: 'fa-meta', color: 'blue' },
+        { name: 'Llama (Meta)', desc: 'Meta\'s open-weight LLM family — Llama 3, Llama 3.1, and beyond.', url: 'https://llama.meta.com', cat: 'Open Source Models', tags: ['Open Weight', 'Meta'], icon: 'fa-meta', iconPrefix: 'fab', color: 'blue' },
         { name: 'vLLM', desc: 'High-throughput serving engine for LLMs with PagedAttention.', url: 'https://github.com/vllm-project/vllm', cat: 'Open Source Models', tags: ['Serving', 'Fast', 'GPU'], icon: 'fa-server', color: 'green' },
 
         // --- Agent Frameworks ---
@@ -194,12 +195,12 @@
             return `<a href="${t.url}" target="_blank" rel="noopener" class="card-hover bg-white rounded-xl p-5 shadow-sm border border-slate-100 block fade-in">
                 <div class="flex items-start gap-4">
                     <div class="w-11 h-11 ${c.bg} rounded-lg flex items-center justify-center shrink-0">
-                        <i class="fas ${t.icon || 'fa-cube'} ${c.text} text-lg"></i>
+                        <i class="${t.iconPrefix || 'fas'} ${t.icon || 'fa-cube'} ${c.text} text-lg"></i>
                     </div>
                     <div class="min-w-0">
                         <div class="flex items-center gap-2 mb-1">
                             <h4 class="font-semibold text-slate-900">${t.name}</h4>
-                            <i class="fas fa-external-link-alt text-slate-300 text-xs"></i>
+                            <i class="fas fa-arrow-up-right-from-square text-slate-300 text-xs"></i>
                         </div>
                         <p class="text-sm text-slate-500 mb-2 line-clamp-2">${t.desc}</p>
                         <div class="flex flex-wrap gap-1.5">
