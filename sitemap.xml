@@ -37,6 +37,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://devtools-ten-tau.vercel.app/blog/ai-workflow-automation-guide.html</loc>
+    <lastmod>2026-05-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://devtools-ten-tau.vercel.app/blog/cursor-vs-copilot-2026.html</loc>
     <lastmod>2026-05-03</lastmod>
     <changefreq>monthly</changefreq>
