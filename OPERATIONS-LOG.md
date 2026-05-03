@@ -27,6 +27,7 @@
 | top-ai-coding-tools-2026.html | 100% | /blog/top-ai-coding-tools-2026.html |
 | cursor-vs-copilot-2026.html | 100% | /blog/cursor-vs-copilot-2026.html |
 | how-to-choose-ai-api.html | 100% | /blog/how-to-choose-ai-api.html |
+| ai-prompt-engineering-guide.html | 100% | /blog/ai-prompt-engineering-guide.html |
 
 ### Next: Phase 2 (Week 2)
 - [ ] Google Search Console 验证
