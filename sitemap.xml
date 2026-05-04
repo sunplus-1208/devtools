@@ -61,6 +61,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://devtools-ten-tau.vercel.app/blog/local-llm-setup-guide.html</loc>
+    <lastmod>2026-05-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://devtools-ten-tau.vercel.app/blog/rag-implementation-guide.html</loc>
     <lastmod>2026-05-04</lastmod>
     <changefreq>monthly</changefreq>

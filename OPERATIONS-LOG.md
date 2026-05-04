@@ -30,6 +30,8 @@
 | ai-prompt-engineering-guide.html | 100% | /blog/ai-prompt-engineering-guide.html |
 | ai-model-context-window-guide.html | 100% | /blog/ai-model-context-window-guide.html |
 | ai-workflow-automation-guide.html | 100% | /blog/ai-workflow-automation-guide.html |
+| rag-implementation-guide.html | 85% | /blog/rag-implementation-guide.html |
+| ai-safety-privacy-developers.html | 75% | /blog/ai-safety-privacy-developers.html |
 
 ### Next: Phase 2 (Week 2)
 - [ ] Google Search Console 验证
