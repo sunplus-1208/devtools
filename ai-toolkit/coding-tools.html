@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VVLR9NKKXE"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VVLR9NKKXE');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Coding Tools - AI Toolkit Hub</title>
@@ -79,20 +87,20 @@
 
     <script>
         const i18n = {
-            zh: { title: 'AI 编程工具', subtitle: '主流 AI 编程助手对比', 'compare.title': '功能对比', footer: '数据更新于 2026-05' },
+            zh: { title: 'AI 编程工具', subtitle: '主流 AI 编程助手对比', 'compare.title': '功能对比', footer: '数据更新�?2026-05' },
             en: { title: 'AI Coding Tools', subtitle: 'Compare the best AI coding assistants for developers', 'compare.title': 'Feature Comparison', footer: 'Tools updated 2026-05' }
         };
 
         const tools = [
             { name: 'Cursor', type: ['ide'], desc: 'AI-first code editor built on VS Code. Deep codebase understanding with @codebase. Agent mode for autonomous coding.', pricing: 'Free tier, $20/mo Pro', url: 'https://cursor.sh', icon: 'fa-code', color: 'bg-indigo-100 text-indigo-600', badge: 'Most Popular', badgeColor: 'bg-indigo-100 text-indigo-700', features: { ide: '✓✓', codebase: '✓✓', agent: '✓✓', multifile: '✓✓' }, bestFor: 'Full-stack dev' },
-            { name: 'Claude Code', type: ['cli', 'agent'], desc: 'Anthropic\'s official CLI agent. Terminal-based, excellent reasoning. Works with any editor via MCP.', pricing: 'Pay-per-token (Claude pricing)', url: 'https://docs.anthropic.com/claude-code', icon: 'fa-terminal', color: 'bg-orange-100 text-orange-600', badge: 'Best Reasoning', badgeColor: 'bg-orange-100 text-orange-700', features: { ide: '✗', codebase: '✓', agent: '✓✓', multifile: '✓' }, bestFor: 'Backend/Infra' },
-            { name: 'GitHub Copilot', type: ['extension'], desc: 'Industry standard. Auto-complete, chat, and multi-file suggestions. Deep GitHub integration.', pricing: '$10/mo individual, $19/mo business', url: 'https://github.com/features/copilot', icon: 'fa-github', color: 'bg-gray-100 text-gray-600', badge: 'Industry Standard', badgeColor: 'bg-gray-100 text-gray-700', features: { ide: '✓✓', codebase: '✓', agent: '✓', multifile: '✓' }, bestFor: 'General dev' },
+            { name: 'Claude Code', type: ['cli', 'agent'], desc: 'Anthropic\'s official CLI agent. Terminal-based, excellent reasoning. Works with any editor via MCP.', pricing: 'Pay-per-token (Claude pricing)', url: 'https://docs.anthropic.com/claude-code', icon: 'fa-terminal', color: 'bg-orange-100 text-orange-600', badge: 'Best Reasoning', badgeColor: 'bg-orange-100 text-orange-700', features: { ide: '�?, codebase: '�?, agent: '✓✓', multifile: '�? }, bestFor: 'Backend/Infra' },
+            { name: 'GitHub Copilot', type: ['extension'], desc: 'Industry standard. Auto-complete, chat, and multi-file suggestions. Deep GitHub integration.', pricing: '$10/mo individual, $19/mo business', url: 'https://github.com/features/copilot', icon: 'fa-github', color: 'bg-gray-100 text-gray-600', badge: 'Industry Standard', badgeColor: 'bg-gray-100 text-gray-700', features: { ide: '✓✓', codebase: '�?, agent: '�?, multifile: '�? }, bestFor: 'General dev' },
             { name: 'Windsurf', type: ['ide', 'agent'], desc: 'AI IDE with Cascade agent flow. Good context handling and multi-file refactoring.', pricing: 'Free tier, $15/mo Pro', url: 'https://codeium.com/windsurf', icon: 'fa-wind', color: 'bg-cyan-100 text-cyan-600', badge: 'Fast Iteration', badgeColor: 'bg-cyan-100 text-cyan-700', features: { ide: '✓✓', codebase: '✓✓', agent: '✓✓', multifile: '✓✓' }, bestFor: 'Rapid prototyping' },
-            { name: 'Trae', type: ['ide', 'agent'], desc: 'ByteDance\'s AI IDE. Builder mode for visual agent creation. Strong in Chinese language tasks.', pricing: 'Free (beta)', url: 'https://trae.ai', icon: 'fa-robot', color: 'bg-pink-100 text-pink-600', badge: 'New', badgeColor: 'bg-pink-100 text-pink-700', features: { ide: '✓✓', codebase: '✓', agent: '✓✓', multifile: '✓' }, bestFor: 'Chinese dev' },
-            { name: 'Replit Agent', type: ['agent'], desc: 'Browser-based agent. Deploy directly to cloud. No local setup required.', pricing: 'Free tier, $25/mo Core', url: 'https://replit.com/ai', icon: 'fa-cloud', color: 'bg-purple-100 text-purple-600', badge: 'Zero Setup', badgeColor: 'bg-purple-100 text-purple-700', features: { ide: '✓', codebase: '✓', agent: '✓✓', multifile: '✓' }, bestFor: 'Quick deploy' },
-            { name: 'Cline', type: ['extension', 'agent'], desc: 'VS Code extension with autonomous agent. Supports any LLM via OpenAI-compatible API.', pricing: 'Free (BYOK)', url: 'https://github.com/cline/cline', icon: 'fa-puzzle-piece', color: 'bg-green-100 text-green-600', badge: 'Open Source', badgeColor: 'bg-green-100 text-green-700', features: { ide: '✓', codebase: '✓', agent: '✓✓', multifile: '✓' }, bestFor: 'BYOK users' },
-            { name: 'Aider', type: ['cli', 'agent'], desc: 'Terminal-based pair programmer. Git-aware, works with your favorite editor.', pricing: 'Free (BYOK)', url: 'https://aider.chat', icon: 'fa-terminal', color: 'bg-teal-100 text-teal-600', badge: 'Git-aware', badgeColor: 'bg-teal-100 text-teal-700', features: { ide: '✗', codebase: '✓', agent: '✓', multifile: '✓' }, bestFor: 'Terminal users' },
-            { name: 'Zed', type: ['ide'], desc: 'High-performance editor with built-in AI assistant. Fast, lightweight.', pricing: 'Free tier, $10/mo Pro', url: 'https://zed.dev', icon: 'fa-bolt', color: 'bg-yellow-100 text-yellow-600', badge: 'Fastest', badgeColor: 'bg-yellow-100 text-yellow-700', features: { ide: '✓✓', codebase: '✓', agent: '✗', multifile: '✓' }, bestFor: 'Speed-focused' },
+            { name: 'Trae', type: ['ide', 'agent'], desc: 'ByteDance\'s AI IDE. Builder mode for visual agent creation. Strong in Chinese language tasks.', pricing: 'Free (beta)', url: 'https://trae.ai', icon: 'fa-robot', color: 'bg-pink-100 text-pink-600', badge: 'New', badgeColor: 'bg-pink-100 text-pink-700', features: { ide: '✓✓', codebase: '�?, agent: '✓✓', multifile: '�? }, bestFor: 'Chinese dev' },
+            { name: 'Replit Agent', type: ['agent'], desc: 'Browser-based agent. Deploy directly to cloud. No local setup required.', pricing: 'Free tier, $25/mo Core', url: 'https://replit.com/ai', icon: 'fa-cloud', color: 'bg-purple-100 text-purple-600', badge: 'Zero Setup', badgeColor: 'bg-purple-100 text-purple-700', features: { ide: '�?, codebase: '�?, agent: '✓✓', multifile: '�? }, bestFor: 'Quick deploy' },
+            { name: 'Cline', type: ['extension', 'agent'], desc: 'VS Code extension with autonomous agent. Supports any LLM via OpenAI-compatible API.', pricing: 'Free (BYOK)', url: 'https://github.com/cline/cline', icon: 'fa-puzzle-piece', color: 'bg-green-100 text-green-600', badge: 'Open Source', badgeColor: 'bg-green-100 text-green-700', features: { ide: '�?, codebase: '�?, agent: '✓✓', multifile: '�? }, bestFor: 'BYOK users' },
+            { name: 'Aider', type: ['cli', 'agent'], desc: 'Terminal-based pair programmer. Git-aware, works with your favorite editor.', pricing: 'Free (BYOK)', url: 'https://aider.chat', icon: 'fa-terminal', color: 'bg-teal-100 text-teal-600', badge: 'Git-aware', badgeColor: 'bg-teal-100 text-teal-700', features: { ide: '�?, codebase: '�?, agent: '�?, multifile: '�? }, bestFor: 'Terminal users' },
+            { name: 'Zed', type: ['ide'], desc: 'High-performance editor with built-in AI assistant. Fast, lightweight.', pricing: 'Free tier, $10/mo Pro', url: 'https://zed.dev', icon: 'fa-bolt', color: 'bg-yellow-100 text-yellow-600', badge: 'Fastest', badgeColor: 'bg-yellow-100 text-yellow-700', features: { ide: '✓✓', codebase: '�?, agent: '�?, multifile: '�? }, bestFor: 'Speed-focused' },
         ];
 
         let currentLang = 'en', currentFilter = 'all';

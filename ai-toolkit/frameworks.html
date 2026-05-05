@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VVLR9NKKXE"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VVLR9NKKXE');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Frameworks - AI Toolkit Hub</title>
@@ -76,7 +84,7 @@
 
     <script>
         const i18n = {
-            zh: { 'title': 'AI 开发框架', 'subtitle': '主流 AI 应用开发框架一览', 'compare.title': '框架对比', 'footer': '数据更新于 2026-05' },
+            zh: { 'title': 'AI 开发框�?, 'subtitle': '主流 AI 应用开发框架一�?, 'compare.title': '框架对比', 'footer': '数据更新�?2026-05' },
             en: { 'title': 'AI Frameworks', 'subtitle': 'Build AI applications with these popular frameworks', 'compare.title': 'Framework Comparison', 'footer': 'Frameworks updated 2026-05' }
         };
 
@@ -93,12 +101,12 @@
         ];
 
         const comparisons = [
-            { name: 'LangChain', agents: '✓', rag: '✓', multiAgent: '✓', eval: '✓', curve: 'Medium' },
-            { name: 'LangGraph', agents: '✓✓', rag: '✓', multiAgent: '✓✓', eval: '✓', curve: 'Medium' },
-            { name: 'LlamaIndex', agents: '✓', rag: '✓✓', multiAgent: '✓', eval: '✓', curve: 'Easy' },
-            { name: 'CrewAI', agents: '✓✓', rag: '✗', multiAgent: '✓✓', eval: '✗', curve: 'Easy' },
-            { name: 'AutoGen', agents: '✓✓', rag: '✗', multiAgent: '✓✓', eval: '✓', curve: 'Hard' },
-            { name: 'Dify', agents: '✓', rag: '✓✓', multiAgent: '✓', eval: '✓', curve: 'Very Easy' },
+            { name: 'LangChain', agents: '�?, rag: '�?, multiAgent: '�?, eval: '�?, curve: 'Medium' },
+            { name: 'LangGraph', agents: '✓✓', rag: '�?, multiAgent: '✓✓', eval: '�?, curve: 'Medium' },
+            { name: 'LlamaIndex', agents: '�?, rag: '✓✓', multiAgent: '�?, eval: '�?, curve: 'Easy' },
+            { name: 'CrewAI', agents: '✓✓', rag: '�?, multiAgent: '✓✓', eval: '�?, curve: 'Easy' },
+            { name: 'AutoGen', agents: '✓✓', rag: '�?, multiAgent: '✓✓', eval: '�?, curve: 'Hard' },
+            { name: 'Dify', agents: '�?, rag: '✓✓', multiAgent: '�?, eval: '�?, curve: 'Very Easy' },
         ];
 
         let currentLang = 'en', currentFilter = 'all';

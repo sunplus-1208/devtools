@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VVLR9NKKXE"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-VVLR9NKKXE');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>API Pricing - AI Toolkit Hub</title>
@@ -94,27 +102,27 @@
 
     <script>
         const i18n = {
-            zh: { title: 'API 价格对比', subtitle: '美元计价，更新于 2026-05', th: {model:'模型',context:'上下文',input:'输入/1M',output:'输出/1M',free:'免费额度',link:'链接'}, calc: {title:'费用计算器',input:'输入 tokens',output:'输出 tokens',model:'模型',est:'预估费用'}, footer:'价格仅供参考，请以官方最新定价为准' },
+            zh: { title: 'API 价格对比', subtitle: '美元计价，更新于 2026-05', th: {model:'模型',context:'上下�?,input:'输入/1M',output:'输出/1M',free:'免费额度',link:'链接'}, calc: {title:'费用计算�?,input:'输入 tokens',output:'输出 tokens',model:'模型',est:'预估费用'}, footer:'价格仅供参考，请以官方最新定价为�? },
             en: { title: 'API Pricing Comparison', subtitle: 'Prices in USD, updated 2026-05', th: {model:'Model',context:'Context',input:'Input / 1M',output:'Output / 1M',free:'Free Tier',link:'Link'}, calc: {title:'Cost Calculator',input:'Input tokens',output:'Output tokens',model:'Model',est:'Estimated Cost'}, footer:'Prices in USD. Free tier limits vary. Always check official pricing pages.' }
         };
 
         const pricing = [
-            { provider: 'OpenAI', model: 'GPT-5.5', context: '128K', input: '$2.50', output: '$15.00', free: '✗', url: 'https://platform.openai.com/pricing' },
-            { provider: 'OpenAI', model: 'GPT-5.4', context: '128K', input: '$2.50', output: '$15.00', free: '✗', url: 'https://platform.openai.com/pricing' },
-            { provider: 'OpenAI', model: 'GPT-5.4 mini', context: '128K', input: '$0.75', output: '$4.50', free: '✓', url: 'https://platform.openai.com/pricing' },
-            { provider: 'OpenAI', model: 'GPT-5.4 nano', context: '128K', input: '$0.20', output: '$1.25', free: '✓', url: 'https://platform.openai.com/pricing' },
-            { provider: 'Anthropic', model: 'Claude Opus 4.7', context: '1M', input: '$4.00', output: '$20.00', free: '✗', url: 'https://console.anthropic.com/pricing' },
-            { provider: 'Anthropic', model: 'Claude Sonnet 4.6', context: '200K', input: '$2.40', output: '$12.00', free: '✓', url: 'https://console.anthropic.com/pricing' },
-            { provider: 'Anthropic', model: 'Claude Haiku 4.5', context: '200K', input: '$0.80', output: '$4.00', free: '✓', url: 'https://console.anthropic.com/pricing' },
-            { provider: 'Google', model: 'Gemini 2.5 Pro', context: '1M', input: '$1.25', output: '$5.00', free: '✓', url: 'https://ai.google.dev/pricing' },
-            { provider: 'Google', model: 'Gemini 2.5 Flash', context: '1M', input: '$0.075', output: '$0.30', free: '✓', url: 'https://ai.google.dev/pricing' },
-            { provider: 'Google', model: 'Gemini 2.5 Deep Think', context: '1M', input: '$2.50', output: '$10.00', free: '✗', url: 'https://ai.google.dev/pricing' },
-            { provider: 'DeepSeek', model: 'DeepSeek V4-Pro', context: '1M', input: '$0.55', output: '$2.19', free: '✗', url: 'https://platform.deepseek.com/pricing' },
-            { provider: 'DeepSeek', model: 'DeepSeek V4-Flash', context: '128K', input: '$0.14', output: '$0.28', free: '✓', url: 'https://platform.deepseek.com/pricing' },
-            { provider: 'DeepSeek', model: 'DeepSeek R1', context: '64K', input: '$0.55', output: '$2.19', free: '✗', url: 'https://platform.deepseek.com/pricing' },
-            { provider: 'Mistral', model: 'Mistral Large 3', context: '128K', input: '$2.00', output: '$6.00', free: '✗', url: 'https://console.mistral.ai/pricing' },
-            { provider: 'Groq', model: 'Llama 4 Behemoth', context: '128K', input: '$0.07', output: '$0.07', free: '✓', url: 'https://console.groq.com' },
-            { provider: 'Together', model: 'Qwen3 235B', context: '128K', input: '$0.30', output: '$0.30', free: '✗', url: 'https://together.ai' },
+            { provider: 'OpenAI', model: 'GPT-5.5', context: '128K', input: '$2.50', output: '$15.00', free: '�?, url: 'https://platform.openai.com/pricing' },
+            { provider: 'OpenAI', model: 'GPT-5.4', context: '128K', input: '$2.50', output: '$15.00', free: '�?, url: 'https://platform.openai.com/pricing' },
+            { provider: 'OpenAI', model: 'GPT-5.4 mini', context: '128K', input: '$0.75', output: '$4.50', free: '�?, url: 'https://platform.openai.com/pricing' },
+            { provider: 'OpenAI', model: 'GPT-5.4 nano', context: '128K', input: '$0.20', output: '$1.25', free: '�?, url: 'https://platform.openai.com/pricing' },
+            { provider: 'Anthropic', model: 'Claude Opus 4.7', context: '1M', input: '$4.00', output: '$20.00', free: '�?, url: 'https://console.anthropic.com/pricing' },
+            { provider: 'Anthropic', model: 'Claude Sonnet 4.6', context: '200K', input: '$2.40', output: '$12.00', free: '�?, url: 'https://console.anthropic.com/pricing' },
+            { provider: 'Anthropic', model: 'Claude Haiku 4.5', context: '200K', input: '$0.80', output: '$4.00', free: '�?, url: 'https://console.anthropic.com/pricing' },
+            { provider: 'Google', model: 'Gemini 2.5 Pro', context: '1M', input: '$1.25', output: '$5.00', free: '�?, url: 'https://ai.google.dev/pricing' },
+            { provider: 'Google', model: 'Gemini 2.5 Flash', context: '1M', input: '$0.075', output: '$0.30', free: '�?, url: 'https://ai.google.dev/pricing' },
+            { provider: 'Google', model: 'Gemini 2.5 Deep Think', context: '1M', input: '$2.50', output: '$10.00', free: '�?, url: 'https://ai.google.dev/pricing' },
+            { provider: 'DeepSeek', model: 'DeepSeek V4-Pro', context: '1M', input: '$0.55', output: '$2.19', free: '�?, url: 'https://platform.deepseek.com/pricing' },
+            { provider: 'DeepSeek', model: 'DeepSeek V4-Flash', context: '128K', input: '$0.14', output: '$0.28', free: '�?, url: 'https://platform.deepseek.com/pricing' },
+            { provider: 'DeepSeek', model: 'DeepSeek R1', context: '64K', input: '$0.55', output: '$2.19', free: '�?, url: 'https://platform.deepseek.com/pricing' },
+            { provider: 'Mistral', model: 'Mistral Large 3', context: '128K', input: '$2.00', output: '$6.00', free: '�?, url: 'https://console.mistral.ai/pricing' },
+            { provider: 'Groq', model: 'Llama 4 Behemoth', context: '128K', input: '$0.07', output: '$0.07', free: '�?, url: 'https://console.groq.com' },
+            { provider: 'Together', model: 'Qwen3 235B', context: '128K', input: '$0.30', output: '$0.30', free: '�?, url: 'https://together.ai' },
         ];
 
         const providers = [
@@ -156,7 +164,7 @@
                     <td class="px-4 py-3 text-center text-gray-500">${p.context}</td>
                     <td class="px-4 py-3 text-center font-mono text-green-600">${p.input}</td>
                     <td class="px-4 py-3 text-center font-mono text-orange-600">${p.output}</td>
-                    <td class="px-4 py-3 text-center hidden md:table-cell">${p.free === '✓' ? '<span class="text-green-600"><i class="fas fa-check"></i></span>' : '<span class="text-gray-300"><i class="fas fa-times"></i></span>'}</td>
+                    <td class="px-4 py-3 text-center hidden md:table-cell">${p.free === '�? ? '<span class="text-green-600"><i class="fas fa-check"></i></span>' : '<span class="text-gray-300"><i class="fas fa-times"></i></span>'}</td>
                     <td class="px-4 py-3 text-center hidden lg:table-cell"><a href="${p.url}" target="_blank" class="text-primary hover:text-indigo-700"><i class="fas fa-external-link-alt"></i></a></td>
                 </tr>
             `).join('');
