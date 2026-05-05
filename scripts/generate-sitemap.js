@@ -7,7 +7,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const BASE_URL = 'https://devtools-ten-tau.vercel.app';
+const BASE_URL = 'https://aitechtools.top';
 const ROOT = path.join(__dirname, '..');
 
 function getHtmlFiles(dir, basePath = '') {
