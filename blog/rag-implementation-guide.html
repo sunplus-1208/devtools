@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -91,7 +91,7 @@
             <div class="flex items-center text-sm text-gray-500 mb-6">
                 <span class="bg-indigo-100 text-indigo-700 px-2 py-1 rounded text-xs font-medium mr-2">Tutorial</span>
                 <span>May 4, 2026</span>
-                <span class="mx-2">Â·</span>
+                <span class="mx-2">è·¯</span>
                 <span>18 min read</span>
             </div>
 
@@ -104,8 +104,8 @@
 
 <p>LLMs hallucinate. They confidently make things up. RAG (Retrieval-Augmented Generation) fixes this by grounding responses in your actual data.</p>
 
-<p><strong>Before RAG:</strong> "What's our refund policy?" â†?LLM guesses, possibly wrong</p>
-<p><strong>After RAG:</strong> "What's our refund policy?" â†?LLM retrieves your actual policy document, summarizes accurately</p>
+<p><strong>Before RAG:</strong> "What's our refund policy?" éˆ«?LLM guesses, possibly wrong</p>
+<p><strong>After RAG:</strong> "What's our refund policy?" éˆ«?LLM retrieves your actual policy document, summarizes accurately</p>
 
 <p>This guide shows you how to build a production-ready RAG system from scratch.</p>
 
@@ -119,7 +119,7 @@
 <li><strong>Retrieval + Generation</strong>: Find relevant docs, feed to LLM, generate answer</li>
 </ol>
 
-<pre><code>User Query â†?Embedding â†?Vector Search â†?Top-K Docs â†?LLM Context â†?Answer</code></pre>
+<pre><code>User Query éˆ«?Embedding éˆ«?Vector Search éˆ«?Top-K Docs éˆ«?LLM Context éˆ«?Answer</code></pre>
 
 <h2>Step 1: Choose Your Embedding Model</h2>
 
@@ -152,7 +152,7 @@
 
 <p>Higher dimensions = better quality but more storage and slower search. For most use cases, 1024-1536 dimensions is the sweet spot.</p>
 
-<p>OpenAI's <code>text-embedding-3-large</code> supports <strong>dimension reduction</strong> â€?you can request 256, 512, or 1024 dimensions without re-embedding:</p>
+<p>OpenAI's <code>text-embedding-3-large</code> supports <strong>dimension reduction</strong> éˆ¥?you can request 256, 512, or 1024 dimensions without re-embedding:</p>
 
 <pre><code># Request smaller dimensions (trade quality for speed/storage)
 response = client.embeddings.create(
@@ -220,7 +220,7 @@ response = client.embeddings.create(
 <ol>
 <li><strong>Overlap is essential</strong>: Use 10-20% overlap to catch content spanning chunk boundaries</li>
 <li><strong>Respect structure</strong>: Don't split mid-sentence or mid-paragraph when possible</li>
-<li><strong>Add metadata</strong>: Source, page, section â€?helps with filtering and citation</li>
+<li><strong>Add metadata</strong>: Source, page, section éˆ¥?helps with filtering and citation</li>
 </ol>
 
 <pre><code>from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -546,7 +546,7 @@ print(response.choices[0].message.content)</code></pre>
                             <i class="fab fa-linkedin text-xl"></i>
                         </a>
                     </div>
-                    <a href="index.html" class="text-primary hover:underline font-medium">â†?Back to Blog</a>
+                    <a href="index.html" class="text-primary hover:underline font-medium">éˆ«?Back to Blog</a>
                 </div>
             </div>
         </div>
@@ -556,7 +556,7 @@ print(response.choices[0].message.content)</code></pre>
     <footer class="bg-white border-t border-gray-200 mt-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div class="text-center text-gray-500 text-sm">
-                <p>Â© 2026 DevTools. Open source and free to use.</p>
+                <p>æ¼ 2026 DevTools. Open source and free to use.</p>
             </div>
         </div>
     </footer>
