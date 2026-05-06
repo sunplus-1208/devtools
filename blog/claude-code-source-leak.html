@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Code Source Leak: 500K Lines Exposed (March 2026)</title>
+    <meta name="description" content="Anthropic accidentally published Claude Code source code to npm. 1,906 TypeScript files exposed, revealing KAIROS autonomous agent and autoDream memory consolidation.">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "Claude Code Source Code Leaked via npm",
+        "datePublished": "2026-03-31",
+        "dateModified": "2026-05-06",
+        "author": {"@type": "Organization", "name": "DevTools"},
+        "publisher": {"@type": "Organization", "name": "DevTools", "url": "https://aitechtools.top"},
+        "mainEntityOfPage": "https://aitechtools.top/blog/claude-code-source-leak.html"
+    }
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+            <a href="../index.html" class="flex items-center gap-2 text-gray-600 hover:text-gray-900">
+                <i class="fas fa-arrow-left"></i>
+                <span class="font-semibold">DevTools</span>
+            </a>
+            <a href="index.html" class="text-indigo-600 hover:underline">Blog</a>
+        </div>
+    </header>
+
+    <article class="max-w-4xl mx-auto px-4 py-12">
+        <div class="bg-white rounded-xl shadow-sm p-8 md:p-12">
+            <div class="mb-6">
+                <span class="text-sm text-red-600 font-medium">Security Incident</span>
+                <span class="text-sm text-gray-400 ml-3">March 31, 2026</span>
+            </div>
+            
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Claude Code Source Leak: 500K Lines Exposed</h1>
+            
+            <div class="prose prose-lg max-w-none">
+                <p class="text-xl text-gray-600 mb-8">Security researcher Chaofan Shou discovered Anthropic accidentally published Claude Code's complete source code to npm, including unreleased features like KAIROS autonomous agent and autoDream memory consolidation.</p>
+
+                <h2 class="text-2xl font-bold mt-8 mb-4">What Happened</h2>
+                <p class="text-gray-700 mb-4">On March 31, 2026, Anthropic published Claude Code v2.1.88 to the npm registry. The package included a 59.8MB source map file (<code>cli.js.map</code>) that should have been excluded.</p>
+                <p class="text-gray-700 mb-4">This single file contained:</p>
+                <ul class="list-disc pl-6 space-y-2 text-gray-700">
+                    <li><strong>1,906 TypeScript source files</strong></li>
+                    <li><strong>512,000+ lines of code</strong></li>
+                    <li><strong>40+ core tool modules</strong></li>
+                    <li><strong>Hardcoded internal Cloudflare R2 URLs</strong></li>
+                </ul>
+
+                <h2 class="text-2xl font-bold mt-8 mb-4">The Bun Bundler Blame</h2>
+                <p class="text-gray-700 mb-4">The root cause was Anthropic's use of Bun for bundling. Unlike esbuild or webpack, Bun generates source maps by default unless explicitly disabled with <code>--no-sourcemap</code>.</p>
+                <p class="text-gray-700 mb-4">Anthropic's build script likely lacked this flag, causing the massive source map to be included in the production npm package.</p>
+
+                <div class="bg-red-50 border-l-4 border-red-500 p-4 my-8">
+                    <p class="text-red-800"><strong>Security lesson:</strong> Always audit npm packages before publish. Use <code>npm pack --dry-run</code> to inspect what gets included. Source maps should never ship to production.</p>
+                </div>
+
+                <h2 class="text-2xl font-bold mt-8 mb-4">What the Leak Revealed: KAIROS</h2>
+                <p class="text-gray-700 mb-4">The most significant discovery was <strong>KAIROS</strong>, an unreleased autonomous agent system with startling capabilities:</p>
+                <ul class="list-disc pl-6 space-y-2 text-gray-700">
+                    <li><strong>Always-On Background Daemon:</strong> Runs continuously, monitoring for tasks</li>
+                    <li><strong>GitHub Webhook Integration:</strong> Subscribes to repo events, automatically responds to issues/PRs</li>
+                    <li><strong>Auto-Fix Capability:</strong> Detects code errors and fixes them without human intervention</li>
+                    <li><strong>"Dreaming" Memory Consolidation:</strong> Periodic background process that consolidates learnings</li>
+                </ul>
+
+                <h3 class="text-xl font-bold mt-6 mb-3">The autoDream Feature</h3>
+                <p class="text-gray-700 mb-4">Perhaps the most intriguing discovery was <strong>autoDream</strong>, a memory consolidation system inspired by sleep research. The code references:</p>
+                <ul class="list-disc pl-6 space-y-2 text-gray-700">
+                    <li>Periodic "dream cycles" that process accumulated interactions</li>
+                    <li>Knowledge graph updates during idle periods</li>
+                    <li>Pattern extraction from conversation history</li>
+                    <li>Optimization of reasoning pathways</li>
+                </ul>
+                <p class="text-gray-700 mb-4">This suggests Anthropic is building AI that learns continuously, not just during training.</p>
+
+                <h2 class="text-2xl font-bold mt-8 mb-4">Enterprise API Architecture Exposed</h2>
+                <p class="text-gray-700 mb-4">The leak also revealed Anthropic's enterprise API design:</p>
+                <ul class="list-disc pl-6 space-y-2 text-gray-700">
+                    <li><strong>Multi-tenant isolation:</strong> Customer data siloing architecture</li>
+                    <li><strong>Permission control:</strong> Fine-grained access management system</li>
+                    <li><strong>Audit logs:</strong> Comprehensive activity tracking for compliance</li>
+                    <li><strong>Rate limiting:</strong> Quota management by organization</li>
+                </ul>
+
+                <h2 class="text-2xl font-bold mt-8 mb-4">Response and Impact</h2>
+                <p class="text-gray-700 mb-4">Anthropic pulled the package within 2 hours of the disclosure. But the damage was done:</p>
+                <ul class="list-disc pl-6 space-y-2 text-gray-700">
+                    <li>A GitHub mirror (<code>instructkr/claude-code</code>) hit <strong>50,000 stars in 2 hours</strong></li>
+                    <li>The source map was re-uploaded to multiple archives</li>
+                    <li>Competitors gained insight into Anthropic's agent architecture</li>
+                    <li>Security researchers documented the internal APIs</li>
+                </ul>
+
+                <h2 class="text-2xl font-bold mt-8 mb-4">What This Means for Developers</h2>
+                <p class="text-gray-700 mb-4">The Claude Code leak offers a rare glimpse into frontier AI development:</p>
+                
+                <h3 class="text-xl font-bold mt-6 mb-3">1. Autonomous Agents Are Coming</h3>
+                <p class="text-gray-700 mb-4">KAIROS proves Anthropic is building AI that operates independently, not just responds to prompts. The "dreaming" feature suggests continuous learning systems.</p>
+
+                <h3 class="text-xl font-bold mt-6 mb-3">2. Build Security Matters</h3>
+                <p class="text-gray-700 mb-4">A single bundler misconfiguration exposed months of proprietary work. Every team shipping code should audit their build pipeline for similar risks.</p>
+
+                <h3 class="text-xl font-bold mt-6 mb-3">3. The Agent Race Is Real</h3>
+                <p class="text-gray-700 mb-4">KAIROS competes with OpenAI's agent initiatives and Google's Gemini tools. All major labs are building autonomous coding assistants.</p>
+
+                <div class="bg-indigo-50 border-l-4 border-indigo-500 p-4 my-8">
+                    <p class="text-indigo-800"><strong>Related:</strong> Read about <a href="claude-opus-4-7-released.html" class="underline">Claude Opus 4.7's release</a> and how it compares to GPT-5.5 in our detailed benchmark.</p>
+                </div>
+
+                <h2 class="text-2xl font-bold mt-8 mb-4">Timeline</h2>
+                <ul class="list-disc pl-6 space-y-2 text-gray-700">
+                    <li><strong>March 31, 10:00 UTC:</strong> Claude Code v2.1.88 published to npm with source map</li>
+                    <li><strong>March 31, 14:00 UTC:</strong> Chaofan Shou discovers the leak</li>
+                    <li><strong>March 31, 15:30 UTC:</strong> Disclosure to Anthropic</li>
+                    <li><strong>March 31, 17:00 UTC:</strong> Package pulled from npm</li>
+                    <li><strong>March 31, 18:00 UTC:</strong> GitHub mirrors appear</li>
+                    <li><strong>April 1:</strong> 50K+ stars on mirror repo</li>
+                </ul>
+
+                <h2 class="text-2xl font-bold mt-8 mb-4">Bottom Line</h2>
+                <p class="text-gray-700 mb-4">The Claude Code leak was a costly mistake, but it revealed the future of AI development. Autonomous agents that learn continuously, fix bugs automatically, and operate in the background are not science fiction, they're already in development at Anthropic and likely elsewhere.</p>
+                <p class="text-gray-700 mb-4">For developers, the lesson is twofold: audit your build pipeline, and prepare for AI that works while you sleep.</p>
+            </div>
+
+            <div class="mt-12 pt-8 border-t border-gray-200">
+                <p class="text-sm text-gray-500">
+                    <i class="fas fa-calendar mr-2"></i>Published: March 31, 2026
+                    <span class="mx-2">|</span>
+                    <i class="fas fa-clock mr-2"></i>Updated: May 6, 2026
+                    <span class="mx-2">|</span>
+                    <i class="fas fa-tags mr-2"></i>Tags: Claude Code, Security, Anthropic, KAIROS
+                </p>
+            </div>
+        </div>
+    </article>
+
+    <footer class="max-w-4xl mx-auto px-4 py-8 text-center text-gray-500 text-sm">
+        &copy; 2026 DevTools · <a href="../index.html" class="text-indigo-600 hover:underline">Home</a> · <a href="index.html" class="text-indigo-600 hover:underline">Blog</a>
+    </footer>
+</body>
+</html>
