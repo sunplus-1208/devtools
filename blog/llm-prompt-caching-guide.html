@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM Prompt Caching Best Practices 2026: Reduce API Costs by 90%</title>
+    <meta name="description" content="Complete guide to prompt caching for OpenAI and Claude APIs. Learn how to reduce costs by 90% and latency by 85% with practical code examples.">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "LLM Prompt Caching Best Practices 2026: Reduce API Costs by 90%",
+      "datePublished": "2026-05-07",
+      "dateModified": "2026-05-07T10:01:00+08:00",
+      "author": {
+        "@type": "Organization",
+        "name": "DevTools"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "DevTools",
+        "url": "https://aitechtools.top"
+      },
+      "description": "Complete guide to prompt caching for OpenAI and Claude APIs. Learn how to reduce costs by 90% and latency by 85%.",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://aitechtools.top/blog/llm-prompt-caching-guide.html"
+      }
+    }
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#64748b',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .prose { max-width: 65ch; }
+        .prose h2 { margin-top: 2rem; margin-bottom: 1rem; }
+        .prose h3 { margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        .prose p { margin-bottom: 1rem; }
+        .prose ul, .prose ol { margin-bottom: 1rem; padding-left: 1.5rem; }
+        .prose li { margin-bottom: 0.5rem; }
+        .prose pre { background: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; margin-bottom: 1rem; }
+        .prose code { background: #f1f5f9; padding: 0.125rem 0.25rem; border-radius: 0.25rem; font-size: 0.875rem; }
+        .prose pre code { background: none; padding: 0; }
+        .prose blockquote { border-left: 4px solid #3b82f6; padding-left: 1rem; margin: 1rem 0; color: #64748b; }
+        .prose table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+        .prose th, .prose td { border: 1px solid #e2e8f0; padding: 0.5rem 1rem; text-align: left; }
+        .prose th { background: #f8fafc; font-weight: 600; }
+        .comparison-card { transition: all 0.3s ease; }
+        .comparison-card:hover { transform: translateY(-2px); box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="../index.html" class="flex items-center">
+                    <i class="fas fa-tools text-primary text-2xl mr-3"></i>
+                    <h1 class="text-xl font-bold text-gray-900">DevTools</h1>
+                </a>
+                <nav class="hidden md:flex items-center space-x-6">
+                    <a href="../index.html" class="text-gray-600 hover:text-primary font-medium">Home</a>
+                    <a href="index.html" class="primary font-medium">Blog</a>
+                    <a href="../ai-toolkit/" class="text-gray-600 hover:text-primary font-medium">AI Toolkit</a>
+                </nav>
+                <div class="flex items-center space-x-4">
+                    <a href="https://github.com/sunplus-1208/devtools" target="_blank" class="text-gray-500 hover:text-gray-700">
+                        <i class="fab fa-github text-xl"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Breadcrumb -->
+        <nav class="mb-4 text-sm">
+            <a href="index.html" class="text-gray-500 hover:text-primary">Blog</a>
+            <span class="mx-2 text-gray-400">/</span>
+            <span class="text-gray-900">LLM Prompt Caching Guide</span>
+        </nav>
+
+        <!-- Article Header -->
+        <article class="bg-white rounded-lg shadow-sm p-8">
+            <header class="mb-8">
+                <div class="flex items-center gap-2 mb-4">
+                    <span class="bg-blue-100 text-primary text-xs font-medium px-2.5 py-0.5 rounded">Tutorial</span>
+                    <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Cost Optimization</span>
+                </div>
+                <h1 class="text-3xl font-bold text-gray-900 mb-4">LLM Prompt Caching Best Practices 2026: Reduce API Costs by 90%</h1>
+                <div class="flex items-center text-sm text-gray-500">
+                    <span>Last updated: May 7, 2026</span>
+                    <span class="mx-2">·</span>
+                    <span>12 min read</span>
+                </div>
+            </header>
+
+            <!-- Article Content -->
+            <div class="prose text-gray-700">
+                <p class="lead text-xl text-gray-600 mb-6">
+                    Prompt caching is the single most effective cost optimization technique for LLM API usage. This guide shows you exactly how to implement it for both OpenAI and Anthropic Claude APIs, with real code examples and benchmarks.
+                </p>
+
+                <h2 id="what-is-prompt-caching">What is Prompt Caching?</h2>
+                <p>
+                    Prompt caching allows LLM providers to reuse computations from previous API calls when prompts share common prefixes. Instead of reprocessing the same system instructions, documentation, or context on every request, the server caches the intermediate key-value (KV) states and reuses them.
+                </p>
+                <p>
+                    This technique is especially valuable for:
+                </p>
+                <ul>
+                    <li><strong>Multi-turn conversations</strong> — chat history stays cached</li>
+                    <li><strong>Agent applications</strong> — system prompts and tool definitions are reused</li>
+                    <li><strong>RAG systems</strong> — retrieved documents can be cached</li>
+                    <li><strong>Code review tools</strong> — repository context remains stable</li>
+                </ul>
+
+                <h2 id="cost-savings-benchmark">Cost Savings Benchmark</h2>
+                <p>Here's what the major providers offer:</p>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Provider</th>
+                            <th>Cost Reduction</th>
+                            <th>Latency Reduction</th>
+                            <th>Cache Hit Pricing</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Anthropic Claude</strong></td>
+                            <td>Up to 90%</td>
+                            <td>Up to 85%</td>
+                            <td>~10% of input token price</td>
+                        </tr>
+                        <tr>
+                            <td><strong>OpenAI</strong></td>
+                            <td>Up to 75%</td>
+                            <td>Up to 80%</td>
+                            <td>~25% of input token price</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <blockquote>
+                    <strong>Real-world example:</strong> A customer service bot with a 5,000-token system prompt that handles 10,000 requests per day. Without caching: ~$50/day on input tokens. With 90% cache hit rate: ~$5/day. That's $1,350/month in savings.
+                </blockquote>
+
+                <h2 id="how-it-works">How Prompt Caching Works</h2>
+                <p>The caching mechanism is based on <strong>prefix matching</strong>:</p>
+                <ol>
+                    <li>Your request includes a <code>cache_control</code> marker at a specific position</li>
+                    <li>The server computes a hash of everything before that marker</li>
+                    <li>If a matching cache entry exists, it reuses the KV states</li>
+                    <li>Only the new content after the cache breakpoint is processed</li>
+                </ol>
+                
+                <div class="bg-gray-100 p-4 rounded-lg my-4">
+                    <p class="font-mono text-sm mb-2">┌─────────────────────────────────────┐</p>
+                    <p class="font-mono text-sm mb-2">│ System Prompt (cached)              │</p>
+                    <p class="font-mono text-sm mb-2">│ + Tool Definitions (cached)        │</p>
+                    <p class="font-mono text-sm mb-2">│ + Conversation History (cached)    │</p>
+                    <p class="font-mono text-sm mb-2">│ ───────── cache breakpoint ─────── │</p>
+                    <p class="font-mono text-sm mb-2">│ + New User Message (processed)     │</p>
+                    <p class="font-mono text-sm">└─────────────────────────────────────┘</p>
+                </div>
+
+                <h2 id="anthropic-implementation">Anthropic Claude Implementation</h2>
+                <p>Claude offers two caching modes: <strong>automatic</strong> and <strong>explicit breakpoints</strong>.</p>
+
+                <h3>Automatic Caching (Recommended)</h3>
+                <p>The simplest approach — add a single <code>cache_control</code> field at the top level:</p>
+
+                <pre><code class="language-python">import anthropic
+
+client = anthropic.Anthropic()
+
+response = client.messages.create(
+    model="claude-sonnet-4-6",
+    max_tokens=1024,
+    # Automatic caching - system handles breakpoint placement
+    cache_control={"type": "ephemeral"},
+    system="""You are a technical documentation assistant.
+    Your role is to explain complex topics clearly.
+    Always include code examples when relevant.
+    Format responses in markdown.""",
+    messages=[
+        {"role": "user", "content": "Explain prompt caching"}
+    ]
+)
+
+# Check cache performance
+print(f"Cache read: {response.usage.cache_read_input_tokens}")
+print(f"Cache write: {response.usage.cache_write_input_tokens}")</code></pre>
+
+                <h3>Explicit Cache Breakpoints</h3>
+                <p>For fine-grained control, place <code>cache_control</code> on specific content blocks:</p>
+
+                <pre><code class="language-python">response = client.messages.create(
+    model="claude-sonnet-4-6",
+    max_tokens=1024,
+    system=[
+        {
+            "type": "text",
+            "text": "You are a code review assistant...",
+            "cache_control": {"type": "ephemeral"}  # Cache breakpoint here
+        }
+    ],
+    messages=[
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "text",
+                    "text": "Review this code:\n```python\n...",
+                    "cache_control": {"type": "ephemeral"}  # Another breakpoint
+                }
+            ]
+        }
+    ]
+)</code></pre>
+
+                <h3>Claude Caching Thresholds</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Minimum Tokens</th>
+                            <th>Cache Lifetime</th>
+                            <th>Best For</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1,024 tokens</td>
+                            <td>5 minutes (ephemeral)</td>
+                            <td>Multi-turn conversations</td>
+                        </tr>
+                        <tr>
+                            <td>1,024 tokens</td>
+                            <td>1 hour (extended)</td>
+                            <td>Long-running agents</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2 id="openai-implementation">OpenAI Implementation</h2>
+                <p>OpenAI's prompt caching is <strong>automatic</strong> for supported models. No code changes required — just structure your prompts correctly.</p>
+
+                <h3>Supported Models</h3>
+                <ul>
+                    <li>gpt-4o and gpt-4o-mini</li>
+                    <li>gpt-4o-realtime-preview</li>
+                    <li>gpt-4-turbo (limited support)</li>
+                </ul>
+
+                <h3>Best Practices for OpenAI Caching</h3>
+                <pre><code class="language-python">from openai import OpenAI
+
+client = OpenAI()
+
+# Structure prompts with static content FIRST
+SYSTEM_PROMPT = """You are a helpful assistant with the following rules:
+1. Be concise
+2. Use examples
+3. Format in markdown
+
+[Long documentation or context here...]"""
+
+response = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+        {"role": "system", "content": SYSTEM_PROMPT},  # Static - will be cached
+        {"role": "user", "content": "What is prompt caching?"}  # Dynamic
+    ]
+)
+
+# Check usage for cache indicators
+print(response.usage)</code></pre>
+
+                <h3>Key Requirements for Cache Hits</h3>
+                <ol>
+                    <li><strong>Prefix must match exactly</strong> — same text, same order</li>
+                    <li><strong>Minimum 1,024 tokens</strong> before the dynamic portion</li>
+                    <li><strong>Same model</strong> — cache is model-specific</li>
+                    <li><strong>Same tools/images</strong> — these are part of the prefix hash</li>
+                </ol>
+
+                <h2 id="comparison">Claude vs OpenAI Prompt Caching</h2>
+                <div class="grid md:grid-cols-2 gap-4 my-6">
+                    <div class="comparison-card bg-white border rounded-lg p-4">
+                        <h4 class="font-bold text-lg mb-2">Anthropic Claude</h4>
+                        <ul class="text-sm space-y-1">
+                            <li>✅ 90% cost reduction (higher savings)</li>
+                            <li>✅ Explicit control via cache_control</li>
+                            <li>✅ Automatic mode available</li>
+                            <li>✅ Extended cache lifetime (1 hour)</li>
+                            <li>❌ Requires code changes</li>
+                        </ul>
+                    </div>
+                    <div class="comparison-card bg-white border rounded-lg p-4">
+                        <h4 class="font-bold text-lg mb-2">OpenAI</h4>
+                        <ul class="text-sm space-y-1">
+                            <li>✅ 75% cost reduction</li>
+                            <li>✅ Fully automatic (no code change)</li>
+                            <li>✅ Simple prefix-matching</li>
+                            <li>❌ Less control over caching</li>
+                            <li>❌ Shorter cache lifetime (~5 min)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h2 id="practical-patterns">Practical Implementation Patterns</h2>
+
+                <h3>Pattern 1: Multi-Turn Conversation</h3>
+                <pre><code class="language-python"># Store conversation history and cache it
+conversation_history = []
+
+def chat(user_message: str):
+    conversation_history.append({
+        "role": "user", 
+        "content": user_message
+    })
+    
+    response = client.messages.create(
+        model="claude-sonnet-4-6",
+        max_tokens=1024,
+        cache_control={"type": "ephemeral"},
+        system=SYSTEM_PROMPT,
+        messages=conversation_history
+    )
+    
+    conversation_history.append({
+        "role": "assistant",
+        "content": response.content[0].text
+    })
+    
+    return response</code></pre>
+
+                <h3>Pattern 2: RAG with Document Caching</h3>
+                <pre><code class="language-python">def rag_query(query: str, documents: list[str]):
+    # Documents are cached, query is dynamic
+    doc_text = "\n\n".join(documents)
+    
+    response = client.messages.create(
+        model="claude-sonnet-4-6",
+        max_tokens=1024,
+        system=[
+            {
+                "type": "text",
+                "text": f"Reference documents:\n{doc_text}",
+                "cache_control": {"type": "ephemeral"}
+            },
+            {
+                "type": "text",
+                "text": "Answer questions based only on the reference documents."
+            }
+        ],
+        messages=[{"role": "user", "content": query}]
+    )
+    return response</code></pre>
+
+                <h3>Pattern 3: Agent with Tool Definitions</h3>
+                <pre><code class="language-python">TOOLS = [
+    {
+        "name": "search",
+        "description": "Search for information",
+        "input_schema": {...}  # Large schema
+    },
+    # More tools...
+]
+
+response = client.messages.create(
+    model="claude-sonnet-4-6",
+    max_tokens=1024,
+    cache_control={"type": "ephemeral"},
+    system="You are a helpful agent.",
+    tools=TOOLS,  # Tool definitions are cached
+    messages=[{"role": "user", "content": "..."}]
+)</code></pre>
+
+                <h2 id="common-mistakes">Common Mistakes to Avoid</h2>
+                <ul>
+                    <li><strong>Placing dynamic content early</strong> — breaks cache matching. Put user-specific data at the END of prompts.</li>
+                    <li><strong>Changing prompt formatting</strong> — even whitespace changes break the cache. Use templates.</li>
+                    <li><strong>Not checking cache hit rate</strong> — monitor <code>cache_read_input_tokens</code> to verify caching is working.</li>
+                    <li><strong>Cache write costs</strong> — the first request pays a "cache write" premium (~25% extra input tokens). This pays off after 2+ requests.</li>
+                </ul>
+
+                <h2 id="monitoring">Monitoring Cache Performance</h2>
+                <pre><code class="language-python">def analyze_cache_performance(responses: list):
+    total_input = 0
+    total_cache_read = 0
+    total_cache_write = 0
+    
+    for r in responses:
+        usage = r.usage
+        total_input += usage.input_tokens
+        total_cache_read += getattr(usage, 'cache_read_input_tokens', 0)
+        total_cache_write += getattr(usage, 'cache_write_input_tokens', 0)
+    
+    hit_rate = total_cache_read / total_input if total_input > 0 else 0
+    
+    print(f"Total input tokens: {total_input:,}")
+    print(f"Cache read tokens: {total_cache_read:,}")
+    print(f"Cache write tokens: {total_cache_write:,}")
+    print(f"Cache hit rate: {hit_rate:.1%}")
+    print(f"Estimated savings: ${calculate_savings(hit_rate):.2f}")</code></pre>
+
+                <h2 id="conclusion">Conclusion</h2>
+                <p>Prompt caching is a must-have optimization for any production LLM application. Key takeaways:</p>
+                <ol>
+                    <li><strong>Start with automatic caching</strong> — Claude's one-line <code>cache_control</code> is the easiest path</li>
+                    <li><strong>Structure prompts correctly</strong> — static content first, dynamic content last</li>
+                    <li><strong>Monitor cache hit rates</strong> — aim for 80%+ in multi-turn scenarios</li>
+                    <li><strong>Calculate ROI</strong> — cache write costs pay off after 2+ similar requests</li>
+                </ol>
+                
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 my-6">
+                    <p class="font-bold">Bottom Line</p>
+                    <p>For Claude: Add <code>cache_control={"type": "ephemeral"}</code> to your requests. For OpenAI: Structure prompts with static prefixes. Both can reduce your API costs by 75-90% with minimal code changes.</p>
+                </div>
+
+                <h3>Further Reading</h3>
+                <ul>
+                    <li><a href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching" target="_blank" rel="noopener">Anthropic Prompt Caching Documentation</a></li>
+                    <li><a href="https://platform.openai.com/docs/guides/prompt-caching" target="_blank" rel="noopener">OpenAI Prompt Caching Guide</a></li>
+                </ul>
+            </div>
+
+            <!-- Article Footer -->
+            <footer class="mt-8 pt-6 border-t border-gray-200">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <span class="text-sm text-gray-500">Was this helpful?</span>
+                        <button class="text-gray-400 hover:text-green-500 transition-colors" onclick="likeArticle()">
+                            <i class="far fa-thumbs-up text-xl"></i>
+                        </button>
+                    </div>
+                    <a href="index.html" class="text-primary hover:underline text-sm">
+                        ← Back to Blog
+                    </a>
+                </div>
+            </footer>
+        </article>
+
+        <!-- Related Posts -->
+        <section class="mt-8">
+            <h2 class="text-xl font-bold text-gray-900 mb-4">Related Articles</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <a href="how-to-choose-ai-api.html" class="block bg-white rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow">
+                    <h3 class="font-medium text-gray-900">How to Choose an AI API Provider</h3>
+                    <p class="text-sm text-gray-500 mt-1">Compare pricing, features, and performance across providers</p>
+                </a>
+                <a href="rag-implementation-guide.html" class="block bg-white rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow">
+                    <h3 class="font-medium text-gray-900">RAG Implementation Guide</h3>
+                    <p class="text-sm text-gray-500 mt-1">Build your own knowledge assistant with vector databases</p>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <i class="fas fa-tools text-primary text-2xl mr-3"></i>
+                    <span class="text-lg font-bold">DevTools</span>
+                </div>
+                <div class="text-sm text-gray-400">
+                    © 2026 DevTools. All rights reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function likeArticle() {
+            const btn = event.currentTarget;
+            btn.innerHTML = '<i class="fas fa-thumbs-up text-xl text-green-500"></i>';
+            btn.disabled = true;
+        }
+    </script>
+</body>
+</html>
