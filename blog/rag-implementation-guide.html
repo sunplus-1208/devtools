@@ -104,8 +104,8 @@
 
 <p>LLMs hallucinate. They confidently make things up. RAG (Retrieval-Augmented Generation) fixes this by grounding responses in your actual data.</p>
 
-<p><strong>Before RAG:</strong> "What's our refund policy?" 鈫?LLM guesses, possibly wrong</p>
-<p><strong>After RAG:</strong> "What's our refund policy?" 鈫?LLM retrieves your actual policy document, summarizes accurately</p>
+<p><strong>Before RAG:</strong> "What's our refund policy?" &rarr;LLM guesses, possibly wrong</p>
+<p><strong>After RAG:</strong> "What's our refund policy?" &rarr;LLM retrieves your actual policy document, summarizes accurately</p>
 
 <p>This guide shows you how to build a production-ready RAG system from scratch.</p>
 
@@ -119,7 +119,7 @@
 <li><strong>Retrieval + Generation</strong>: Find relevant docs, feed to LLM, generate answer</li>
 </ol>
 
-<pre><code>User Query 鈫?Embedding 鈫?Vector Search 鈫?Top-K Docs 鈫?LLM Context 鈫?Answer</code></pre>
+<pre><code>User Query &rarr;Embedding &rarr;Vector Search &rarr;Top-K Docs &rarr;LLM Context &rarr;Answer</code></pre>
 
 <h2>Step 1: Choose Your Embedding Model</h2>
 
@@ -546,7 +546,7 @@ print(response.choices[0].message.content)</code></pre>
                             <i class="fab fa-linkedin text-xl"></i>
                         </a>
                     </div>
-                    <a href="index.html" class="text-primary hover:underline font-medium">鈫?Back to Blog</a>
+                    <a href="index.html" class="text-primary hover:underline font-medium">&rarr;Back to Blog</a>
                 </div>
             </div>
         </div>
@@ -556,7 +556,7 @@ print(response.choices[0].message.content)</code></pre>
     <footer class="bg-white border-t border-gray-200 mt-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div class="text-center text-gray-500 text-sm">
-                <p>漏 2026 DevTools. Open source and free to use.</p>
+                <p>&copy; 2026 DevTools. Open source and free to use.</p>
             </div>
         </div>
     </footer>
