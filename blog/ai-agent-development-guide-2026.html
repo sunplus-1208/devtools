@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agent Development Guide 2026: Build Your First AI Agent from Scratch</title>
+    <meta name="description" content="Learn how to build AI agents from scratch in 2026. Step-by-step tutorial covering agent architecture, tool calling, memory management, frameworks, and production deployment with Python code examples.">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "AI Agent Development Guide 2026: Build Your First AI Agent from Scratch",
+      "datePublished": "2026-05-10",
+      "dateModified": "2026-05-10T09:00:00+08:00",
+      "author": { "@type": "Organization", "name": "DevTools" },
+      "publisher": { "@type": "Organization", "name": "DevTools", "url": "https://aitechtools.top" },
+      "description": "Learn how to build AI agents from scratch in 2026. Step-by-step tutorial covering agent architecture, tool calling, memory management, frameworks, and production deployment with Python code examples.",
+      "mainEntityOfPage": { "@type": "WebPage", "@id": "https://aitechtools.top/blog/ai-agent-development-guide-2026.html" }
+    }
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>tailwind.config = { theme: { extend: { colors: { primary: '#3b82f6', secondary: '#64748b' } } } }</script>
+    <style>
+        .prose { max-width: 65ch; }
+        .prose h2 { margin-top: 2rem; margin-bottom: 1rem; }
+        .prose h3 { margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        .prose p { margin-bottom: 1rem; }
+        .prose ul, .prose ol { margin-bottom: 1rem; padding-left: 1.5rem; }
+        .prose li { margin-bottom: 0.5rem; }
+        .prose pre { background: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; margin-bottom: 1rem; }
+        .prose code { background: #f1f5f9; padding: 0.125rem 0.25rem; border-radius: 0.25rem; font-size: 0.875rem; }
+        .prose pre code { background: none; padding: 0; }
+        .prose table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+        .prose th, .prose td { border: 1px solid #e2e8f0; padding: 0.5rem 1rem; text-align: left; }
+        .prose th { background: #f8fafc; font-weight: 600; }
+        .prose blockquote { border-left: 4px solid #8b5cf6; padding-left: 1rem; margin: 1.5rem 0; color: #4b5563; font-style: italic; }
+        .highlight-box { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 1rem 1.25rem; margin: 1.5rem 0; border-radius: 0 0.5rem 0.5rem 0; }
+        .warning-box { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 1rem 1.25rem; margin: 1.5rem 0; border-radius: 0 0.5rem 0.5rem 0; }
+        .success-box { background: #ecfdf5; border-left: 4px solid #10b981; padding: 1rem 1.25rem; margin: 1.5rem 0; border-radius: 0 0.5rem 0.5rem 0; }
+    </style>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VVLR9NKKXE"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-VVLR9NKKXE');
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="../index.html" class="flex items-center">
+                    <i class="fas fa-tools text-primary text-2xl mr-3"></i>
+                    <h1 class="text-xl font-bold text-gray-900">DevTools</h1>
+                </a>
+                <nav class="hidden md:flex items-center space-x-6">
+                    <a href="../index.html" class="text-gray-600 hover:text-primary font-medium">Home</a>
+                    <a href="index.html" class="text-primary font-medium">Blog</a>
+                    <a href="../ai-toolkit/" class="text-gray-600 hover:text-primary font-medium">AI Toolkit</a>
+                </nav>
+                <a href="https://github.com/sunplus-1208/devtools" target="_blank" class="text-gray-500 hover:text-gray-700"><i class="fab fa-github text-xl"></i></a>
+            </div>
+        </div>
+    </header>
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <article>
+            <div class="bg-gradient-to-r from-violet-500 to-purple-600 rounded-xl p-8 mb-8 text-white">
+                <div class="flex items-center text-sm mb-4">
+                    <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-medium">Tutorial</span>
+                    <span class="ml-3 opacity-90">May 10, 2026</span>
+                </div>
+                <h1 class="text-3xl font-bold mb-3">AI Agent Development Guide 2026: Build Your First AI Agent from Scratch</h1>
+                <p class="text-lg opacity-90">A complete tutorial for building autonomous AI agents. Covers architecture, tool calling, memory, frameworks, and production best practices with real Python code.</p>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm p-8">
+                <div class="prose text-gray-700">
+
+<h2>What Are AI Agents (And Why They Are Not Just LLM Calls)</h2>
+<p>There is a critical distinction that most tutorials gloss over: calling an LLM API is not building an agent. An AI agent is an autonomous system that perceives its environment, reasons about what to do, and takes actions to achieve a goal&mdash;all without requiring a human to manually drive every step.</p>
+<p>Consider the difference. A simple LLM call looks like this: you send a prompt, you get a response. It is stateless, single-turn, and passive. An agent, on the other hand, can break a complex task into subtasks, call external tools when it needs information, remember what it has already done, and iterate until the goal is met.</p>
+<p>Think of it this way: a chatbot answers questions. An agent solves problems.</p>
+
+<table>
+<thead><tr><th>Aspect</th><th>Simple LLM Call</th><th>AI Agent</th></tr></thead>
+<tbody>
+<tr><td>Control flow</td><td>Single request-response</td><td>Autonomous loop with branching</td></tr>
+<tr><td>Tool access</td><td>None</td><td>Can call APIs, databases, browsers</td></tr>
+<tr><td>Memory</td><td>Stateless (unless you manage it)</td><td>Built-in short-term and long-term</td></tr>
+<tr><td>Error handling</td><td>None (fails silently)</td><td>Retries, fallbacks, self-correction</td></tr>
+<tr><td>Goal pursuit</td><td>Answers one question</td><td>Plans and executes multi-step strategy</td></tr>
+<tr><td>Example</td><td>"Summarize this text"</td><td>"Research competitors, compile a report, and email it"</td></tr>
+</tbody>
+</table>
+
+<p>In 2026, agents are no longer a research curiosity. They power customer support systems that resolve tickets autonomously, research assistants that synthesize information from dozens of sources, coding assistants that plan and implement features across multiple files, and operations agents that monitor infrastructure and respond to incidents. The gap between "calling GPT" and "building an agent" is exactly what this guide bridges.</p>
+
+<h2>Agent Architecture: The Perception-Reasoning-Action Loop</h2>
+<p>Every AI agent, regardless of framework or complexity, follows the same fundamental loop:</p>
+
+<ol>
+<li><strong>Perceive:</strong> Receive input (user message, sensor data, system event) and gather context from memory and environment</li>
+<li><strong>Reason:</strong> The LLM analyzes the situation, decides what to do next, and selects which tools to call (if any)</li>
+<li><strong>Act:</strong> Execute the chosen action&mdash;call an API, query a database, write a file, send a message</li>
+<li><strong>Observe:</strong> Process the result of the action and update internal state</li>
+<li><strong>Repeat:</strong> Continue the loop until the goal is achieved or a stopping condition is met</li>
+</ol>
+
+<p>This is called the <strong>ReAct loop</strong> (Reason + Act), and it is the architectural backbone of virtually every production agent system built in 2026.</p>
+
+<div class="highlight-box">
+<p class="font-medium text-blue-800 mb-1"><i class="fas fa-lightbulb mr-2"></i>Key Insight</p>
+<p class="text-blue-700 mb-0">The power of the ReAct loop is that it is <em>iterative</em>. The agent does not need to know everything upfront. It can gather information, realize it needs more context, call another tool, and adjust its plan. This is what makes agents genuinely autonomous.</p>
+</div>
+
+<p>Here is what the loop looks like in code:</p>
+<pre><code>class Agent:
+    def __init__(self, llm, tools, memory):
+        self.llm = llm
+        self.tools = tools
+        self.memory = memory
+
+    def run(self, task: str, max_iterations: int = 10):
+        self.memory.add("user", task)
+
+        for i in range(max_iterations):
+            # Perceive + Reason
+            context = self.memory.get_context()
+            response = self.llm.chat(
+                messages=context,
+                tools=self.tools.definitions()
+            )
+
+            # If the LLM wants to call a tool
+            if response.tool_calls:
+                for call in response.tool_calls:
+                    # Act
+                    result = self.tools.execute(call)
+                    # Observe
+                    self.memory.add("tool", f"{call.name}: {result}")
+            else:
+                # No tool call = final answer
+                self.memory.add("assistant", response.content)
+                return response.content
+
+        return "Agent reached maximum iterations without completing the task."</code></pre>
+
+<p>This simple pattern&mdash;perceive, reason, act, observe, repeat&mdash;is the foundation. Everything else in this guide builds on top of it.</p>
+
+<h2>Tools and Function Calling</h2>
+<p>Tools are what transform a language model from a text generator into an agent that can interact with the real world. Without tools, an LLM can only produce text. With tools, it can search the web, query databases, read files, send emails, call APIs, and execute code.</p>
+
+<p>Function calling (also called tool use) is the mechanism that makes this work. You define a set of functions with their names, descriptions, and parameter schemas. The LLM decides which function to call and with what arguments based on the current context.</p>
+
+<h3>Defining Tools</h3>
+<p>Here is how you define tools using the OpenAI function calling format:</p>
+<pre><code>tools = [
+    {
+        "type": "function",
+        "function": {
+            "name": "search_web",
+            "description": "Search the web for current information on a topic",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "description": "The search query"
+                    }
+                },
+                "required": ["query"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "read_file",
+            "description": "Read the contents of a file from disk",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "path": {
+                        "type": "string",
+                        "description": "Absolute path to the file"
+                    }
+                },
+                "required": ["path"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "send_email",
+            "description": "Send an email to a recipient",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "to": { "type": "string", "description": "Recipient email" },
+                    "subject": { "type": "string", "description": "Email subject" },
+                    "body": { "type": "string", "description": "Email body text" }
+                },
+                "required": ["to", "subject", "body"]
+            }
+        }
+    }
+]</</code></pre>
+
+<h3>Executing Tool Calls</h3>
+<p>When the LLM decides to call a tool, you receive a structured response with the function name and arguments. You then execute the function and feed the result back:</p>
+<pre><code>import json
+from openai import OpenAI
+
+client = OpenAI()
+
+def execute_tool(name: str, args: dict) -> str:
+    """Dispatch tool calls to actual implementations."""
+    if name == "search_web":
+        return search_web(args["query"])
+    elif name == "read_file":
+        return read_file(args["path"])
+    elif name == "send_email":
+        return send_email(args["to"], args["subject"], args["body"])
+    return f"Unknown tool: {name}"
+
+def run_agent(messages: list, max_turns: int = 5):
+    for _ in range(max_turns):
+        response = client.chat.completions.create(
+            model="gpt-4.1",
+            messages=messages,
+            tools=tools
+        )
+
+        msg = response.choices[0].message
+        messages.append(msg)
+
+        # No tool calls = agent is done
+        if not msg.tool_calls:
+            return msg.content
+
+        # Execute each tool call
+        for tool_call in msg.tool_calls:
+            args = json.loads(tool_call.function.arguments)
+            result = execute_tool(tool_call.function.name, args)
+            messages.append({
+                "role": "tool",
+                "tool_call_id": tool_call.id,
+                "content": str(result)
+            })
+
+    return "Agent reached maximum turns."</code></pre>
+
+<div class="warning-box">
+<p class="font-medium text-amber-800 mb-1"><i class="fas fa-exclamation-triangle mr-2"></i>Security Warning</p>
+<p class="text-amber-700 mb-0">Never let an LLM directly execute shell commands or database queries without sanitization. Always validate tool arguments before execution. A malicious prompt can trick an agent into running destructive commands. Use allowlists, sandboxed environments, and confirmation steps for sensitive operations.</p>
+</div>
+
+<h2>Memory and State Management</h2>
+<p>Memory is what separates a one-shot chatbot from a persistent, context-aware agent. There are three types of memory every production agent needs:</p>
+
+<h3>1. Working Memory (Conversation Context)</h3>
+<p>This is the immediate conversation history&mdash;the messages exchanged so far. Every LLM API call includes this as the <code>messages</code> array. The challenge is that context windows are finite. A 128K token window sounds large, but an agent making 20 tool calls can easily exceed it.</p>
+<p><strong>Solution:</strong> Implement a sliding window with summarization. Keep the most recent N messages verbatim and summarize older ones:</p>
+<pre><code>class ConversationMemory:
+    def __init__(self, max_messages: int = 20):
+        self.messages = []
+        self.summary = ""
+        self.max_messages = max_messages
+
+    def add(self, role: str, content: str):
+        self.messages.append({"role": role, "content": content})
+        if len(self.messages) > self.max_messages:
+            self._summarize_older()
+
+    def _summarize_older(self):
+        # Summarize the oldest half of messages
+        old = self.messages[:len(self.messages) // 2]
+        self.summary += f"\nPrevious context: {summarize(old)}"
+        self.messages = self.messages[len(self.messages) // 2:]
+
+    def get_context(self) -> list:
+        context = []
+        if self.summary:
+            context.append({
+                "role": "system",
+                "content": f"Previous conversation summary: {self.summary}"
+            })
+        context.extend(self.messages)
+        return context</code></pre>
+
+<h3>2. Episodic Memory (Past Interactions)</h3>
+<p>Episodic memory stores what happened in previous sessions. When a user returns, the agent remembers their preferences, past problems, and established context. This is typically stored in a vector database or relational database indexed by user ID.</p>
+<pre><code>class EpisodicMemory:
+    def __init__(self, db):
+        self.db = db
+
+    def store(self, user_id: str, event: str, embedding: list):
+        self.db.insert({
+            "user_id": user_id,
+            "event": event,
+            "embedding": embedding,
+            "timestamp": datetime.utcnow()
+        })
+
+    def recall(self, user_id: str, query_embedding: list, top_k: int = 5):
+        return self.db.search(
+            user_id=user_id,
+            embedding=query_embedding,
+            top_k=top_k
+        )</code></pre>
+
+<h3>3. Semantic Memory (Factual Knowledge)</h3>
+<p>Semantic memory is the agent's knowledge base&mdash;documents, FAQs, product information, and any structured data it needs to answer questions accurately. This is where RAG (Retrieval-Augmented Generation) comes in. Store your knowledge in a vector database and retrieve relevant chunks on demand.</p>
+
+<div class="success-box">
+<p class="font-medium text-green-800 mb-1"><i class="fas fa-check-circle mr-2"></i>Memory Architecture Best Practice</p>
+<ul class="text-green-700 mb-0">
+<li><strong>Working memory:</strong> In-memory, sliding window with summarization</li>
+<li><strong>Episodic memory:</strong> Vector database (Pinecone, Qdrant, pgvector) per user</li>
+<li><strong>Semantic memory:</strong> Vector database with curated knowledge chunks</li>
+<li><strong>All three:</strong> Injected into the system prompt at query time</li>
+</ul>
+</div>
+
+<h2>Building a Research Agent: Step by Step</h2>
+<p>Let us build a complete research agent that takes a topic, searches for information, synthesizes findings, and produces a structured report. This agent demonstrates every concept we have covered: the ReAct loop, tool calling, and memory management.</p>
+
+<h3>Step 1: Define the Tools</h3>
+<pre><code>import requests
+from duckduckgo_search import DDGS
+
+def search_web(query: str, max_results: int = 5) -> str:
+    """Search the web using DuckDuckGo."""
+    results = []
+    with DDGS() as ddgs:
+        for r in ddgs.text(query, max_results=max_results):
+            results.append(f"Title: {r['title']}\nURL: {r['href']}\nSnippet: {r['body']}")
+    return "\n\n".join(results) if results else "No results found."
+
+def fetch_url(url: str) -> str:
+    """Fetch and extract text content from a URL."""
+    try:
+        resp = requests.get(url, timeout=10, headers={"User-Agent": "ResearchAgent/1.0"})
+        resp.raise_for_status()
+        # Simple text extraction (in production, use proper HTML parser)
+        text = resp.text[:5000]  # Truncate to avoid token overflow
+        return text
+    except Exception as e:
+        return f"Error fetching {url}: {e}"
+
+RESEARCH_TOOLS = [
+    {
+        "type": "function",
+        "function": {
+            "name": "search_web",
+            "description": "Search the web for information on a topic",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "query": {"type": "string", "description": "Search query"}
+                },
+                "required": ["query"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "fetch_url",
+            "description": "Fetch the full content of a web page by URL",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "url": {"type": "string", "description": "URL to fetch"}
+                },
+                "required": ["url"]
+            }
+        }
+    }
+]</code></pre>
+
+<h3>Step 2: Build the Agent Core</h3>
+<pre><code>import json
+from openai import OpenAI
+
+class ResearchAgent:
+    def __init__(self, model: str = "gpt-4.1"):
+        self.client = OpenAI()
+        self.model = model
+        self.tool_map = {
+            "search_web": search_web,
+            "fetch_url": fetch_url,
+        }
+        self.conversation = []
+
+    def _system_prompt(self) -> str:
+        return """You are a research agent. Your job is to:
+1. Understand the research topic
+2. Search for relevant information
+3. Read promising sources in detail
+4. Synthesize findings into a clear, structured report
+
+Guidelines:
+- Start with a broad search, then narrow down
+- Verify facts across multiple sources when possible
+- Always cite your sources with URLs
+- If a search returns poor results, try different query formulations
+- Produce a final report with sections: Summary, Key Findings, Detailed Analysis, Sources"""
+
+    def research(self, topic: str, max_turns: int = 8) -> str:
+        self.conversation = [
+            {"role": "system", "content": self._system_prompt()},
+            {"role": "user", "content": f"Research this topic and produce a report: {topic}"}
+        ]
+
+        for turn in range(max_turns):
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=self.conversation,
+                tools=RESEARCH_TOOLS,
+                tool_choice="auto"
+            )
+
+            msg = response.choices[0].message
+            self.conversation.append(msg)
+
+            if not msg.tool_calls:
+                return msg.content
+
+            for tool_call in msg.tool_calls:
+                fn_name = tool_call.function.name
+                fn_args = json.loads(tool_call.function.arguments)
+                print(f"  [Tool Call] {fn_name}({fn_args})")
+
+                result = self.tool_map[fn_name](**fn_args)
+
+                self.conversation.append({
+                    "role": "tool",
+                    "tool_call_id": tool_call.id,
+                    "content": str(result)[:3000]  # Truncate long results
+                })
+
+        return "Research agent reached maximum turns. Partial results may be incomplete."
+
+# Run it
+agent = ResearchAgent()
+report = agent.research("AI agent frameworks comparison 2026 LangChain CrewAI AutoGen")
+print(report)</code></pre>
+
+<h3>Step 3: Add Structured Output</h3>
+<p>For production agents, you often want the final output in a structured format rather than free-form text. Use structured outputs to enforce a schema:</p>
+<pre><code>from pydantic import BaseModel
+from typing import List
+
+class Source(BaseModel):
+    title: str
+    url: str
+    relevance: str  # "high", "medium", "low"
+
+class ResearchReport(BaseModel):
+    topic: str
+    summary: str
+    key_findings: List[str]
+    detailed_analysis: str
+    sources: List[Source]
+    confidence: str  # "high", "medium", "low"
+
+# Use with the OpenAI structured output feature
+response = client.beta.chat.completions.parse(
+    model="gpt-4.1",
+    messages=conversation,
+    response_format=ResearchReport,
+)
+report = response.choices[0].message.parsed</code></pre>
+
+<p>This gives you a typed, validated output that you can programmatically process, store, or display in a UI.</p>
+
+<h2>Frameworks: LangChain, CrewAI, OpenAI Agents SDK</h2>
+<p>Building an agent from scratch teaches you the fundamentals. But for production, most teams use a framework. Here is how the three most popular options compare in 2026.</p>
+
+<h3>LangChain / LangGraph</h3>
+<p>LangChain remains the most widely adopted framework, but the ecosystem has shifted significantly toward <strong>LangGraph</strong>&mdash;LangChain's graph-based agent orchestration layer. LangGraph models agents as state machines with explicit nodes and edges, making complex multi-step workflows much easier to reason about.</p>
+<pre><code>from langgraph.prebuilt import create_react_agent
+from langchain_openai import ChatOpenAI
+from langchain_community.tools import DuckDuckGoSearchRun
+
+model = ChatOpenAI(model="gpt-4.1")
+tools = [DuckDuckGoSearchRun()]
+
+agent = create_react_agent(model, tools)
+result = agent.invoke({
+    "messages": [{"role": "user", "content": "What are the top AI agent frameworks in 2026?"}]
+})
+print(result["messages"][-1].content)</code></pre>
+<p><strong>Pros:</strong> Massive ecosystem, LangGraph visualization and debugging, LangSmith for observability, extensive integrations.</p>
+<p><strong>Cons:</strong> Steep learning curve, abstraction leaks, frequent breaking changes between versions.</p>
+
+<h3>CrewAI</h3>
+<p>CrewAI specializes in <strong>multi-agent systems</strong>. You define multiple agents with distinct roles, and they collaborate to solve problems. Think of it as assembling a team where each member has a specialty.</p>
+<pre><code>from crewai import Agent, Task, Crew, Process
+from crewai_tools import SerperDevTool
+
+search_tool = SerperDevTool()
+
+researcher = Agent(
+    role="Senior Research Analyst",
+    goal="Find and analyze information about AI agent frameworks",
+    backstory="You are an expert researcher with 10 years of experience in AI.",
+    tools=[search_tool],
+    verbose=True,
+)
+
+writer = Agent(
+    role="Technical Writer",
+    goal="Write a comprehensive comparison article",
+    backstory="You are a skilled writer who makes complex topics accessible.",
+    verbose=True,
+)
+
+research_task = Task(
+    description="Research the top 5 AI agent frameworks in 2026",
+    expected_output="A detailed analysis with pros, cons, and use cases",
+    agent=researcher,
+)
+
+write_task = Task(
+    description="Write a comparison article based on the research",
+    expected_output="A 2000-word article with clear sections",
+    agent=writer,
+)
+
+crew = Crew(
+    agents=[researcher, writer],
+    tasks=[research_task, write_task],
+    process=Process.sequential,
+)
+
+result = crew.kickoff()
+print(result)</code></pre>
+<p><strong>Pros:</strong> Intuitive multi-agent design, role-based architecture, built-in task delegation, easy to reason about agent collaboration.</p>
+<p><strong>Cons:</strong> Higher cost (multiple LLM calls per task), harder to debug when agents disagree, less flexible than LangGraph for non-standard workflows.</p>
+
+<h3>OpenAI Agents SDK</h3>
+<p>Released in early 2026, the OpenAI Agents SDK is the newest entrant. It is lightweight, Python-native, and tightly integrated with the OpenAI API. If you are all-in on OpenAI models, this is the simplest path to production agents.</p>
+<pre><code>from openai import OpenAI
+from agents import Agent, Runner, function_tool
+
+@function_tool
+def search_web(query: str) -> str:
+    """Search the web for information."""
+    results = perform_search(query)
+    return results
+
+research_agent = Agent(
+    name="Research Agent",
+    instructions="You research topics thoroughly and provide structured findings.",
+    tools=[search_web],
+    model="gpt-4.1",
+)
+
+result = Runner.run_sync(
+    research_agent,
+    "Compare LangChain vs CrewAI vs OpenAI Agents SDK for building AI agents"
+)
+print(result.final_output)</code></pre>
+<p><strong>Pros:</strong> Minimal boilerplate, first-class OpenAI integration, built-in tracing, guardrails API.</p>
+<p><strong>Cons:</strong> Only works with OpenAI models, smaller ecosystem, less community support than LangChain.</p>
+
+<h3>Framework Comparison</h3>
+<table>
+<thead><tr><th>Feature</th><th>LangGraph</th><th>CrewAI</th><th>OpenAI Agents SDK</th></tr></thead>
+<tbody>
+<tr><td>Language</td><td>Python / JS</td><td>Python</td><td>Python</td></tr>
+<tr><td>Model support</td><td>Any (OpenAI, Anthropic, local)</td><td>Any</td><td>OpenAI only</td></tr>
+<tr><td>Multi-agent</td><td>Yes (graph-based)</td><td>Yes (role-based)</td><td>Yes (handoff-based)</td></tr>
+<tr><td>Observability</td><td>LangSmith</td><td>CrewAI+ monitoring</td><td>Built-in tracing</td></tr>
+<tr><td>Learning curve</td><td>Steep</td><td>Medium</td><td>Low</td></tr>
+<tr><td>Production readiness</td><td>High</td><td>Medium</td><td>High (OpenAI stack)</td></tr>
+<tr><td>Best for</td><td>Complex workflows</td><td>Team simulation</td><td>Quick OpenAI agents</td></tr>
+</tbody>
+</table>
+
+<div class="highlight-box">
+<p class="font-medium text-blue-800 mb-1"><i class="fas fa-code mr-2"></i>Our Recommendation</p>
+<ul class="text-blue-700 mb-0">
+<li><strong>Just getting started?</strong> OpenAI Agents SDK &mdash; lowest friction</li>
+<li><strong>Need multi-model or complex workflows?</strong> LangGraph &mdash; most flexible</li>
+<li><strong>Building a team of specialists?</strong> CrewAI &mdash; best multi-agent ergonomics</li>
+<li><strong>Production with observability?</strong> LangGraph + LangSmith &mdash; best debugging</li>
+</ul>
+</div>
+
+<h2>Production Considerations</h2>
+<p>Demo agents work perfectly. Production agents break in spectacular ways. Here are the critical considerations for taking an agent from prototype to production.</p>
+
+<h3>Error Handling</h3>
+<p>Agents fail in ways that simple API calls do not. A tool might return an error, the LLM might produce malformed function call arguments, the agent might loop endlessly, or the context window might overflow. Every one of these scenarios needs explicit handling.</p>
+<pre><code>class RobustAgent:
+    def run(self, task: str, max_retries: int = 3):
+        for attempt in range(max_retries):
+            try:
+                response = self.client.chat.completions.create(
+                    model=self.model,
+                    messages=self.conversation,
+                    tools=self.tools,
+                    timeout=30  # Prevent hanging
+                )
+
+                msg = response.choices[0].message
+
+                if msg.tool_calls:
+                    for call in msg.tool_calls:
+                        try:
+                            args = json.loads(call.function.arguments)
+                        except json.JSONDecodeError:
+                            # Ask the LLM to fix malformed arguments
+                            self.conversation.append({
+                                "role": "tool",
+                                "tool_call_id": call.id,
+                                "content": "Error: Invalid JSON in function arguments. Please retry with valid JSON."
+                            })
+                            continue
+
+                        try:
+                            result = self.execute_tool(call.function.name, args)
+                        except Exception as e:
+                            result = f"Tool error: {str(e)}. Try a different approach."
+
+                        self.conversation.append({
+                            "role": "tool",
+                            "tool_call_id": call.id,
+                            "content": str(result)[:3000]
+                        })
+                else:
+                    return msg.content
+
+            except Exception as e:
+                if attempt == max_retries - 1:
+                    return f"Agent failed after {max_retries} attempts: {str(e)}"
+                time.sleep(2 ** attempt)  # Exponential backoff
+
+        return "Agent reached maximum retries."</code></pre>
+
+<h3>Cost Control</h3>
+<p>Agents are expensive because each turn involves an LLM API call with a growing conversation history. A 10-turn agent interaction can easily consume 50K+ tokens. Here are strategies to control costs:</p>
+<ul>
+<li><strong>Set token budgets:</strong> Track cumulative tokens per session and stop when a budget is exceeded</li>
+<li><strong>Use cheaper models for tool calling:</strong> GPT-4.1-mini handles most tool calls just as well as GPT-4.1 for a fraction of the cost</li>
+<li><strong>Compress conversation history:</strong> Summarize older turns instead of keeping them verbatim</li>
+<li><strong>Cache tool results:</strong> If the same search query was made recently, return the cached result</li>
+<li><strong>Implement early stopping:</strong> If the agent's last three tool calls did not produce new information, stop and synthesize what you have</li>
+</ul>
+
+<pre><code>class CostAwareAgent:
+    def __init__(self, max_tokens_per_session: int = 100000):
+        self.max_tokens = max_tokens_per_session
+        self.tokens_used = 0
+
+    def run(self, task: str):
+        while self.tokens_used < self.max_tokens:
+            response = self.client.chat.completions.create(
+                model="gpt-4.1-mini",  # Cheaper model
+                messages=self.conversation,
+                tools=self.tools,
+            )
+            self.tokens_used += response.usage.total_tokens
+
+            if self.tokens_used > self.max_tokens * 0.8:
+                # Switch to synthesis mode
+                self.conversation.append({
+                    "role": "system",
+                    "content": "Token budget is nearly exhausted. Provide your best answer now with the information you have."
+                })
+
+            # ... rest of agent loop</code></pre>
+
+<h3>Observability</h3>
+<p>You cannot debug what you cannot see. Production agents need comprehensive logging and tracing. Every turn of the agent loop should log: the input messages, the LLM's response, which tools were called, the tool results, the token count, and the latency.</p>
+<pre><code>import structlog
+
+logger = structlog.get_logger()
+
+class ObservableAgent:
+    def run(self, task: str):
+        trace_id = generate_trace_id()
+        logger.info("agent_started", trace_id=trace_id, task=task)
+
+        for turn in range(self.max_turns):
+            start_time = time.time()
+
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=self.conversation,
+                tools=self.tools,
+            )
+
+            latency = time.time() - start_time
+            logger.info("llm_call", 
+                trace_id=trace_id,
+                turn=turn,
+                tokens=response.usage.total_tokens,
+                latency_ms=round(latency * 1000),
+                has_tool_calls=bool(response.choices[0].message.tool_calls)
+            )
+
+            if response.choices[0].message.tool_calls:
+                for call in response.choices[0].message.tool_calls:
+                    logger.info("tool_call",
+                        trace_id=trace_id,
+                        turn=turn,
+                        tool=call.function.name,
+                        args=call.function.arguments[:200]
+                    )
+                    # Execute and log result...</code></pre>
+
+<p>For full observability, use <strong>LangSmith</strong> (with LangGraph), <strong>Arize Phoenix</strong> (open-source), or <strong>OpenTelemetry</strong> with a Jaeger/Tempo backend. These tools give you trace visualizations, latency breakdowns, and token cost tracking across every agent turn.</p>
+
+<h3>Guardrails and Safety</h3>
+<p>Production agents need guardrails at multiple levels:</p>
+<ul>
+<li><strong>Input guardrails:</strong> Validate and sanitize user input before it reaches the agent. Check for prompt injection patterns, PII, and malicious content.</li>
+<li><strong>Tool guardrails:</strong> Validate tool arguments before execution. Use allowlists for file paths, URL domains, and API endpoints. Require confirmation for destructive operations.</li>
+<li><strong>Output guardrails:</strong> Check agent responses for harmful content, PII leaks, and hallucinations before returning to the user.</li>
+<li><strong>Behavioral guardrails:</strong> Set explicit rules about what the agent should and should not do. Use system prompts to enforce boundaries.</li>
+</ul>
+
+<div class="warning-box">
+<p class="font-medium text-amber-800 mb-1"><i class="fas fa-shield-alt mr-2"></i>Production Safety Checklist</p>
+<ul class="text-amber-700 mb-0">
+<li>Set maximum iterations per agent run (prevent infinite loops)</li>
+<li>Set maximum tokens per session (prevent cost overruns)</li>
+<li>Sandbox tool execution environments (prevent system damage)</li>
+<li>Log every tool call with arguments and results (audit trail)</li>
+<li>Implement rate limiting per user (prevent abuse)</li>
+<li>Add human-in-the-loop confirmation for critical actions</li>
+<li>Test with adversarial inputs before deployment</li>
+</ul>
+</div>
+
+<h2>Putting It All Together: A Complete Research Agent</h2>
+<p>Here is a complete, production-ready research agent that combines everything we have covered:</p>
+<pre><code>"""
+Production Research Agent - Complete Implementation
+Combines: ReAct loop, tool calling, memory, cost control, error handling, observability
+"""
+
+import json
+import time
+import structlog
+from openai import OpenAI
+from typing import Optional
+
+logger = structlog.get_logger()
+
+class ProductionResearchAgent:
+    def __init__(
+        self,
+        model: str = "gpt-4.1-mini",
+        max_turns: int = 8,
+        max_tokens: int = 100_000,
+    ):
+        self.client = OpenAI()
+        self.model = model
+        self.max_turns = max_turns
+        self.max_tokens = max_tokens
+        self.tokens_used = 0
+        self.conversation = []
+        self.tool_map = {
+            "search_web": search_web,
+            "fetch_url": fetch_url,
+        }
+        self.tools = RESEARCH_TOOLS
+
+    def _system_prompt(self) -> str:
+        return """You are a research agent. Your job is to:
+1. Understand the research topic
+2. Search for relevant, current information
+3. Read promising sources in detail (use fetch_url)
+4. Synthesize findings into a structured report
+
+Rules:
+- Start broad, then narrow your searches
+- Verify key facts across at least 2 sources
+- Always cite URLs in your final report
+- If a search returns poor results, reformulate the query
+- Produce: Summary, Key Findings, Detailed Analysis, Sources
+- Stop researching once you have sufficient information"""
+
+    def research(self, topic: str) -> dict:
+        trace_id = f"research-{int(time.time())}"
+        logger.info("research_started", trace_id=trace_id, topic=topic)
+
+        self.conversation = [
+            {"role": "system", "content": self._system_prompt()},
+            {"role": "user", "content": f"Research this topic: {topic}"}
+        ]
+
+        for turn in range(self.max_turns):
+            if self.tokens_used >= self.max_tokens:
+                logger.warning("token_budget_exceeded", trace_id=trace_id)
+                self.conversation.append({
+                    "role": "system",
+                    "content": "Token budget reached. Provide your best answer now."
+                })
+
+            try:
+                start = time.time()
+                response = self.client.chat.completions.create(
+                    model=self.model,
+                    messages=self.conversation,
+                    tools=self.tools,
+                    tool_choice="auto",
+                    timeout=30,
+                )
+                latency = time.time() - start
+                self.tokens_used += response.usage.total_tokens
+
+                logger.info("turn_complete",
+                    trace_id=trace_id, turn=turn,
+                    tokens=response.usage.total_tokens,
+                    latency_ms=round(latency * 1000),
+                    total_tokens=self.tokens_used
+                )
+
+                msg = response.choices[0].message
+                self.conversation.append(msg)
+
+                if not msg.tool_calls:
+                    logger.info("research_complete", trace_id=trace_id, turns=turn + 1)
+                    return {
+                        "report": msg.content,
+                        "turns": turn + 1,
+                        "tokens_used": self.tokens_used,
+                        "trace_id": trace_id,
+                    }
+
+                for call in msg.tool_calls:
+                    try:
+                        args = json.loads(call.function.arguments)
+                        logger.info("tool_call", trace_id=trace_id,
+                                    tool=call.function.name, args=str(args)[:100])
+                        result = self.tool_map[call.function.name](**args)
+                    except json.JSONDecodeError:
+                        result = "Error: Invalid arguments. Retry with valid JSON."
+                    except Exception as e:
+                        result = f"Error: {str(e)}"
+
+                    self.conversation.append({
+                        "role": "tool",
+                        "tool_call_id": call.id,
+                        "content": str(result)[:3000]
+                    })
+
+            except Exception as e:
+                logger.error("turn_failed", trace_id=trace_id, error=str(e))
+                if turn == self.max_turns - 1:
+                    return {
+                        "report": f"Research failed: {str(e)}",
+                        "turns": turn + 1,
+                        "tokens_used": self.tokens_used,
+                        "trace_id": trace_id,
+                    }
+                time.sleep(2 ** (turn % 3))  # Exponential backoff
+
+        return {
+            "report": "Max turns reached. Report may be incomplete.",
+            "turns": self.max_turns,
+            "tokens_used": self.tokens_used,
+            "trace_id": trace_id,
+        }
+
+# Usage
+agent = ProductionResearchAgent(model="gpt-4.1-mini", max_turns=8)
+result = agent.research("Best practices for deploying AI agents in production 2026")
+print(result["report"])
+print(f"\nStats: {result['turns']} turns, {result['tokens_used']} tokens")</code></pre>
+
+<h2>Conclusion</h2>
+<p>Building AI agents in 2026 is fundamentally about mastering the perception-reasoning-action loop and then layering on the production infrastructure that makes agents reliable: robust error handling, cost controls, observability, and guardrails. Start by building an agent from scratch to understand the core mechanics, then adopt a framework when your needs outgrow the hand-rolled approach.</p>
+
+<p>The three frameworks we compared each serve a different need: LangGraph for complex, multi-step workflows; CrewAI for multi-agent collaboration; and the OpenAI Agents SDK for quick, OpenAI-native agents. Pick based on your use case, not hype.</p>
+
+<p>Most importantly, remember that agents are software systems, not magic. They need the same engineering discipline as any production service: testing, monitoring, error handling, and iteration. The agent that works in a demo is not the agent that works in production. Build for reliability, and your users will trust the results.</p>
+
+<p><em>Last updated: 2026-05-10. Code examples tested with OpenAI Python SDK v1.82+, LangGraph 0.4+, CrewAI 0.95+, and OpenAI Agents SDK 1.0+.</em></p>
+
+                </div>
+            </div>
+            <footer class="mt-6 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <span class="text-gray-500 text-sm">Was this helpful?</span>
+                    <button onclick="likeArticle()" class="p-2 rounded-lg hover:bg-gray-100 transition-colors"><i class="far fa-thumbs-up text-xl"></i></button>
+                </div>
+                <a href="index.html" class="text-primary hover:underline text-sm">&larr; Back to Blog</a>
+            </footer>
+        </article>
+        <section class="mt-8">
+            <h2 class="text-xl font-bold text-gray-900 mb-4">Related Articles</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <a href="agent-frameworks-2026.html" class="block bg-white rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow">
+                    <h3 class="font-medium text-gray-900">AI Agent Frameworks 2026</h3>
+                    <p class="text-sm text-gray-500 mt-1">Deep comparison of LangGraph, CrewAI, AutoGen, and more</p>
+                </a>
+                <a href="mcp-protocol-guide-2026.html" class="block bg-white rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow">
+                    <h3 class="font-medium text-gray-900">MCP Protocol Guide 2026</h3>
+                    <p class="text-sm text-gray-500 mt-1">Connect your agents to any tool with the Model Context Protocol</p>
+                </a>
+            </div>
+        </section>
+    </main>
+    <footer class="bg-gray-900 text-white py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <i class="fas fa-tools text-primary text-2xl mr-3"></i>
+                    <span class="text-lg font-bold">DevTools</span>
+                </div>
+                <div class="text-sm text-gray-400">&copy; 2026 DevTools. All rights reserved.</div>
+            </div>
+        </div>
+    </footer>
+    <script>
+        function likeArticle() {
+            const btn = event.currentTarget;
+            btn.innerHTML = '<i class="fas fa-thumbs-up text-xl text-green-500"></i>';
+            btn.disabled = true;
+        }
+    </script>
+</body>
+</html>
