@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Streaming Responses Implementation Guide 2026 - SSE, Real-Time UX &amp; Production Patterns</title>
+    <meta name="description" content="Learn how to implement streaming responses for AI APIs in 2026. Complete guide to SSE, OpenAI/Anthropic/Google streaming APIs, real-time UX patterns, error recovery, and production deployment.">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "AI Streaming Responses Implementation Guide 2026 - SSE, Real-Time UX & Production Patterns",
+      "description": "Learn how to implement streaming responses for AI APIs in 2026. Complete guide to SSE, OpenAI/Anthropic/Google streaming APIs, real-time UX patterns, error recovery, and production deployment.",
+      "author": { "@type": "Organization", "name": "DevTools" },
+      "datePublished": "2026-05-11",
+      "dateModified": "2026-05-11T10:00:00+08:00",
+      "publisher": { "@type": "Organization", "name": "DevTools", "url": "https://aitechtools.top" },
+      "mainEntityOfPage": { "@type": "WebPage", "@id": "https://aitechtools.top/blog/ai-streaming-responses-guide-2026.html" }
+    }
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>tailwind.config = { theme: { extend: { colors: { primary: '#3b82f6', secondary: '#64748b' } } } }</script>
+    <style>
+        .prose { max-width: 65ch; }
+        .prose h2 { margin-top: 2rem; margin-bottom: 1rem; }
+        .prose h3 { margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        .prose p { margin-bottom: 1rem; }
+        .prose ul, .prose ol { margin-bottom: 1rem; padding-left: 1.5rem; }
+        .prose li { margin-bottom: 0.5rem; }
+        .prose pre { background: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; margin-bottom: 1rem; }
+        .prose code { background: #f1f5f9; padding: 0.125rem 0.25rem; border-radius: 0.25rem; font-size: 0.875rem; }
+        .prose pre code { background: none; padding: 0; }
+        .prose table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+        .prose th, .prose td { border: 1px solid #e5e7eb; padding: 0.5rem 1rem; text-align: left; }
+        .prose th { background: #f9fafb; font-weight: 600; }
+        .prose blockquote { border-left: 4px solid #8b5cf6; padding-left: 1rem; margin: 1.5rem 0; color: #4b5563; font-style: italic; }
+    </style>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VVLR9NKKXE"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-VVLR9NKKXE');
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="../index.html" class="flex items-center">
+                    <i class="fas fa-tools text-primary text-2xl mr-3"></i>
+                    <h1 class="text-xl font-bold text-gray-900">DevTools</h1>
+                </a>
+                <nav class="hidden md:flex items-center space-x-6">
+                    <a href="../index.html" class="text-gray-600 hover:text-primary font-medium">Home</a>
+                    <a href="index.html" class="text-primary font-medium">Blog</a>
+                    <a href="../ai-toolkit/" class="text-gray-600 hover:text-primary font-medium">AI Toolkit</a>
+                </nav>
+                <a href="https://github.com/sunplus-1208/devtools" target="_blank" class="text-gray-500 hover:text-gray-700"><i class="fab fa-github text-xl"></i></a>
+            </div>
+        </div>
+    </header>
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <article>
+            <div class="bg-gradient-to-r from-violet-500 to-purple-600 rounded-xl p-8 mb-8 text-white">
+                <div class="flex items-center text-sm mb-4">
+                    <span class="bg-violet-100 text-violet-700 px-3 py-1 rounded-full font-medium">Tutorial</span>
+                    <span class="ml-3">May 11, 2026</span>
+                </div>
+                <h1 class="text-3xl font-bold mb-3">AI Streaming Responses Implementation Guide 2026</h1>
+                <p class="text-lg opacity-90">Implement real-time streaming for AI APIs with SSE. OpenAI, Anthropic, and Google streaming patterns, error recovery, UX design, and production deployment.</p>
+                <div class="mt-4">
+                    <i class="fas fa-bolt text-5xl opacity-30"></i>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm p-8">
+                <div class="prose text-gray-700">
+
+                    <p>Waiting 30 seconds for an AI response feels like an eternity. Streaming changes that: instead of waiting for the complete response, tokens appear one by one as the model generates them. This isn't just a nice UX improvement — it's become the default expectation for any production AI application. Every major chatbot, coding assistant, and AI tool you use streams responses in real time.</p>
+                    <p>This guide covers everything you need to implement streaming responses across all major LLM providers, from the underlying protocols to production-ready patterns.</p>
+
+                    <h2 id="why-streaming">Why Streaming Matters</h2>
+                    <p>The performance difference is dramatic. Consider a typical response of 500 tokens:</p>
+                    <table>
+                        <thead>
+                            <tr><th>Metric</th><th>Non-Streaming</th><th>Streaming</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Time to first token</td><td>15-30 seconds</td><td>0.3-1 second</td></tr>
+                            <tr><td>Perceived responsiveness</td><td>Poor</td><td>Excellent</td></tr>
+                            <tr><td>User abandonment risk</td><td>High</td><td>Low</td></tr>
+                            <tr><td>Total time</td><td>Same</td><td>Same</td></tr>
+                        </tbody>
+                    </table>
+                    <blockquote>Streaming doesn't make the model faster — the total time is the same. But it transforms the user experience from "did it crash?" to "it's thinking and responding." This is the difference between an app that feels broken and one that feels intelligent.</blockquote>
+
+                    <h2 id="sse-protocol">Server-Sent Events (SSE) Protocol</h2>
+                    <p>All major LLM providers use Server-Sent Events (SSE) for streaming. SSE is a simple HTTP-based protocol where the server sends a stream of events to the client. Each event has a <code>data</code> field containing a JSON payload.</p>
+                    <p>The raw SSE format looks like this:</p>
+<pre><code>data: {"id":"chatcmpl-abc123","choices":[{"delta":{"content":"Hello"},"index":0}]}
+
+data: {"id":"chatcmpl-abc123","choices":[{"delta":{"content":" world"},"index":0}]}
+
+data: [DONE]</code></pre>
+                    <p>Key SSE characteristics:</p>
+                    <ul>
+                        <li><strong>One-way communication</strong> — Server pushes to client, client cannot send data back on the same connection</li>
+                        <li><strong>Auto-reconnect</strong> — Browsers automatically reconnect if the connection drops</li>
+                        <li><strong>Text-based</strong> — Each event is a line starting with <code>data:</code></li>
+                        <li><strong>Termination</strong> — Stream ends with <code>data: [DONE]</code></li>
+                    </ul>
+                    <p>SSE is simpler than WebSockets and purpose-built for server-push scenarios. It works through proxies, load balancers, and firewalls without special configuration.</p>
+
+                    <h2 id="openai-streaming">OpenAI Streaming</h2>
+
+                    <h3>Python SDK</h3>
+<pre><code>from openai import OpenAI
+
+client = OpenAI()
+
+# Using the responses API with streaming
+stream = client.responses.create(
+    model="gpt-5",
+    input="Explain quantum computing in simple terms",
+    stream=True
+)
+
+for event in stream:
+    if event.type == "response.output_text.delta":
+        print(event.delta, end="", flush=True)
+    elif event.type == "response.completed":
+        print("\n[Done]")</code></pre>
+
+                    <h3>Node.js SDK</h3>
+<pre><code>import OpenAI from 'openai';
+
+const client = new OpenAI();
+
+const stream = await client.responses.create({
+    model: 'gpt-5',
+    input: 'Explain quantum computing in simple terms',
+    stream: true
+});
+
+for await (const event of stream) {
+    if (event.type === 'response.output_text.delta') {
+        process.stdout.write(event.delta);
+    }
+}</code></pre>
+
+                    <h3>Streaming with Tool Calls</h3>
+                    <p>Tool calls in streaming mode arrive in fragments. You need to accumulate them before executing:</p>
+<pre><code>stream = client.responses.create(
+    model="gpt-5",
+    tools=tools,
+    input="What's the weather in Tokyo?",
+    stream=True
+)
+
+tool_calls = {}  # Accumulate fragments
+
+for event in stream:
+    if event.type == "response.function_call_arguments.delta":
+        call_id = event.call_id
+        if call_id not in tool_calls:
+            tool_calls[call_id] = {"name": event.name, "arguments": ""}
+        tool_calls[call_id]["arguments"] += event.arguments_delta
+    elif event.type == "response.completed":
+        # Now execute all completed tool calls
+        for call_id, call in tool_calls.items():
+            args = json.loads(call["arguments"])
+            result = execute_tool(call["name"], args)
+            print(f"Tool {call['name']} returned: {result}")</code></pre>
+
+                    <h2 id="anthropic-streaming">Anthropic Streaming</h2>
+                    <p>Anthropic's streaming works similarly but uses a different event structure:</p>
+<pre><code>import anthropic
+
+client = anthropic.Anthropic()
+
+with client.messages.stream(
+    model="claude-sonnet-4-20250514",
+    max_tokens=1024,
+    messages=[{"role": "user", "content": "Explain RAG"}]
+) as stream:
+    for text in stream.text_stream:
+        print(text, end="", flush=True)</code></pre>
+
+                    <h3>Low-Level Event Handling</h3>
+                    <p>For fine-grained control, handle individual events:</p>
+<pre><code>with client.messages.stream(
+    model="claude-sonnet-4-20250514",
+    max_tokens=1024,
+    messages=[{"role": "user", "content": "Hello"}]
+) as stream:
+    for event in stream:
+        if event.type == "message_start":
+            print(f"Message started: {event.message.id}")
+        elif event.type == "content_block_delta":
+            if event.delta.type == "text_delta":
+                print(event.delta.text, end="", flush=True)
+        elif event.type == "message_delta":
+            # Usage info and stop reason
+            print(f"\nStop reason: {event.delta.stop_reason}")
+            print(f"Tokens: {event.usage.output_tokens}")</code></pre>
+
+                    <h2 id="google-streaming">Google Gemini Streaming</h2>
+<pre><code>import google.generativeai as genai
+
+model = genai.GenerativeModel('gemini-2.5-pro')
+
+response = model.generate_content(
+    "Explain machine learning",
+    stream=True
+)
+
+for chunk in response:
+    print(chunk.text, end="", flush=True)</code></pre>
+
+                    <h2 id="provider-comparison">Streaming API Comparison</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th>OpenAI</th>
+                                <th>Anthropic</th>
+                                <th>Google</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Protocol</td>
+                                <td>SSE</td>
+                                <td>SSE</td>
+                                <td>SSE</td>
+                            </tr>
+                            <tr>
+                                <td>Granularity</td>
+                                <td>Token-level</td>
+                                <td>Token-level</td>
+                                <td>Chunk-level</td>
+                            </tr>
+                            <tr>
+                                <td>Streaming tool calls</td>
+                                <td>Yes</td>
+                                <td>Yes</td>
+                                <td>Yes</td>
+                            </tr>
+                            <tr>
+                                <td>Usage stats in stream</td>
+                                <td>Yes</td>
+                                <td>Yes</td>
+                                <td>Yes</td>
+                            </tr>
+                            <tr>
+                                <td>Thinking tokens stream</td>
+                                <td>Yes (o-series)</td>
+                                <td>Yes (extended thinking)</td>
+                                <td>Yes</td>
+                            </tr>
+                            <tr>
+                                <td>Cancel mid-stream</td>
+                                <td>Yes (disconnect)</td>
+                                <td>Yes (disconnect)</td>
+                                <td>Yes (disconnect)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h2 id="frontend-implementation">Frontend Implementation</h2>
+
+                    <h3>Basic Browser SSE Client</h3>
+<pre><code>async function streamChat(message) {
+    const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message })
+    });
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+
+    while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop(); // Keep incomplete line
+
+        for (const line of lines) {
+            if (line.startsWith('data: ')) {
+                const data = line.slice(6);
+                if (data === '[DONE]') return;
+                
+                try {
+                    const parsed = JSON.parse(data);
+                    const content = parsed.choices?.[0]?.delta?.content || '';
+                    appendToChat(content);
+                } catch (e) {
+                    // Skip malformed events
+                }
+            }
+        }
+    }
+}</code></pre>
+
+                    <h3>React Component with Streaming</h3>
+<pre><code>import { useState, useRef } from 'react';
+
+function ChatComponent() {
+    const [messages, setMessages] = useState([]);
+    const [isStreaming, setIsStreaming] = useState(false);
+    const abortRef = useRef(null);
+
+    const sendMessage = async (content) => {
+        setMessages(prev => [...prev, { role: 'user', content }]);
+        setMessages(prev => [...prev, { role: 'assistant', content: '' }]);
+        setIsStreaming(true);
+
+        abortRef.current = new AbortController();
+
+        try {
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ messages: [...messages, { role: 'user', content }] }),
+                signal: abortRef.current.signal
+            });
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let buffer = '';
+            let assistantContent = '';
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                buffer += decoder.decode(value, { stream: true });
+                const lines = buffer.split('\n');
+                buffer = lines.pop();
+
+                for (const line of lines) {
+                    if (line.startsWith('data: ') && line.slice(6) !== '[DONE]') {
+                        const parsed = JSON.parse(line.slice(6));
+                        const delta = parsed.choices?.[0]?.delta?.content || '';
+                        assistantContent += delta;
+                        
+                        setMessages(prev => {
+                            const updated = [...prev];
+                            updated[updated.length - 1] = { 
+                                role: 'assistant', 
+                                content: assistantContent 
+                            };
+                            return updated;
+                        });
+                    }
+                }
+            }
+        } catch (e) {
+            if (e.name === 'AbortError') {
+                console.log('Stream cancelled by user');
+            }
+        } finally {
+            setIsStreaming(false);
+        }
+    };
+
+    const stopStreaming = () => {
+        abortRef.current?.abort();
+    };
+
+    return (
+        // Your chat UI with stop button
+        // isStreaming && &lt;button onClick={stopStreaming}&gt;Stop&lt;/button&gt;
+    );
+}</code></pre>
+
+                    <h2 id="backend-proxy">Backend Proxy Pattern</h2>
+                    <p>Never expose API keys to the frontend. Always proxy through your backend:</p>
+<pre><code># FastAPI example
+from fastapi import FastAPI
+from fastapi.responses import StreamingResponse
+from openai import OpenAI
+import json
+
+app = FastAPI()
+client = OpenAI()
+
+@app.post("/api/chat")
+async def chat(request: dict):
+    messages = request.get("messages", [])
+    
+    def generate():
+        stream = client.chat.completions.create(
+            model="gpt-5",
+            messages=messages,
+            stream=True
+        )
+        for chunk in stream:
+            if chunk.choices[0].delta.content:
+                data = json.dumps({
+                    "choices": [{
+                        "delta": {"content": chunk.choices[0].delta.content}
+                    }]
+                })
+                yield f"data: {data}\n\n"
+        yield "data: [DONE]\n\n"
+    
+    return StreamingResponse(
+        generate(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no"  # Disable nginx buffering
+        }
+    )</code></pre>
+
+                    <h2 id="error-recovery">Error Recovery in Streaming</h2>
+                    <p>Streaming introduces error scenarios that non-streaming APIs don't have. Here's how to handle them:</p>
+
+                    <h3>1. Mid-Stream Disconnects</h3>
+                    <p>The connection drops while streaming. Your client should detect this and offer to retry:</p>
+<pre><code>async function streamWithRetry(message, maxRetries = 2) {
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+        try {
+            return await streamChat(message);
+        } catch (e) {
+            if (attempt === maxRetries) throw e;
+            
+            // Exponential backoff
+            const delay = Math.pow(2, attempt) * 1000;
+            await new Promise(r => setTimeout(r, delay));
+        }
+    }
+}</code></pre>
+
+                    <h3>2. Partial Response Handling</h3>
+                    <p>Always save the partial response so users don't lose content if the stream breaks:</p>
+<pre><code>// Auto-save partial responses
+let lastSavedLength = 0;
+
+function appendToChat(content) {
+    assistantContent += content;
+    
+    // Save every 50 characters
+    if (assistantContent.length - lastSavedLength > 50) {
+        localStorage.setItem('draft_response', assistantContent);
+        lastSavedLength = assistantContent.length;
+    }
+}</code></pre>
+
+                    <h3>3. Timeout Detection</h3>
+<pre><code>class StreamTimeout {
+    constructor(ms) {
+        this.ms = ms;
+        this.timer = null;
+    }
+    
+    start(onTimeout) {
+        this.reset(onTimeout);
+    }
+    
+    reset(onTimeout) {
+        clearTimeout(this.timer);
+        this.timer = setTimeout(onTimeout, this.ms);
+    }
+    
+    clear() {
+        clearTimeout(this.timer);
+    }
+}
+
+// Usage: timeout if no token received for 30 seconds
+const timeout = new StreamTimeout(30000);
+timeout.start(() => {
+    console.error('Stream timeout - no data received for 30s');
+    abortController.abort();
+});
+
+// Reset timeout on each received token
+// timeout.reset(() => abortController.abort());</code></pre>
+
+                    <h2 id="ux-patterns">UX Patterns for Streaming</h2>
+
+                    <h3>Typing Indicator</h3>
+                    <p>Show a typing indicator before the first token arrives:</p>
+<pre><code>&lt;div class="typing-indicator"&gt;
+    &lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;
+&lt;/div&gt;
+
+&lt;style&gt;
+.typing-indicator span {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #94a3b8;
+    animation: bounce 1.4s infinite;
+}
+.typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+.typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bounce {
+    0%, 60%, 100% { transform: translateY(0); }
+    30% { transform: translateY(-10px); }
+}
+&lt;/style&gt;</code></pre>
+
+                    <h3>Markdown Rendering During Streaming</h3>
+                    <p>One challenge: rendering markdown as it streams. Code blocks arrive character by character, so <code>```</code> appears before the block is complete:</p>
+<pre><code>import { marked } from 'marked';
+
+function StreamingRenderer() {
+    let fullContent = '';
+    
+    function append(delta) {
+        fullContent += delta;
+        // Re-render the full content each time
+        // marked handles incomplete markdown gracefully
+        const html = marked.parse(fullContent);
+        document.getElementById('output').innerHTML = html;
+    }
+    
+    return { append };
+}</code></pre>
+                    <p>For better performance with long responses, debounce the markdown rendering:</p>
+<pre><code>let renderTimeout = null;
+function append(delta) {
+    fullContent += delta;
+    
+    // Show raw text immediately
+    document.getElementById('raw-output').textContent += delta;
+    
+    // Debounce markdown rendering
+    clearTimeout(renderTimeout);
+    renderTimeout = setTimeout(() => {
+        document.getElementById('formatted-output').innerHTML = marked.parse(fullContent);
+    }, 100);
+}</code></pre>
+
+                    <h3>Copy Button for Completed Responses</h3>
+                    <p>Show a copy button only after streaming completes:</p>
+<pre><code>function onStreamComplete() {
+    const copyBtn = document.createElement('button');
+    copyBtn.textContent = 'Copy';
+    copyBtn.onclick = () => {
+        navigator.clipboard.writeText(fullContent);
+        copyBtn.textContent = 'Copied!';
+        setTimeout(() => copyBtn.textContent = 'Copy', 2000);
+    };
+    document.querySelector('.message:last-child').appendChild(copyBtn);
+}</code></pre>
+
+                    <h2 id="production-considerations">Production Considerations</h2>
+
+                    <h3>Proxy and Load Balancer Configuration</h3>
+                    <p>SSE connections are long-lived. Your infrastructure must support this:</p>
+                    <ul>
+                        <li><strong>Nginx:</strong> Set <code>proxy_buffering off</code> and <code>proxy_read_timeout 300s</code></li>
+                        <li><strong>Cloudflare:</strong> Disable response buffering, or use <code>X-Accel-Buffering: no</code> header</li>
+                        <li><strong>AWS ALB:</strong> Increase idle timeout (default 60s may not be enough)</li>
+                        <li><strong>Kubernetes:</strong> Set appropriate <code>proxy-read-timeout</code> in ingress annotations</li>
+                    </ul>
+
+                    <h3>Connection Management</h3>
+<pre><code># FastAPI with connection lifecycle
+from fastapi import Request
+
+@app.post("/api/chat")
+async def chat(request: Request):
+    async def generate():
+        try:
+            stream = client.chat.completions.create(
+                model="gpt-5",
+                messages=messages,
+                stream=True
+            )
+            for chunk in stream:
+                # Check if client disconnected
+                if await request.is_disconnected():
+                    print("Client disconnected, stopping stream")
+                    break
+                yield format_sse(chunk)
+        finally:
+            print("Stream ended")
+            # Cleanup resources
+    
+    return StreamingResponse(generate(), media_type="text/event-stream")</code></pre>
+
+                    <h3>Token Counting and Cost Tracking</h3>
+                    <p>Streaming responses include usage information in the final event. Always capture this for cost tracking:</p>
+<pre><code>total_tokens = 0
+
+for event in stream:
+    if event.type == "response.completed":
+        total_tokens = event.response.usage.total_tokens
+        input_tokens = event.response.usage.input_tokens
+        output_tokens = event.response.usage.output_tokens
+        
+        # Log to your cost tracking system
+        log_usage(
+            model="gpt-5",
+            input_tokens=input_tokens,
+            output_tokens=output_tokens,
+            cost=calculate_cost("gpt-5", input_tokens, output_tokens)
+        )</code></pre>
+
+                    <h3>Concurrent Stream Limits</h3>
+                    <p>Each streaming connection holds resources on your server. Implement limits:</p>
+<pre><code>from asyncio import Semaphore
+
+# Limit concurrent streams per user
+stream_semaphores = {}
+
+async def chat(request: Request):
+    user_id = get_user_id(request)
+    if user_id not in stream_semaphores:
+        stream_semaphores[user_id] = Semaphore(3)  # Max 3 concurrent streams
+    
+    if stream_semaphores[user_id].locked():
+        return {"error": "Too many concurrent streams"}
+    
+    async with stream_semaphores[user_id]:
+        # Process stream
+        pass</code></pre>
+
+                    <h2 id="advanced-patterns">Advanced Patterns</h2>
+
+                    <h3>Multi-Model Streaming with Fallback</h3>
+                    <p>Stream from a primary model and fall back to a secondary if it fails:</p>
+<pre><code>async def stream_with_fallback(messages, primary="gpt-5", fallback="claude-sonnet-4-20250514"):
+    try:
+        async for chunk in stream_openai(primary, messages):
+            yield chunk
+    except Exception as e:
+        print(f"Primary model failed: {e}, falling back")
+        yield f"data: {json.dumps({'fallback': True})}\n\n"
+        async for chunk in stream_anthropic(fallback, messages):
+            yield chunk</code></pre>
+
+                    <h3>Streaming with Caching</h3>
+                    <p>Cache complete responses for identical queries, but still stream them to the client:</p>
+<pre><code>import hashlib, redis
+
+r = redis.Redis()
+
+async def cached_stream(messages, model):
+    cache_key = hashlib.sha256(
+        f"{model}:{json.dumps(messages)}".encode()
+    ).hexdigest()
+    
+    # Check cache first
+    cached = r.get(f"stream:{cache_key}")
+    if cached:
+        # Simulate streaming from cache
+        full_response = json.loads(cached)
+        for i in range(0, len(full_response), 10):
+            yield format_sse(full_response[i:i+10])
+            await asyncio.sleep(0.01)  # Realistic feel
+        yield "data: [DONE]\n\n"
+        return
+    
+    # Stream from API and cache
+    full_content = ""
+    async for chunk in stream_from_api(model, messages):
+        full_content += extract_content(chunk)
+        yield chunk
+    
+    r.setex(f"stream:{cache_key}", 3600, json.dumps(full_content))</code></pre>
+
+                    <h2 id="common-pitfalls">Common Pitfalls</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Pitfall</th><th>Solution</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Proxy buffering breaking streaming</td>
+                                <td>Set <code>X-Accel-Buffering: no</code> and disable proxy buffering</td>
+                            </tr>
+                            <tr>
+                                <td>Not handling partial JSON in SSE events</td>
+                                <td>Buffer incomplete lines and parse on newline</td>
+                            </tr>
+                            <tr>
+                                <td>Memory leak from abandoned connections</td>
+                                <td>Check <code>is_disconnected()</code> and set timeouts</td>
+                            </tr>
+                            <tr>
+                                <td>Markdown flickering during streaming</td>
+                                <td>Debounce rendering or use incremental parsers</td>
+                            </tr>
+                            <tr>
+                                <td>Exposing API keys in frontend</td>
+                                <td>Always proxy through backend</td>
+                            </tr>
+                            <tr>
+                                <td>Not tracking token usage from streams</td>
+                                <td>Capture usage from the final stream event</td>
+                            </tr>
+                            <tr>
+                                <td>CORS issues with SSE</td>
+                                <td>Configure CORS headers on your proxy</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h2 id="conclusion">Conclusion</h2>
+                    <p>Streaming is no longer optional for AI applications — it's the baseline expectation. The good news is that all major LLM providers use the same SSE protocol, so your core streaming infrastructure works across them. The real engineering work is in the details: proper error recovery, UX polish, proxy configuration, and cost tracking.</p>
+                    <p>Start with the basic patterns in this guide, then layer on the advanced patterns as your application scales. The most important thing is to never expose API keys to the frontend and always handle mid-stream failures gracefully. Your users will thank you for it.</p>
+
+                    <div class="mt-8 p-4 bg-violet-50 rounded-lg border border-violet-200">
+                        <p class="text-sm text-violet-800"><strong>Related Guides:</strong> <a href="ai-function-calling-tool-use-guide-2026.html" class="text-violet-600 hover:underline">Function Calling &amp; Tool Use Guide</a> · <a href="ai-api-rate-limits-error-handling-2026.html" class="text-violet-600 hover:underline">API Rate Limits &amp; Error Handling</a> · <a href="ai-agent-development-guide-2026.html" class="text-violet-600 hover:underline">AI Agent Development Guide</a></p>
+                    </div>
+
+                </div>
+            </div>
+        </article>
+    </main>
+    <footer class="bg-gray-900 text-gray-400 py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p>&copy; 2026 DevTools. Built for developers.</p>
+        </div>
+    </footer>
+    <script>
+        function likeArticle() {
+            const btn = event.currentTarget;
+            btn.innerHTML = '<i class="fas fa-thumbs-up text-xl text-green-500"></i>';
+            btn.disabled = true;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Function Calling &amp; Tool Use Guide 2026 - Master LLM Tool Integration</title>
+    <meta name="description" content="Complete guide to AI function calling and tool use in 2026. Learn OpenAI, Anthropic, and Google Gemini function calling APIs, structured outputs, parallel tool calls, and production patterns with code examples.">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "AI Function Calling & Tool Use Guide 2026 - Master LLM Tool Integration",
+      "description": "Complete guide to AI function calling and tool use in 2026. Learn OpenAI, Anthropic, and Google Gemini function calling APIs, structured outputs, parallel tool calls, and production patterns with code examples.",
+      "author": { "@type": "Organization", "name": "DevTools" },
+      "datePublished": "2026-05-11",
+      "dateModified": "2026-05-11T10:00:00+08:00",
+      "publisher": { "@type": "Organization", "name": "DevTools", "url": "https://aitechtools.top" },
+      "mainEntityOfPage": { "@type": "WebPage", "@id": "https://aitechtools.top/blog/ai-function-calling-tool-use-guide-2026.html" }
+    }
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>tailwind.config = { theme: { extend: { colors: { primary: '#3b82f6', secondary: '#64748b' } } } }</script>
+    <style>
+        .prose { max-width: 65ch; }
+        .prose h2 { margin-top: 2rem; margin-bottom: 1rem; }
+        .prose h3 { margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        .prose p { margin-bottom: 1rem; }
+        .prose ul, .prose ol { margin-bottom: 1rem; padding-left: 1.5rem; }
+        .prose li { margin-bottom: 0.5rem; }
+        .prose pre { background: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; margin-bottom: 1rem; }
+        .prose code { background: #f1f5f9; padding: 0.125rem 0.25rem; border-radius: 0.25rem; font-size: 0.875rem; }
+        .prose pre code { background: none; padding: 0; }
+        .prose table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+        .prose th, .prose td { border: 1px solid #e5e7eb; padding: 0.5rem 1rem; text-align: left; }
+        .prose th { background: #f9fafb; font-weight: 600; }
+        .prose blockquote { border-left: 4px solid #3b82f6; padding-left: 1rem; margin: 1.5rem 0; color: #4b5563; font-style: italic; }
+    </style>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VVLR9NKKXE"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-VVLR9NKKXE');
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="../index.html" class="flex items-center">
+                    <i class="fas fa-tools text-primary text-2xl mr-3"></i>
+                    <h1 class="text-xl font-bold text-gray-900">DevTools</h1>
+                </a>
+                <nav class="hidden md:flex items-center space-x-6">
+                    <a href="../index.html" class="text-gray-600 hover:text-primary font-medium">Home</a>
+                    <a href="index.html" class="text-primary font-medium">Blog</a>
+                    <a href="../ai-toolkit/" class="text-gray-600 hover:text-primary font-medium">AI Toolkit</a>
+                </nav>
+                <a href="https://github.com/sunplus-1208/devtools" target="_blank" class="text-gray-500 hover:text-gray-700"><i class="fab fa-github text-xl"></i></a>
+            </div>
+        </div>
+    </header>
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <article>
+            <div class="bg-gradient-to-r from-blue-600 to-cyan-600 rounded-xl p-8 mb-8 text-white">
+                <div class="flex items-center text-sm mb-4">
+                    <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-medium">Tutorial</span>
+                    <span class="ml-3">May 11, 2026</span>
+                </div>
+                <h1 class="text-3xl font-bold mb-3">AI Function Calling &amp; Tool Use Guide 2026</h1>
+                <p class="text-lg opacity-90">Master LLM tool integration with OpenAI, Anthropic, and Google Gemini function calling APIs. Learn structured outputs, parallel tool calls, error handling, and production patterns.</p>
+                <div class="mt-4">
+                    <i class="fas fa-plug text-5xl opacity-30"></i>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm p-8">
+                <div class="prose text-gray-700">
+
+                    <p>Function calling — also known as tool use — is the mechanism that transforms large language models from text generators into action-taking systems. Instead of just producing words, a model with function calling can request that your application execute specific operations: look up data, call an API, query a database, or run calculations. This guide covers how function calling works across all major LLM providers in 2026, with practical code examples and production patterns you can deploy today.</p>
+
+                    <h2 id="what-is-function-calling">What Is Function Calling?</h2>
+                    <p>At its core, function calling is a structured way for an LLM to communicate intent to your application. You define a set of tools (functions) with their names, descriptions, and parameter schemas. When the model decides it needs to call a tool, it outputs a structured JSON object specifying which function to call and with what arguments. Your application executes the function and returns the result, which the model uses to continue the conversation.</p>
+                    <p>The flow always involves these steps:</p>
+                    <ol>
+                        <li>You send a message to the model along with available tool definitions</li>
+                        <li>The model responds with a tool call (or a regular text response)</li>
+                        <li>Your application executes the tool and returns the output</li>
+                        <li>The model processes the tool output and generates a final response</li>
+                    </ol>
+                    <blockquote>This is not the model executing code itself. The model only decides <em>what</em> to call and with <em>what arguments</em>. Your application is always in control of execution.</blockquote>
+
+                    <h2 id="openai-function-calling">OpenAI Function Calling</h2>
+                    <p>OpenAI's function calling API has evolved significantly. As of 2026, the <code>responses.create</code> API is the recommended interface, with support for parallel tool calls, structured outputs, and the new tool search feature for managing large tool sets.</p>
+
+                    <h3>Basic Tool Definition</h3>
+                    <p>Tools are defined using JSON Schema for their parameters. Here's a simple example:</p>
+<pre><code>from openai import OpenAI
+import json
+
+client = OpenAI()
+
+tools = [
+    {
+        "type": "function",
+        "name": "get_weather",
+        "description": "Get current weather for a location",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "location": {
+                    "type": "string",
+                    "description": "City name, e.g. 'San Francisco'"
+                },
+                "unit": {
+                    "type": "string",
+                    "enum": ["celsius", "fahrenheit"],
+                    "description": "Temperature unit"
+                }
+            },
+            "required": ["location"]
+        }
+    }
+]
+
+response = client.responses.create(
+    model="gpt-5",
+    tools=tools,
+    input="What's the weather in Tokyo?"
+)</code></pre>
+
+                    <h3>Handling Tool Calls</h3>
+                    <p>When the model returns tool calls, you execute them and provide the results back:</p>
+<pre><code>input_list = [{"role": "user", "content": "What's the weather in Tokyo?"}]
+response = client.responses.create(
+    model="gpt-5",
+    tools=tools,
+    input=input_list
+)
+
+input_list += response.output
+
+for item in response.output:
+    if item.type == "function_call":
+        # Execute your function logic
+        args = json.loads(item.arguments)
+        result = get_weather(args["location"], args.get("unit", "celsius"))
+        
+        # Return the result to the model
+        input_list.append({
+            "type": "function_call_output",
+            "call_id": item.call_id,
+            "output": result
+        })
+
+# Get final response
+final_response = client.responses.create(
+    model="gpt-5",
+    tools=tools,
+    input=input_list
+)
+print(final_response.output_text)</code></pre>
+
+                    <h3>Structured Outputs with Strict Mode</h3>
+                    <p>For reliable function calling, enable strict mode which guarantees the model's output matches your schema exactly:</p>
+<pre><code>tools = [
+    {
+        "type": "function",
+        "name": "search_products",
+        "description": "Search product catalog",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {"type": "string"},
+                "category": {"type": "string"},
+                "max_price": {"type": "number"},
+                "in_stock_only": {"type": "boolean"}
+            },
+            "required": ["query"]
+        },
+        "strict": True  # Guarantees schema compliance
+    }
+]</code></pre>
+                    <p>With strict mode, the model will always produce valid JSON matching your schema. This eliminates the need for defensive parsing and makes your application more reliable.</p>
+
+                    <h3>Tool Search for Large Tool Sets</h3>
+                    <p>GPT-5.4 and later models support tool search, which lets you defer rarely-used tools and load them only when needed. This is essential when your application has dozens or hundreds of tools:</p>
+<pre><code>tools = [
+    # Frequently used tools defined directly
+    {
+        "type": "function",
+        "name": "search_knowledge_base",
+        "description": "Search internal knowledge base",
+        "parameters": { ... }
+    }
+]
+
+# Use tool_search for deferred loading
+response = client.responses.create(
+    model="gpt-5",
+    tools=tools,
+    tool_search={
+        "enabled": True,
+        "max_results": 5
+    },
+    input="Find our refund policy"
+)</code></pre>
+
+                    <h2 id="anthropic-tool-use">Anthropic Tool Use (Claude)</h2>
+                    <p>Anthropic's Claude models support tool use through the <code>tools</code> parameter in the messages API. The approach is similar but uses a slightly different schema format:</p>
+<pre><code>import anthropic
+
+client = anthropic.Anthropic()
+
+response = client.messages.create(
+    model="claude-sonnet-4-20250514",
+    max_tokens=1024,
+    tools=[
+        {
+            "name": "get_weather",
+            "description": "Get current weather for a location",
+            "input_schema": {
+                "type": "object",
+                "properties": {
+                    "location": {
+                        "type": "string",
+                        "description": "City name"
+                    }
+                },
+                "required": ["location"]
+            }
+        }
+    ],
+    messages=[
+        {"role": "user", "content": "What's the weather in Paris?"}
+    ]
+)
+
+# Check for tool use in response
+for block in response.content:
+    if block.type == "tool_use":
+        print(f"Tool: {block.name}")
+        print(f"Input: {block.input}")
+        
+        # Execute and return result
+        tool_result = get_weather(block.input["location"])
+        
+        # Continue conversation with tool result
+        response = client.messages.create(
+            model="claude-sonnet-4-20250514",
+            max_tokens=1024,
+            tools=[...],
+            messages=[
+                {"role": "user", "content": "What's the weather in Paris?"},
+                {"role": "assistant", "content": response.content},
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "tool_result",
+                            "tool_use_id": block.id,
+                            "content": str(tool_result)
+                        }
+                    ]
+                }
+            ]
+        )</code></pre>
+
+                    <h3>Claude's Computer Use</h3>
+                    <p>Claude also supports a unique <strong>computer use</strong> capability that goes beyond traditional function calling. With computer use, Claude can interact with a computer interface — clicking, typing, and scrolling — through structured tool calls. This is available on Claude 3.5 Sonnet and later models and is particularly useful for UI automation and testing.</p>
+
+                    <h2 id="google-gemini-function-calling">Google Gemini Function Calling</h2>
+                    <p>Gemini's function calling uses a protocol-compatible approach with OpenAI's format, making it easy to switch providers:</p>
+<pre><code>import google.generativeai as genai
+
+genai.configure(api_key="YOUR_API_KEY")
+
+# Define functions
+get_weather_func = genai.protos.FunctionDeclaration(
+    name="get_weather",
+    description="Get current weather for a location",
+    parameters={
+        "type": "object",
+        "properties": {
+            "location": {"type": "string", "description": "City name"}
+        },
+        "required": ["location"]
+    }
+)
+
+model = genai.GenerativeModel(
+    model_name="gemini-2.5-pro",
+    tools=[{"function_declarations": [get_weather_func]}]
+)
+
+chat = model.start_chat()
+response = chat.send_message("What's the weather in Berlin?")
+
+# Check for function call
+if response.candidates[0].content.parts[0].function_call:
+    fc = response.candidates[0].content.parts[0].function_call
+    print(f"Function: {fc.name}")
+    print(f"Args: {dict(fc.args)}")
+    
+    # Execute and return
+    result = get_weather(dict(fc.args)["location"])
+    response = chat.send_message(
+        genai.protos.Content(
+            parts=[genai.protos.Part(
+                function_response=genai.protos.FunctionResponse(
+                    name="get_weather",
+                    response={"result": result}
+                )
+            )]
+        )
+    )</code></pre>
+
+                    <h2 id="provider-comparison">Provider Comparison</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th>OpenAI (GPT-5)</th>
+                                <th>Anthropic (Claude)</th>
+                                <th>Google (Gemini 2.5)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Parallel tool calls</td>
+                                <td>Yes</td>
+                                <td>Yes</td>
+                                <td>Yes</td>
+                            </tr>
+                            <tr>
+                                <td>Structured outputs</td>
+                                <td>Strict mode</td>
+                                <td>JSON mode</td>
+                                <td>JSON mode</td>
+                            </tr>
+                            <tr>
+                                <td>Tool search / deferred</td>
+                                <td>Yes (GPT-5.4+)</td>
+                                <td>No</td>
+                                <td>No</td>
+                            </tr>
+                            <tr>
+                                <td>Max tools per request</td>
+                                <td>128+</td>
+                                <td>128</td>
+                                <td>64</td>
+                            </tr>
+                            <tr>
+                                <td>Computer use</td>
+                                <td>No</td>
+                                <td>Yes</td>
+                                <td>No</td>
+                            </tr>
+                            <tr>
+                                <td>Forced tool choice</td>
+                                <td>Yes</td>
+                                <td>Yes</td>
+                                <td>Yes</td>
+                            </tr>
+                            <tr>
+                                <td>Streaming tool calls</td>
+                                <td>Yes</td>
+                                <td>Yes</td>
+                                <td>Yes</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h2 id="parallel-tool-calls">Parallel Tool Calls</h2>
+                    <p>One of the most powerful features in 2026 is parallel tool calling. When a user query requires multiple independent tool calls, the model can request them all at once instead of sequentially. This dramatically reduces latency for complex queries.</p>
+<pre><code># Example: User asks "Compare weather in NYC and London"
+# The model may return TWO tool calls simultaneously
+
+response = client.responses.create(
+    model="gpt-5",
+    tools=tools,
+    input="Compare weather in NYC and London"
+)
+
+# Process all tool calls
+results = {}
+for item in response.output:
+    if item.type == "function_call":
+        args = json.loads(item.arguments)
+        results[item.call_id] = get_weather(args["location"])
+        input_list.append({
+            "type": "function_call_output",
+            "call_id": item.call_id,
+            "output": results[item.call_id]
+        })</code></pre>
+                    <p>Key point: when processing parallel tool calls, you must return <strong>all</strong> tool results before making the next API call. Don't make separate follow-up calls for each tool result.</p>
+
+                    <h2 id="error-handling">Error Handling Patterns</h2>
+                    <p>Function calling in production requires robust error handling. Here are the key patterns:</p>
+
+                    <h3>1. Tool Execution Errors</h3>
+                    <p>When a tool execution fails, don't crash — report the error back to the model so it can recover:</p>
+<pre><code>def execute_tool_safely(tool_name, args):
+    try:
+        result = tool_registry[tool_name](**args)
+        return {"status": "success", "data": result}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+# Return error to model — it will try an alternative approach
+input_list.append({
+    "type": "function_call_output",
+    "call_id": item.call_id,
+    "output": json.dumps(execute_tool_safely(item.name, args))
+})</code></pre>
+
+                    <h3>2. Schema Validation</h3>
+                    <p>Even with strict mode, validate tool arguments on your side:</p>
+<pre><code>from jsonschema import validate, ValidationError
+
+def validate_tool_args(tool_name, args, schema):
+    try:
+        validate(instance=args, schema=schema)
+        return True
+    except ValidationError as e:
+        print(f"Invalid args for {tool_name}: {e.message}")
+        return False</code></pre>
+
+                    <h3>3. Timeout Protection</h3>
+                    <p>Tool executions should always have timeouts to prevent hanging:</p>
+<pre><code>import asyncio
+
+async def execute_with_timeout(tool_func, args, timeout=10):
+    try:
+        result = await asyncio.wait_for(
+            tool_func(**args),
+            timeout=timeout
+        )
+        return result
+    except asyncio.TimeoutError:
+        return {"error": f"Tool execution timed out after {timeout}s"}</code></pre>
+
+                    <h2 id="production-patterns">Production Patterns</h2>
+
+                    <h3>Tool Registry Pattern</h3>
+                    <p>Centralize tool definitions and handlers in a registry for clean architecture:</p>
+<pre><code>class ToolRegistry:
+    def __init__(self):
+        self.tools = {}
+        self.handlers = {}
+    
+    def register(self, name, description, parameters, handler):
+        self.tools[name] = {
+            "type": "function",
+            "name": name,
+            "description": description,
+            "parameters": parameters
+        }
+        self.handlers[name] = handler
+    
+    def get_tool_definitions(self):
+        return list(self.tools.values())
+    
+    def execute(self, name, args):
+        return self.handlers[name](**args)
+
+# Usage
+registry = ToolRegistry()
+registry.register(
+    name="search_docs",
+    description="Search internal documentation",
+    parameters={
+        "type": "object",
+        "properties": {
+            "query": {"type": "string"},
+            "limit": {"type": "integer", "default": 5}
+        },
+        "required": ["query"]
+    },
+    handler=search_documentation
+)</code></pre>
+
+                    <h3>Conversation State Management</h3>
+                    <p>In a multi-turn tool use conversation, maintain state carefully:</p>
+<pre><code>class ToolConversation:
+    def __init__(self, client, model, registry):
+        self.client = client
+        self.model = model
+        self.registry = registry
+        self.input_list = []
+        self.max_tool_rounds = 5  # Prevent infinite loops
+    
+    async def run(self, user_message):
+        self.input_list.append({"role": "user", "content": user_message})
+        
+        for round_num in range(self.max_tool_rounds):
+            response = self.client.responses.create(
+                model=self.model,
+                tools=self.registry.get_tool_definitions(),
+                input=self.input_list
+            )
+            
+            self.input_list += response.output
+            
+            # Check if model wants to call tools
+            tool_calls = [item for item in response.output 
+                         if item.type == "function_call"]
+            
+            if not tool_calls:
+                return response.output_text
+            
+            # Execute all tool calls
+            for item in tool_calls:
+                args = json.loads(item.arguments)
+                result = await self.registry.execute(item.name, args)
+                self.input_list.append({
+                    "type": "function_call_output",
+                    "call_id": item.call_id,
+                    "output": json.dumps(result)
+                })
+        
+        return "Maximum tool call rounds exceeded"</code></pre>
+
+                    <h2 id="structured-outputs">Structured Outputs Beyond Tool Calling</h2>
+                    <p>Function calling isn't just for executing actions — it's also a powerful pattern for extracting structured data from unstructured text. You can define "tools" that the model fills in with extracted information:</p>
+<pre><code>extraction_tools = [
+    {
+        "type": "function",
+        "name": "extract_customer_info",
+        "description": "Extract customer information from text",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "name": {"type": "string"},
+                "email": {"type": "string"},
+                "phone": {"type": "string"},
+                "intent": {"type": "string", "enum": ["purchase", "support", "complaint", "inquiry"]}
+            },
+            "required": ["name", "intent"]
+        },
+        "strict": True
+    }
+]
+
+response = client.responses.create(
+    model="gpt-5",
+    tools=extraction_tools,
+    tool_choice={"type": "function", "name": "extract_customer_info"},
+    input="Hi, I'm Sarah Johnson. My email is sarah@example.com. I need help with my recent order."
+)</code></pre>
+                    <p>This pattern is extremely useful for form auto-filling, data extraction, and intent classification in production applications.</p>
+
+                    <h2 id="mcp-vs-function-calling">MCP vs Function Calling</h2>
+                    <p>The Model Context Protocol (MCP) is an emerging standard that builds on the function calling concept but adds a standardized protocol layer. Here's how they relate:</p>
+                    <ul>
+                        <li><strong>Function calling</strong> is an API-level feature — you define tools per request</li>
+                        <li><strong>MCP</strong> is a protocol standard — tools are hosted as MCP servers and discovered dynamically</li>
+                        <li>MCP servers expose tools that any MCP-compatible client can use</li>
+                        <li>Think of function calling as the mechanism, MCP as the interoperability standard</li>
+                    </ul>
+                    <p>For most applications in 2026, direct function calling is sufficient and simpler. MCP becomes valuable when you need tool interoperability across different applications and platforms.</p>
+
+                    <h2 id="best-practices">Best Practices</h2>
+                    <ol>
+                        <li><strong>Write clear tool descriptions</strong> — The model relies on descriptions to decide when and how to use a tool. Be specific about what the tool does and when it should be used.</li>
+                        <li><strong>Use strict mode when available</strong> — It guarantees schema compliance and eliminates parsing errors.</li>
+                        <li><strong>Keep tool sets focused</strong> — Don't overload the model with too many tools. If you have more than 20, use tool search or group them by context.</li>
+                        <li><strong>Always set max rounds</strong> — Prevent infinite tool call loops by capping the number of rounds.</li>
+                        <li><strong>Validate all inputs</strong> — Never trust model-generated arguments blindly. Validate before execution.</li>
+                        <li><strong>Log tool calls</strong> — Track which tools are called, how often, and with what arguments. This data is invaluable for debugging and optimization.</li>
+                        <li><strong>Return errors to the model</strong> — When a tool fails, inform the model so it can try a different approach rather than leaving the user hanging.</li>
+                        <li><strong>Design idempotent tools</strong> — Tool execution may be retried. Design tools so that calling them twice with the same arguments produces the same result.</li>
+                    </ol>
+
+                    <h2 id="common-pitfalls">Common Pitfalls</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Pitfall</th>
+                                <th>Solution</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Vague tool descriptions leading to wrong tool selection</td>
+                                <td>Write detailed descriptions with examples of when to use the tool</td>
+                            </tr>
+                            <tr>
+                                <td>Tool calling infinite loop</td>
+                                <td>Set max rounds and detect repeated identical calls</td>
+                            </tr>
+                            <tr>
+                                <td>Missing required parameters in tool output</td>
+                                <td>Use strict mode and validate server-side</td>
+                            </tr>
+                            <tr>
+                                <td>Slow tool execution blocking the conversation</td>
+                                <td>Add timeouts and async execution</td>
+                            </tr>
+                            <tr>
+                                <td>Model hallucinating tool calls that don't exist</td>
+                                <td>Use tool_choice to constrain, and validate call names</td>
+                            </tr>
+                            <tr>
+                                <td>Tool results too large for context window</td>
+                                <td>Summarize or truncate results before returning</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h2 id="conclusion">Conclusion</h2>
+                    <p>Function calling is the bridge between LLMs and the real world. In 2026, all major providers — OpenAI, Anthropic, and Google — support robust tool use with parallel calls, structured outputs, and streaming. The key to success is treating function calling as a system design problem, not just an API call. Invest in clear tool descriptions, robust error handling, and a clean architecture like the tool registry pattern. Your users will benefit from more capable, reliable AI applications.</p>
+
+                    <div class="mt-8 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <p class="text-sm text-blue-800"><strong>Related Guides:</strong> <a href="ai-agent-development-guide-2026.html" class="text-blue-600 hover:underline">AI Agent Development Guide</a> · <a href="mcp-protocol-guide-2026.html" class="text-blue-600 hover:underline">MCP Protocol Guide</a> · <a href="ai-api-rate-limits-error-handling-2026.html" class="text-blue-600 hover:underline">API Rate Limits &amp; Error Handling</a></p>
+                    </div>
+
+                </div>
+            </div>
+        </article>
+    </main>
+    <footer class="bg-gray-900 text-gray-400 py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p>&copy; 2026 DevTools. Built for developers.</p>
+        </div>
+    </footer>
+    <script>
+        function likeArticle() {
+            const btn = event.currentTarget;
+            btn.innerHTML = '<i class="fas fa-thumbs-up text-xl text-green-500"></i>';
+            btn.disabled = true;
+        }
+    </script>
+</body>
+</html>
