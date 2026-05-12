@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Structured Outputs &amp; JSON Mode Guide 2026 - Get Reliable JSON from Any LLM</title>
+    <meta name="description" content="Complete guide to structured outputs and JSON mode for LLMs in 2026. OpenAI Structured Outputs, Anthropic JSON mode, Google Gemini controlled generation, and production patterns with code examples.">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "AI Structured Outputs & JSON Mode Guide 2026 - Get Reliable JSON from Any LLM",
+      "description": "Complete guide to structured outputs and JSON mode for LLMs in 2026. OpenAI Structured Outputs, Anthropic JSON mode, Google Gemini controlled generation, and production patterns with code examples.",
+      "author": { "@type": "Organization", "name": "DevTools" },
+      "datePublished": "2026-05-12",
+      "dateModified": "2026-05-12T10:00:00+08:00",
+      "publisher": { "@type": "Organization", "name": "DevTools", "url": "https://aitechtools.top" },
+      "mainEntityOfPage": { "@type": "WebPage", "@id": "https://aitechtools.top/blog/ai-structured-outputs-json-mode-guide-2026.html" }
+    }
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>tailwind.config = { theme: { extend: { colors: { primary: '#3b82f6', secondary: '#64748b' } } } }</script>
+    <style>
+        .prose { max-width: 65ch; }
+        .prose h2 { margin-top: 2rem; margin-bottom: 1rem; }
+        .prose h3 { margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        .prose p { margin-bottom: 1rem; }
+        .prose ul, .prose ol { margin-bottom: 1rem; padding-left: 1.5rem; }
+        .prose li { margin-bottom: 0.5rem; }
+        .prose pre { background: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; margin-bottom: 1rem; }
+        .prose code { background: #f1f5f9; padding: 0.125rem 0.25rem; border-radius: 0.25rem; font-size: 0.875rem; }
+        .prose pre code { background: none; padding: 0; }
+        .prose table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+        .prose th, .prose td { border: 1px solid #e5e7eb; padding: 0.5rem 1rem; text-align: left; }
+        .prose th { background: #f9fafb; font-weight: 600; }
+        .prose blockquote { border-left: 4px solid #f59e0b; padding-left: 1rem; margin: 1.5rem 0; color: #4b5563; font-style: italic; }
+    </style>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VVLR9NKKXE"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-VVLR9NKKXE');
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="../index.html" class="flex items-center">
+                    <i class="fas fa-tools text-primary text-2xl mr-3"></i>
+                    <h1 class="text-xl font-bold text-gray-900">DevTools</h1>
+                </a>
+                <nav class="hidden md:flex items-center space-x-6">
+                    <a href="../index.html" class="text-gray-600 hover:text-primary font-medium">Home</a>
+                    <a href="index.html" class="text-primary font-medium">Blog</a>
+                    <a href="../ai-toolkit/" class="text-gray-600 hover:text-primary font-medium">AI Toolkit</a>
+                </nav>
+                <a href="https://github.com/sunplus-1208/devtools" target="_blank" class="text-gray-500 hover:text-gray-700"><i class="fab fa-github text-xl"></i></a>
+            </div>
+        </div>
+    </header>
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <article>
+            <div class="bg-gradient-to-r from-amber-500 to-orange-600 rounded-xl p-8 mb-8 text-white">
+                <div class="flex items-center text-sm mb-4">
+                    <span class="bg-amber-100 text-amber-700 px-3 py-1 rounded-full font-medium">Tutorial</span>
+                    <span class="ml-3">May 12, 2026</span>
+                </div>
+                <h1 class="text-3xl font-bold mb-3">AI Structured Outputs &amp; JSON Mode Guide 2026</h1>
+                <p class="text-lg opacity-90">Get reliable, schema-compliant JSON from any LLM. OpenAI Structured Outputs, Anthropic JSON mode, Google controlled generation, and production patterns.</p>
+                <div class="mt-4">
+                    <i class="fas fa-code text-5xl opacity-30"></i>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm p-8">
+                <div class="prose text-gray-700">
+
+                    <p>One of the biggest headaches in building LLM applications is parsing the model's output. You ask for JSON, and sometimes you get it — wrapped in markdown code blocks, with missing fields, or with hallucinated values that don't match your schema. Structured Outputs is the solution: it guarantees the model always returns valid JSON that conforms to your specified schema. This guide covers every provider's approach to structured outputs in 2026, with practical code examples and production patterns.</p>
+
+                    <h2 id="the-problem">The Problem: Why Structured Outputs Matter</h2>
+                    <p>Without structured outputs, getting reliable JSON from an LLM is a fragile process:</p>
+                    <ul>
+                        <li>The model wraps JSON in <code>```json ... ```</code> markdown blocks</li>
+                        <li>Required fields are sometimes omitted</li>
+                        <li>Enum values are hallucinated (e.g., <code>"priority": "urgent"</code> when only <code>"high"</code>, <code>"medium"</code>, <code>"low"</code> are valid)</li>
+                        <li>Nested objects have inconsistent structures</li>
+                        <li>The model adds conversational text before or after the JSON</li>
+                    </ul>
+                    <blockquote>In production, even a 1% JSON parsing failure rate means hundreds of broken requests per day at scale. Structured Outputs eliminates this class of errors entirely.</blockquote>
+
+                    <h2 id="openai-structured-outputs">OpenAI Structured Outputs</h2>
+                    <p>OpenAI offers the most robust structured outputs implementation, available through two mechanisms: <strong>function calling with strict mode</strong> and <strong>response_format with json_schema</strong>.</p>
+
+                    <h3>Method 1: Structured Outputs via Response Format</h3>
+                    <p>Use this when you want the model's response to follow a schema — not to call a function:</p>
+<pre><code>from openai import OpenAI
+from pydantic import BaseModel
+
+client = OpenAI()
+
+class MovieReview(BaseModel):
+    title: str
+    year: int
+    rating: float
+    genre: list[str]
+    summary: str
+    recommended: bool
+
+response = client.responses.parse(
+    model="gpt-5",
+    input=[
+        {"role": "system", "content": "Extract movie review information."},
+        {"role": "user", "content": "I watched Inception (2010). Mind-blowing film! 9/10."}
+    ],
+    text_format=MovieReview,
+)
+
+review = response.output_parsed
+print(review.title)       # "Inception"
+print(review.year)        # 2010
+print(review.rating)      # 9.0
+print(review.recommended) # True</code></pre>
+                    <p>The Pydantic model is automatically converted to a JSON Schema, and the model is guaranteed to produce output matching that schema. If it can't (e.g., due to a safety refusal), you get an explicit refusal object instead of broken JSON.</p>
+
+                    <h3>Method 2: Direct JSON Schema (without Pydantic)</h3>
+<pre><code>response = client.chat.completions.create(
+    model="gpt-5",
+    messages=[{"role": "user", "content": "List 3 programming languages"}],
+    response_format={
+        "type": "json_schema",
+        "json_schema": {
+            "name": "language_list",
+            "strict": True,
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "languages": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "name": {"type": "string"},
+                                "paradigm": {"type": "string", "enum": ["imperative", "functional", "logic", "object-oriented"]},
+                                "year_created": {"type": "integer"}
+                            },
+                            "required": ["name", "paradigm", "year_created"],
+                            "additionalProperties": False
+                        }
+                    }
+                },
+                "required": ["languages"],
+                "additionalProperties": False
+            }
+        }
+    }
+)
+
+import json
+result = json.loads(response.choices[0].message.content)
+print(result["languages"][0]["name"])  # e.g. "Python"</code></pre>
+
+                    <h3>Strict Mode Requirements</h3>
+                    <p>When using strict mode, your JSON Schema must follow these rules:</p>
+                    <ol>
+                        <li>All fields must be in <code>required</code></li>
+                        <li><code>additionalProperties</code> must be <code>False</code> on all objects</li>
+                        <li>Nested objects must also follow these rules recursively</li>
+                        <li>Optional fields should use <code>nullable: true</code> with a <code>null</code> type in the union</li>
+                    </ol>
+<pre><code># Making a field optional with strict mode
+"optional_field": {
+    "type": ["string", "null"],
+    "description": "This field is optional"
+}</code></pre>
+
+                    <h3>Handling Refusals</h3>
+                    <p>When the model refuses to answer (safety filter), you get a structured refusal instead of broken output:</p>
+<pre><code>response = client.responses.parse(
+    model="gpt-5",
+    input="How to hack a server",
+    text_format=MySchema,
+)
+
+if response.output_parsed is None:
+    # Model refused — check refusal
+    refusal = response.output[0]
+    print(f"Refused: {refusal.refusal}")
+else:
+    # Normal structured output
+    data = response.output_parsed</code></pre>
+
+                    <h2 id="anthropic-json-mode">Anthropic JSON Mode</h2>
+                    <p>Anthropic's approach to structured output is through tool use or explicit JSON prompting. Claude doesn't have native JSON Schema enforcement like OpenAI, but you can achieve reliable results with the right patterns:</p>
+
+                    <h3>Approach 1: Tool Use for Structured Extraction</h3>
+                    <p>Define a tool with your desired schema and force the model to use it:</p>
+<pre><code>import anthropic
+import json
+
+client = anthropic.Anthropic()
+
+response = client.messages.create(
+    model="claude-sonnet-4-20250514",
+    max_tokens=1024,
+    tool_choice={"type": "tool", "name": "extract_info"},
+    tools=[
+        {
+            "name": "extract_info",
+            "description": "Extract structured information from text",
+            "input_schema": {
+                "type": "object",
+                "properties": {
+                    "entities": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "name": {"type": "string"},
+                                "type": {"type": "string", "enum": ["person", "organization", "location"]},
+                                "mentioned_in_context": {"type": "string"}
+                            },
+                            "required": ["name", "type"]
+                        }
+                    },
+                    "sentiment": {"type": "string", "enum": ["positive", "negative", "neutral"]},
+                    "summary": {"type": "string"}
+                },
+                "required": ["entities", "sentiment", "summary"]
+            }
+        }
+    ],
+    messages=[
+        {"role": "user", "content": "Apple announced Tim Cook will visit their new Austin campus next week."}
+    ]
+)
+
+for block in response.content:
+    if block.type == "tool_use":
+        data = block.input  # Already a dict!
+        print(json.dumps(data, indent=2))</code></pre>
+                    <p>This is the most reliable way to get structured output from Claude — the model is forced to produce a valid tool call that matches your schema.</p>
+
+                    <h3>Approach 2: JSON Mode with Prefill</h3>
+                    <p>Use the assistant prefill trick to force JSON output:</p>
+<pre><code>response = client.messages.create(
+    model="claude-sonnet-4-20250514",
+    max_tokens=1024,
+    messages=[
+        {
+            "role": "user",
+            "content": """Extract the following as JSON:
+{"name": string, "age": number, "occupation": string}
+
+Text: Sarah is a 32-year-old software engineer."""
+        },
+        {
+            "role": "assistant",
+            "content": "{"  # Prefill forces JSON output
+        }
+    ]
+)
+
+# The response continues from "{"
+result = json.loads("{" + response.content[0].text)
+print(result["name"])  # "Sarah"</code></pre>
+
+                    <h2 id="google-gemini-controlled">Google Gemini Controlled Generation</h2>
+                    <p>Gemini supports structured output through response schema configuration:</p>
+<pre><code>import google.generativeai as genai
+from pydantic import BaseModel
+
+class Product(BaseModel):
+    name: str
+    price: float
+    in_stock: bool
+    category: str
+
+# Using Pydantic model directly
+model = genai.GenerativeModel('gemini-2.5-pro')
+
+response = model.generate_content(
+    "Extract product info: The Widget Pro costs $29.99 and is currently in stock in the electronics category.",
+    generation_config=genai.GenerationConfig(
+        response_mime_type="application/json",
+        response_schema=Product
+    )
+)
+
+import json
+product = json.loads(response.text)
+print(product["name"])   # "Widget Pro"
+print(product["price"])  # 29.99</code></pre>
+
+                    <h3>Gemini with Raw JSON Schema</h3>
+<pre><code>response = model.generate_content(
+    "List 3 fruits with their color and taste",
+    generation_config=genai.GenerationConfig(
+        response_mime_type="application/json",
+        response_schema={
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {"type": "string"},
+                    "color": {"type": "string"},
+                    "taste": {"type": "string", "enum": ["sweet", "sour", "bitter", "umami"]}
+                },
+                "required": ["name", "color", "taste"]
+            }
+        }
+    )
+)</code></pre>
+
+                    <h2 id="provider-comparison">Provider Comparison</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th>OpenAI</th>
+                                <th>Anthropic</th>
+                                <th>Google Gemini</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Schema enforcement</td>
+                                <td>Guaranteed (strict mode)</td>
+                                <td>Via tool use</td>
+                                <td>Guaranteed (response_schema)</td>
+                            </tr>
+                            <tr>
+                                <td>Pydantic support</td>
+                                <td>Native SDK</td>
+                                <td>No</td>
+                                <td>Native SDK</td>
+                            </tr>
+                            <tr>
+                                <td>Enum validation</td>
+                                <td>Guaranteed</td>
+                                <td>Best-effort</td>
+                                <td>Guaranteed</td>
+                            </tr>
+                            <tr>
+                                <td>Explicit refusals</td>
+                                <td>Yes</td>
+                                <td>No</td>
+                                <td>No</td>
+                            </tr>
+                            <tr>
+                                <td>Streaming support</td>
+                                <td>Yes</td>
+                                <td>Via tool streaming</td>
+                                <td>Limited</td>
+                            </tr>
+                            <tr>
+                                <td>Optional fields</td>
+                                <td>Via nullable</td>
+                                <td>Naturally optional</td>
+                                <td>Via optional</td>
+                            </tr>
+                            <tr>
+                                <td>Max schema complexity</td>
+                                <td>Large</td>
+                                <td>Large</td>
+                                <td>Moderate</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h2 id="production-patterns">Production Patterns</h2>
+
+                    <h3>1. Multi-Provider Abstraction</h3>
+                    <p>If you need structured outputs across multiple providers, abstract the interface:</p>
+<pre><code>from abc import ABC, abstractmethod
+from pydantic import BaseModel
+from typing import Type
+
+class StructuredOutputProvider(ABC):
+    @abstractmethod
+    async def extract(self, text: str, schema: Type[BaseModel], prompt: str) -> BaseModel:
+        pass
+
+class OpenAIProvider(StructuredOutputProvider):
+    def __init__(self, model="gpt-5"):
+        self.client = OpenAI()
+        self.model = model
+    
+    async def extract(self, text, schema, prompt):
+        response = self.client.responses.parse(
+            model=self.model,
+            input=[
+                {"role": "system", "content": prompt},
+                {"role": "user", "content": text}
+            ],
+            text_format=schema,
+        )
+        return response.output_parsed
+
+class AnthropicProvider(StructuredOutputProvider):
+    def __init__(self, model="claude-sonnet-4-20250514"):
+        self.client = anthropic.Anthropic()
+        self.model = model
+    
+    async def extract(self, text, schema, prompt):
+        # Convert Pydantic schema to tool schema
+        json_schema = schema.model_json_schema()
+        response = self.client.messages.create(
+            model=self.model,
+            max_tokens=1024,
+            tool_choice={"type": "tool", "name": "extract"},
+            tools=[{
+                "name": "extract",
+                "description": prompt,
+                "input_schema": json_schema
+            }],
+            messages=[{"role": "user", "content": text}]
+        )
+        for block in response.content:
+            if block.type == "tool_use":
+                return schema(**block.input)
+
+# Usage
+provider = OpenAIProvider()
+result = await provider.extract(
+    "Apple stock rose 5% to $198",
+    StockInfo,
+    "Extract stock information"
+)</code></pre>
+
+                    <h3>2. Fallback Chain</h3>
+                    <p>If strict mode fails (e.g., schema too complex), fall back to JSON mode:</p>
+<pre><code>def get_structured_output(client, model, messages, schema):
+    # Try structured outputs first
+    try:
+        response = client.chat.completions.create(
+            model=model,
+            messages=messages,
+            response_format={
+                "type": "json_schema",
+                "json_schema": {
+                    "name": "response",
+                    "strict": True,
+                    "schema": schema
+                }
+            }
+        )
+        return json.loads(response.choices[0].message.content)
+    except Exception as e:
+        print(f"Structured output failed: {e}")
+    
+    # Fallback to JSON mode
+    try:
+        response = client.chat.completions.create(
+            model=model,
+            messages=messages + [
+                {"role": "assistant", "content": "Here is the JSON:\n{"}
+            ],
+            response_format={"type": "json_object"}
+        )
+        return json.loads("{" + response.choices[0].message.content)
+    except Exception as e:
+        print(f"JSON mode also failed: {e}")
+        return None</code></pre>
+
+                    <h3>3. Validation Layer</h3>
+                    <p>Even with guaranteed structured outputs, add a validation layer for business logic:</p>
+<pre><code>from pydantic import BaseModel, field_validator
+
+class OrderExtraction(BaseModel):
+    items: list[str]
+    total: float
+    currency: str = "USD"
+    
+    @field_validator('total')
+    @classmethod
+    def total_must_be_positive(cls, v):
+        if v <= 0:
+            raise ValueError('Total must be positive')
+        return v
+    
+    @field_validator('items')
+    @classmethod
+    def must_have_items(cls, v):
+        if not v:
+            raise ValueError('At least one item required')
+        return v
+
+# Use with structured output
+response = client.responses.parse(
+    model="gpt-5",
+    input="I'd like to order 2 laptops",
+    text_format=OrderExtraction,
+)
+
+try:
+    order = OrderExtraction(**response.output_parsed.model_dump())
+except ValueError as e:
+    print(f"Business validation failed: {e}")</code></pre>
+
+                    <h2 id="advanced-schemas">Advanced Schema Patterns</h2>
+
+                    <h3>Recursive Schemas</h3>
+                    <p>Nested and recursive structures work with OpenAI Structured Outputs:</p>
+<pre><code>class Comment(BaseModel):
+    author: str
+    text: str
+    replies: list["Comment"] = []
+
+# This creates a tree structure
+# OpenAI handles the recursion depth limit automatically</code></pre>
+
+                    <h3>Union Types (Discriminated Unions)</h3>
+<pre><code>from typing import Union, Literal
+
+class TextContent(BaseModel):
+    type: Literal["text"]
+    body: str
+
+class ImageContent(BaseModel):
+    type: Literal["image"]
+    url: str
+    alt_text: str
+
+class CodeContent(BaseModel):
+    type: Literal["code"]
+    language: str
+    code: str
+
+ContentBlock = Union[TextContent, ImageContent, CodeContent]
+
+class Article(BaseModel):
+    title: str
+    blocks: list[ContentBlock]</code></pre>
+
+                    <h3>Extraction Chains</h3>
+                    <p>For complex documents, break extraction into multiple passes:</p>
+<pre><code>class EntityExtraction(BaseModel):
+    entities: list[str]
+    relationships: list[tuple[str, str, str]]  # (subject, predicate, object)
+
+class FactCheck(BaseModel):
+    claims: list[str]
+    verifiable: list[bool]
+
+# Pass 1: Extract entities
+entities = client.responses.parse(
+    model="gpt-5",
+    input=document,
+    text_format=EntityExtraction,
+)
+
+# Pass 2: Fact-check claims using extracted entities
+facts = client.responses.parse(
+    model="gpt-5",
+    input=f"Check these entities: {entities.output_parsed.entities}\n\nDocument: {document}",
+    text_format=FactCheck,
+)</code></pre>
+
+                    <h2 id="common-pitfalls">Common Pitfalls</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Pitfall</th><th>Solution</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Forgetting <code>additionalProperties: False</code></td>
+                                <td>Required for strict mode on OpenAI. Add to every object in schema.</td>
+                            </tr>
+                            <tr>
+                                <td>Not handling refusals</td>
+                                <td>Always check if <code>output_parsed</code> is None before using it.</td>
+                            </tr>
+                            <tr>
+                                <td>Too many enum values</td>
+                                <td>Keep enums under ~20 values. More causes unreliable selection.</td>
+                            </tr>
+                            <tr>
+                                <td>Schema too complex</td>
+                                <td>Break into multiple extraction calls. Simpler schemas are more reliable.</td>
+                            </tr>
+                            <tr>
+                                <td>Using JSON mode when Structured Outputs is available</td>
+                                <td>Always prefer Structured Outputs — it guarantees schema compliance.</td>
+                            </tr>
+                            <tr>
+                                <td>Not using Pydantic for Python</td>
+                                <td>Pydantic gives you type safety, validation, and automatic schema generation.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h2 id="performance-considerations">Performance Considerations</h2>
+                    <ul>
+                        <li><strong>Latency:</strong> Structured Outputs adds minimal latency (~50-100ms) compared to unstructured output</li>
+                        <li><strong>Tokens:</strong> Schema definitions count as input tokens. Complex schemas can add 500-2000 tokens to each request</li>
+                        <li><strong>Cost:</strong> The schema tokens add to your input costs. For high-volume applications, consider caching the schema portion with prompt caching</li>
+                        <li><strong>Streaming:</strong> Structured Outputs with streaming works on OpenAI — the JSON builds incrementally. Parse after the stream completes.</li>
+                    </ul>
+
+                    <h2 id="conclusion">Conclusion</h2>
+                    <p>Structured Outputs transforms LLM integration from fragile regex-parsing to reliable schema-driven data extraction. If you're using OpenAI or Google Gemini, use their native Structured Outputs features — they guarantee schema compliance. For Anthropic, the tool-use pattern achieves similar reliability. In all cases, add a Pydantic validation layer for business logic that goes beyond schema validation. The result: zero JSON parsing errors in production, simpler code, and happier users.</p>
+
+                    <div class="mt-8 p-4 bg-amber-50 rounded-lg border border-amber-200">
+                        <p class="text-sm text-amber-800"><strong>Related Guides:</strong> <a href="ai-function-calling-tool-use-guide-2026.html" class="text-amber-600 hover:underline">Function Calling &amp; Tool Use Guide</a> · <a href="ai-prompt-engineering-guide.html" class="text-amber-600 hover:underline">Prompt Engineering Guide</a> · <a href="ai-streaming-responses-guide-2026.html" class="text-amber-600 hover:underline">Streaming Responses Guide</a></p>
+                    </div>
+
+                </div>
+            </div>
+        </article>
+    </main>
+    <footer class="bg-gray-900 text-gray-400 py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p>&copy; 2026 DevTools. Built for developers.</p>
+        </div>
+    </footer>
+    <script>
+        function likeArticle() {
+            const btn = event.currentTarget;
+            btn.innerHTML = '<i class="fas fa-thumbs-up text-xl text-green-500"></i>';
+            btn.disabled = true;
+        }
+    </script>
+</body>
+</html>
