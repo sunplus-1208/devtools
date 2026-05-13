@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Content Moderation &amp; Safety API Guide 2026 - Protect Your Platform at Scale</title>
+    <meta name="description" content="Complete guide to AI content moderation APIs in 2026. OpenAI Moderation, Google Perspective, Azure Content Safety, and custom classifiers. Toxicity detection, PII filtering, and production safety patterns.">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "AI Content Moderation & Safety API Guide 2026 - Protect Your Platform at Scale",
+      "description": "Complete guide to AI content moderation APIs in 2026. OpenAI Moderation, Google Perspective, Azure Content Safety, and custom classifiers. Toxicity detection, PII filtering, and production safety patterns.",
+      "author": { "@type": "Organization", "name": "DevTools" },
+      "datePublished": "2026-05-13",
+      "dateModified": "2026-05-13T10:00:00+08:00",
+      "publisher": { "@type": "Organization", "name": "DevTools", "url": "https://aitechtools.top" },
+      "mainEntityOfPage": { "@type": "WebPage", "@id": "https://aitechtools.top/blog/ai-content-moderation-safety-api-guide-2026.html" }
+    }
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>tailwind.config = { theme: { extend: { colors: { primary: '#3b82f6', secondary: '#64748b' } } } }</script>
+    <style>
+        .prose { max-width: 65ch; }
+        .prose h2 { margin-top: 2rem; margin-bottom: 1rem; }
+        .prose h3 { margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        .prose p { margin-bottom: 1rem; }
+        .prose ul, .prose ol { margin-bottom: 1rem; padding-left: 1.5rem; }
+        .prose li { margin-bottom: 0.5rem; }
+        .prose pre { background: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; margin-bottom: 1rem; }
+        .prose code { background: #f1f5f9; padding: 0.125rem 0.25rem; border-radius: 0.25rem; font-size: 0.875rem; }
+        .prose pre code { background: none; padding: 0; }
+        .prose table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+        .prose th, .prose td { border: 1px solid #e5e7eb; padding: 0.5rem 1rem; text-align: left; }
+        .prose th { background: #f9fafb; font-weight: 600; }
+        .prose blockquote { border-left: 4px solid #ef4444; padding-left: 1rem; margin: 1.5rem 0; color: #4b5563; font-style: italic; }
+    </style>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VVLR9NKKXE"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-VVLR9NKKXE');
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="../index.html" class="flex items-center">
+                    <i class="fas fa-tools text-primary text-2xl mr-3"></i>
+                    <h1 class="text-xl font-bold text-gray-900">DevTools</h1>
+                </a>
+                <nav class="hidden md:flex items-center space-x-6">
+                    <a href="../index.html" class="text-gray-600 hover:text-primary font-medium">Home</a>
+                    <a href="index.html" class="text-primary font-medium">Blog</a>
+                    <a href="../ai-toolkit/" class="text-gray-600 hover:text-primary font-medium">AI Toolkit</a>
+                </nav>
+                <a href="https://github.com/sunplus-1208/devtools" target="_blank" class="text-gray-500 hover:text-gray-700"><i class="fab fa-github text-xl"></i></a>
+            </div>
+        </div>
+    </header>
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <article>
+            <div class="bg-gradient-to-r from-red-500 to-rose-600 rounded-xl p-8 mb-8 text-white">
+                <div class="flex items-center text-sm mb-4">
+                    <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full font-medium">Guide</span>
+                    <span class="ml-3">May 13, 2026</span>
+                </div>
+                <h1 class="text-3xl font-bold mb-3">AI Content Moderation &amp; Safety API Guide 2026</h1>
+                <p class="text-lg opacity-90">Protect your platform from harmful content. OpenAI Moderation, Google Perspective, Azure Content Safety, PII detection, and production moderation patterns.</p>
+                <div class="mt-4">
+                    <i class="fas fa-shield-halved text-5xl opacity-30"></i>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm p-8">
+                <div class="prose text-gray-700">
+
+                    <p>Every platform that accepts user-generated content needs content moderation. Manual review doesn't scale. AI-powered moderation APIs give you automated, real-time content filtering that catches hate speech, violence, sexual content, PII leaks, and more — before it reaches your users. This guide covers every major moderation API in 2026, with implementation patterns for production systems.</p>
+
+                    <h2 id="types-of-moderation">Types of Content Moderation</h2>
+                    <p>Content moderation isn't one thing — it's several distinct problems:</p>
+                    <table>
+                        <thead>
+                            <tr><th>Type</th><th>What It Catches</th><th>API Options</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Toxicity / Hate</td><td>Hate speech, harassment, threats</td><td>OpenAI Moderation, Perspective, Azure</td></tr>
+                            <tr><td>Sexual content</td><td>NSFW text and images</td><td>OpenAI Moderation, Azure, custom</td></tr>
+                            <tr><td>Violence / Gore</td><td>Violent content, self-harm references</td><td>OpenAI Moderation, Azure</td></tr>
+                            <tr><td>PII detection</td><td>SSN, email, phone, credit card</td><td>Presidio, AWS Macie, custom NER</td></tr>
+                            <tr><td>Spam / Misinformation</td><td>Spam, coordinated attacks</td><td>Custom classifiers, LLM-based</td></tr>
+                            <tr><td>Image moderation</td><td>NSFW images, violence in images</td><td>Azure, Google Safe Search, Clarifai</td></tr>
+                        </tbody>
+                    </table>
+
+                    <h2 id="openai-moderation">OpenAI Moderation API</h2>
+                    <p>The simplest and most widely used moderation API. Free to use and covers the most common categories:</p>
+<pre><code>from openai import OpenAI
+
+client = OpenAI()
+
+response = client.moderations.create(
+    model="omni-moderation-latest",
+    input="Your text to check here"
+)
+
+result = response.results[0]
+
+# Check if flagged
+print(f"Flagged: {result.flagged}")
+
+# Individual category scores
+categories = result.categories
+scores = result.category_scores
+
+print(f"Hate: {scores.hate:.4f} (flagged: {categories.hate})")
+print(f"Harassment: {scores.harassment:.4f}")
+print(f"Self-harm: {scores.self_harm:.4f}")
+print(f"Sexual: {scores.sexual:.4f}")
+print(f"Violence: {scores.violence:.4f}")
+
+# Multi-modal moderation (text + image)
+response = client.moderations.create(
+    model="omni-moderation-latest",
+    input=[
+        {"type": "text", "text": "Check this image"},
+        {"type": "image_url", "image_url": {"url": "https://example.com/image.jpg"}}
+    ]
+)</code></pre>
+
+                    <h3>Moderation Categories</h3>
+                    <table>
+                        <thead>
+                            <tr><th>Category</th><th>What It Detects</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>harassment</td><td>Content that expresses, incites, or promotes harassing language</td></tr>
+                            <tr><td>harassment/threatening</td><td>Harassment content that includes violence or serious harm</td></tr>
+                            <tr><td>hate</td><td>Content that expresses, incites, or promotes hate based on identity</td></tr>
+                            <tr><td>hate/threatening</td><td>Hate content that includes violence or serious harm</td></tr>
+                            <tr><td>self-harm</td><td>Content that promotes or encourages self-harm</td></tr>
+                            <tr><td>self-harm/intent</td><td>Content expressing intent to engage in self-harm</td></tr>
+                            <tr><td>self-harm/instructions</td><td>Content providing instructions on self-harm</td></tr>
+                            <tr><td>sexual</td><td>Content meant to arouse sexual excitement</td></tr>
+                            <tr><td>sexual/minors</td><td>Sexual content involving minors</td></tr>
+                            <tr><td>violence</td><td>Content depicting death, violence, or physical injury</td></tr>
+                            <tr><td>violence/graphic</td><td>Violent content with graphic depictions</td></tr>
+                        </tbody>
+                    </table>
+                    <blockquote>OpenAI's Moderation API is free. There's no reason not to add it as a first line of defense for any user-facing AI application. It takes one API call and catches the most dangerous content categories.</blockquote>
+
+                    <h2 id="google-perspective">Google Perspective API</h2>
+                    <p>Google's Perspective API, built by Jigsaw, focuses specifically on toxicity detection in comments and conversations:</p>
+<pre><code>import requests
+
+PERSPECTIVE_API_KEY = "YOUR_KEY"
+url = f"https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze?key={PERSPECTIVE_API_KEY}"
+
+data = {
+    "comment": {"text": "User's comment here"},
+    "requestedAttributes": {
+        "TOXICITY": {},
+        "SEVERE_TOXICITY": {},
+        "IDENTITY_ATTACK": {},
+        "INSULT": {},
+        "PROFANITY": {},
+        "THREAT": {}
+    },
+    "languages": ["en"],
+    "doNotStore": True
+}
+
+response = requests.post(url, json=data)
+scores = response.json()["attributeScores"]
+
+for attribute, data in scores.items():
+    score = data["summaryScore"]["value"]
+    print(f"{attribute}: {score:.3f}")</code></pre>
+                    <p>Perspective's strengths: it's specifically trained on conversational text (comments, forums, chat) and provides granular sub-categories. The free tier allows 1 request/second, which is sufficient for many applications.</p>
+
+                    <h2 id="azure-content-safety">Azure Content Safety</h2>
+                    <p>Microsoft's offering is the most comprehensive for enterprise deployments:</p>
+<pre><code>from azure.ai.contentsafety import ContentSafetyClient
+from azure.core.credentials import AzureKeyCredential
+
+client = ContentSafetyClient(
+    endpoint="https://your-endpoint.cognitiveservices.azure.com/",
+    credential=AzureKeyCredential("YOUR_KEY")
+)
+
+from azure.ai.contentsafety.models import AnalyzeTextOptions
+
+request = AnalyzeTextOptions(
+    text="Text to analyze",
+    categories=["Hate", "Sexual", "Violence", "SelfHarm"]
+)
+
+response = client.analyze_text(request)
+
+for result in response.categories_analysis:
+    print(f"{result.category}: severity={result.severity}")
+    # Severity: 0 (safe) to 7 (most severe)</code></pre>
+                    <p>Azure's unique advantage: severity scores on a 0-7 scale instead of binary flagged/not-flagged. This lets you set custom thresholds — block at severity 5+, flag for review at 3+.</p>
+
+                    <h2 id="pii-detection">PII Detection &amp; Redaction</h2>
+                    <p>Preventing PII leaks is a separate but equally important moderation concern:</p>
+
+                    <h3>Microsoft Presidio (Open Source)</h3>
+<pre><code>from presidio_analyzer import AnalyzerEngine
+from presidio_anonymizer import AnonymizerEngine
+
+# Analyze text for PII
+analyzer = AnalyzerEngine()
+results = analyzer.analyze(
+    text="My SSN is 123-45-6789 and email is john@example.com",
+    language="en"
+)
+
+for result in results:
+    print(f"Found {result.entity_type}: {result.score:.2f}")
+
+# Anonymize/redact PII
+anonymizer = AnonymizerEngine()
+anonymized = anonymizer.anonymize(
+    text="My SSN is 123-45-6789 and email is john@example.com",
+    analyzer_results=results
+)
+
+print(anonymized.text)
+# "My SSN is &lt;SSN&gt; and email is &lt;EMAIL_ADDRESS&gt;"</code></pre>
+                    <p>Presidio detects 30+ PII entity types including SSN, credit cards, phone numbers, email addresses, dates of birth, medical record numbers, and more. It runs locally — no data leaves your infrastructure.</p>
+
+                    <h3>Using LLMs for PII Detection</h3>
+<pre><code>from openai import OpenAI
+from pydantic import BaseModel
+
+client = OpenAI()
+
+class PIIExtraction(BaseModel):
+    has_pii: bool
+    pii_types: list[str]  # ["email", "phone", "ssn"]
+    redacted_text: str
+
+response = client.responses.parse(
+    model="gpt-5.4-mini",
+    input=[
+        {"role": "system", "content": "Detect and redact PII in the text. Replace PII with [TYPE]."},
+        {"role": "user", "content": "Call me at 555-1234 or email john@company.com"}
+    ],
+    text_format=PIIExtraction,
+)
+
+result = response.output_parsed
+print(result.has_pii)        # True
+print(result.pii_types)      # ["phone", "email"]
+print(result.redacted_text)  # "Call me at [PHONE] or email [EMAIL]"</code></pre>
+
+                    <h2 id="provider-comparison">Moderation API Comparison</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th>OpenAI</th>
+                                <th>Google Perspective</th>
+                                <th>Azure Content Safety</th>
+                                <th>Presidio</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Cost</td>
+                                <td>Free</td>
+                                <td>Free (1 req/s)</td>
+                                <td>Pay per call</td>
+                                <td>Free (self-host)</td>
+                            </tr>
+                            <tr>
+                                <td>PII detection</td>
+                                <td>No</td>
+                                <td>No</td>
+                                <td>Limited</td>
+                                <td>Yes (30+ types)</td>
+                            </tr>
+                            <tr>
+                                <td>Image moderation</td>
+                                <td>Yes (omni)</td>
+                                <td>No</td>
+                                <td>Yes</td>
+                                <td>No</td>
+                            </tr>
+                            <tr>
+                                <td>Custom thresholds</td>
+                                <td>Score-based</td>
+                                <td>Score-based</td>
+                                <td>0-7 severity</td>
+                                <td>Configurable</td>
+                            </tr>
+                            <tr>
+                                <td>Languages</td>
+                                <td>Multi</td>
+                                <td>Primarily English</td>
+                                <td>Multi</td>
+                                <td>Multi</td>
+                            </tr>
+                            <tr>
+                                <td>Self-hosted</td>
+                                <td>No</td>
+                                <td>No</td>
+                                <td>No</td>
+                                <td>Yes</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h2 id="production-patterns">Production Patterns</h2>
+
+                    <h3>1. Multi-Layer Moderation Pipeline</h3>
+                    <p>Layer multiple moderation systems for comprehensive coverage:</p>
+<pre><code>class ModerationPipeline:
+    def __init__(self, openai_client, analyzer, threshold=0.7):
+        self.openai = openai_client
+        self.analyzer = analyzer
+        self.threshold = threshold
+    
+    def moderate(self, text: str) -> dict:
+        """Run multi-layer moderation."""
+        results = {
+            "text": text,
+            "passed": True,
+            "flags": [],
+            "actions": []
+        }
+        
+        # Layer 1: PII detection (run first — catch leaks before they reach any API)
+        pii_results = self.analyzer.analyze(text=text, language="en")
+        if pii_results:
+            results["flags"].append({
+                "type": "pii",
+                "details": [{"type": r.entity_type, "score": r.score} for r in pii_results]
+            })
+            results["actions"].append("redact_pii")
+        
+        # Layer 2: OpenAI Moderation (toxicity, violence, sexual, hate)
+        moderation = self.openai.moderations.create(
+            model="omni-moderation-latest",
+            input=text
+        )
+        mod_result = moderation.results[0]
+        
+        if mod_result.flagged:
+            results["passed"] = False
+            for cat, flagged in mod_result.categories:
+                if flagged:
+                    results["flags"].append({
+                        "type": cat,
+                        "score": getattr(mod_result.category_scores, cat)
+                    })
+            results["actions"].append("block")
+        
+        # Layer 3: Custom business rules
+        # (e.g., competitor mentions, brand safety, etc.)
+        
+        return results</code></pre>
+
+                    <h3>2. Threshold-Based Decisioning</h3>
+                    <p>Don't just use binary flagged/not-flagged. Set graduated thresholds:</p>
+<pre><code>def decide_action(moderation_result, thresholds):
+    """Decide action based on score thresholds."""
+    actions = {}
+    
+    for category, score in moderation_result.category_scores:
+        if score >= thresholds.get(category, {}).get("block", 0.9):
+            actions[category] = "block"
+        elif score >= thresholds.get(category, {}).get("review", 0.5):
+            actions[category] = "human_review"
+        else:
+            actions[category] = "allow"
+    
+    return actions
+
+# Example configuration
+THRESHOLDS = {
+    "sexual/minors": {"block": 0.1, "review": 0.01},  # Zero tolerance
+    "violence": {"block": 0.7, "review": 0.3},
+    "hate": {"block": 0.8, "review": 0.4},
+    "sexual": {"block": 0.8, "review": 0.5},
+    "harassment": {"block": 0.7, "review": 0.4},
+}</code></pre>
+
+                    <h3>3. Moderation with User Context</h3>
+                    <p>The same content can be acceptable or harmful depending on context:</p>
+<pre><code>def moderate_with_context(text, user_context):
+    """Consider user context in moderation decisions."""
+    
+    # Base moderation
+    result = moderate(text)
+    
+    # Escalate for repeat offenders
+    if user_context["previous_violations"] > 2:
+        result["threshold_multiplier"] = 0.7  # Lower thresholds
+    
+    # Be more lenient in private conversations
+    if user_context["channel"] == "dm":
+        result["threshold_multiplier"] = 1.3  # Higher thresholds
+    
+    # Always strict for public-facing content
+    if user_context["channel"] == "public_post":
+        result["threshold_multiplier"] = 0.8
+    
+    return result</code></pre>
+
+                    <h3>4. Async Moderation for High Volume</h3>
+<pre><code>import asyncio
+from openai import AsyncOpenAI
+
+async_client = AsyncOpenAI()
+
+async def moderate_batch(texts, batch_size=50):
+    """Moderate many texts concurrently."""
+    results = []
+    
+    for i in range(0, len(texts), batch_size):
+        batch = texts[i:i + batch_size]
+        tasks = [
+            async_client.moderations.create(
+                model="omni-moderation-latest",
+                input=text
+            )
+            for text in batch
+        ]
+        responses = await asyncio.gather(*tasks, return_exceptions=True)
+        
+        for text, response in zip(batch, responses):
+            if isinstance(response, Exception):
+                results.append({"text": text, "error": str(response)})
+            else:
+                results.append({
+                    "text": text,
+                    "flagged": response.results[0].flagged,
+                    "categories": response.results[0].categories
+                })
+    
+    return results</code></pre>
+
+                    <h2 id="moderating-llm-outputs">Moderating LLM Outputs</h2>
+                    <p>Don't just moderate user input — moderate model output too. LLMs can generate harmful content, especially when users craft adversarial prompts:</p>
+<pre><code>async def safe_generate(client, model, messages, **kwargs):
+    """Generate with output moderation."""
+    
+    # 1. Moderate input
+    user_message = messages[-1]["content"]
+    input_check = client.moderations.create(
+        model="omni-moderation-latest",
+        input=user_message
+    )
+    if input_check.results[0].flagged:
+        return {"error": "Input violates safety guidelines", "flagged_categories": [...]}
+    
+    # 2. Generate response
+    response = client.chat.completions.create(
+        model=model,
+        messages=messages,
+        **kwargs
+    )
+    output_text = response.choices[0].message.content
+    
+    # 3. Moderate output
+    output_check = client.moderations.create(
+        model="omni-moderation-latest",
+        input=output_text
+    )
+    if output_check.results[0].flagged:
+        # Log the incident for analysis
+        log_safety_incident(messages, output_text, output_check.results[0])
+        return {"error": "Response filtered for safety", "fallback": "I can't help with that."}
+    
+    return {"response": output_text}</code></pre>
+
+                    <h2 id="common-pitfalls">Common Pitfalls</h2>
+                    <ol>
+                        <li><strong>Only moderating user input</strong> — Always moderate model output too. Prompt injection can cause LLMs to generate harmful content</li>
+                        <li><strong>Using binary thresholds</strong> — Score-based thresholds with graduated actions (allow/review/block) are far more effective</li>
+                        <li><strong>Ignoring PII in prompts</strong> — Users paste sensitive data into chatbots constantly. Detect and redact before processing</li>
+                        <li><strong>Not logging moderation decisions</strong> — You need logs to tune thresholds and understand false positives/negatives</li>
+                        <li><strong>Over-blocking</strong> — Aggressive moderation frustrates users. Start conservative with human review for borderline cases</li>
+                        <li><strong>Not handling moderation API failures</strong> — If the moderation API is down, what happens? Fail open (allow) or fail closed (block)?</li>
+                        <li><strong>English-only moderation</strong> — Harmful content in other languages slips through English-trained models</li>
+                    </ol>
+
+                    <h2 id="conclusion">Conclusion</h2>
+                    <p>Content moderation is a non-negotiable part of any AI application that handles user-generated content. Start with OpenAI's free Moderation API for toxicity and harmful content detection. Add Presidio for PII protection. Use Azure Content Safety if you need enterprise-grade severity scoring. And always moderate both input and output — a safe LLM application is one that filters content in both directions.</p>
+                    <p>The key principle: moderation should be layered, graduated, and logged. No single API catches everything, binary decisions create bad user experiences, and you can't improve what you don't measure.</p>
+
+                    <div class="mt-8 p-4 bg-red-50 rounded-lg border border-red-200">
+                        <p class="text-sm text-red-800"><strong>Related Guides:</strong> <a href="ai-safety-privacy-developers.html" class="text-red-600 hover:underline">AI Safety &amp; Privacy for Developers</a> · <a href="ai-structured-outputs-json-mode-guide-2026.html" class="text-red-600 hover:underline">Structured Outputs Guide</a> · <a href="ai-evaluation-testing-guide-2026.html" class="text-red-600 hover:underline">Evaluation &amp; Testing Guide</a></p>
+                    </div>
+
+                </div>
+            </div>
+        </article>
+    </main>
+    <footer class="bg-gray-900 text-gray-400 py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p>&copy; 2026 DevTools. Built for developers.</p>
+        </div>
+    </footer>
+    <script>
+        function likeArticle() {
+            const btn = event.currentTarget;
+            btn.innerHTML = '<i class="fas fa-thumbs-up text-xl text-green-500"></i>';
+            btn.disabled = true;
+        }
+    </script>
+</body>
+</html>
