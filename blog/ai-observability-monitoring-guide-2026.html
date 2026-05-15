@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Observability &amp; Monitoring Guide 2026 - Production LLM Debugging and Analytics</title>
+    <meta name="description" content="Complete guide to AI observability and monitoring in 2026. LLM tracing, cost tracking, latency monitoring, prompt versioning, and production debugging patterns for AI applications.">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "AI Observability & Monitoring Guide 2026 - Production LLM Debugging and Analytics",
+      "description": "Complete guide to AI observability and monitoring in 2026. LLM tracing, cost tracking, latency monitoring, prompt versioning, and production debugging patterns for AI applications.",
+      "author": { "@type": "Organization", "name": "DevTools" },
+      "datePublished": "2026-05-15",
+      "dateModified": "2026-05-15T10:00:00+08:00",
+      "publisher": { "@type": "Organization", "name": "DevTools", "url": "https://aitechtools.top" },
+      "mainEntityOfPage": { "@type": "WebPage", "@id": "https://aitechtools.top/blog/ai-observability-monitoring-guide-2026.html" }
+    }
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>tailwind.config = { theme: { extend: { colors: { primary: '#3b82f6', secondary: '#64748b' } } } }</script>
+    <style>
+        .prose { max-width: 65ch; }
+        .prose h2 { margin-top: 2rem; margin-bottom: 1rem; }
+        .prose h3 { margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        .prose p { margin-bottom: 1rem; }
+        .prose ul, .prose ol { margin-bottom: 1rem; padding-left: 1.5rem; }
+        .prose li { margin-bottom: 0.5rem; }
+        .prose pre { background: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; margin-bottom: 1rem; }
+        .prose code { background: #f1f5f9; padding: 0.125rem 0.25rem; border-radius: 0.25rem; font-size: 0.875rem; }
+        .prose pre code { background: none; padding: 0; }
+        .prose table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+        .prose th, .prose td { border: 1px solid #e5e7eb; padding: 0.5rem 1rem; text-align: left; }
+        .prose th { background: #f9fafb; font-weight: 600; }
+        .prose blockquote { border-left: 4px solid #10b981; padding-left: 1rem; margin: 1.5rem 0; color: #4b5563; font-style: italic; }
+    </style>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VVLR9NKKXE"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-VVLR9NKKXE');
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="../index.html" class="flex items-center">
+                    <i class="fas fa-tools text-primary text-2xl mr-3"></i>
+                    <h1 class="text-xl font-bold text-gray-900">DevTools</h1>
+                </a>
+                <nav class="hidden md:flex items-center space-x-6">
+                    <a href="../index.html" class="text-gray-600 hover:text-primary font-medium">Home</a>
+                    <a href="index.html" class="text-primary font-medium">Blog</a>
+                    <a href="../ai-toolkit/" class="text-gray-600 hover:text-primary font-medium">AI Toolkit</a>
+                </nav>
+                <a href="https://github.com/sunplus-1208/devtools" target="_blank" class="text-gray-500 hover:text-gray-700"><i class="fab fa-github text-xl"></i></a>
+            </div>
+        </div>
+    </header>
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <article>
+            <div class="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl p-8 mb-8 text-white">
+                <div class="flex items-center text-sm mb-4">
+                    <span class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full font-medium">Guide</span>
+                    <span class="ml-3">May 15, 2026</span>
+                </div>
+                <h1 class="text-3xl font-bold mb-3">AI Observability &amp; Monitoring Guide 2026</h1>
+                <p class="text-lg opacity-90">Production LLM debugging and analytics. Tracing, cost tracking, latency monitoring, prompt versioning, and debugging patterns for AI applications.</p>
+                <div class="mt-4">
+                    <i class="fas fa-chart-line text-5xl opacity-30"></i>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm p-8">
+                <div class="prose text-gray-700">
+
+                    <p>Deploying an LLM application to production is just the beginning. Without observability, you're flying blind — you won't know when costs spike, latency degrades, or outputs drift from expected quality. Traditional application monitoring (CPU, memory, error rates) isn't enough for AI systems. You need to trace individual LLM calls, track token usage, monitor prompt effectiveness, and detect model drift. This guide covers the complete observability stack for production AI applications in 2026.</p>
+
+                    <h2 id="why-ai-observability">Why AI Observability is Different</h2>
+                    <p>Traditional monitoring tracks infrastructure health. AI observability tracks model behavior:</p>
+                    <table>
+                        <thead>
+                            <tr><th>Traditional Monitoring</th><th>AI Observability</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>CPU / memory usage</td><td>Token usage per request</td></tr>
+                            <tr><td>Request latency</td><td>TTFT + TPOT breakdown</td></tr>
+                            <tr><td>Error rate (HTTP 5xx)</td><td>Output quality scores</td></tr>
+                            <tr><td>Log aggregation</td><td>Prompt / response tracing</td></tr>
+                            <tr><td>Static thresholds</td><td>Drift detection</td></tr>
+                            <tr><td>Binary pass/fail</td><td>Graduated quality metrics</td></tr>
+                        </tbody>
+                    </table>
+
+                    <h2 id="key-metrics">Key Metrics to Track</h2>
+
+                    <h3>1. Cost Metrics</h3>
+<pre><code># Track per-request and aggregate costs
+class CostTracker:
+    def __init__(self):
+        self.pricing = {
+            "gpt-5.5": {"input": 5.0, "output": 30.0},      # per 1M tokens
+            "gpt-5.4": {"input": 2.50, "output": 15.0},
+            "gpt-5.4-mini": {"input": 0.75, "output": 4.50},
+        }
+        self.usage_log = []
+    
+    def log_request(self, model, input_tokens, output_tokens, user_id=None):
+        """Log a request and calculate cost."""
+        if model not in self.pricing:
+            return
+        
+        cost = (
+            input_tokens * self.pricing[model]["input"] +
+            output_tokens * self.pricing[model]["output"]
+        ) / 1_000_000
+        
+        entry = {
+            "timestamp": datetime.now().isoformat(),
+            "model": model,
+            "input_tokens": input_tokens,
+            "output_tokens": output_tokens,
+            "cost_usd": cost,
+            "user_id": user_id
+        }
+        self.usage_log.append(entry)
+        return cost
+    
+    def get_daily_cost(self, date=None):
+        """Get total cost for a specific date."""
+        date = date or datetime.now().date()
+        return sum(
+            e["cost_usd"] for e in self.usage_log
+            if datetime.fromisoformat(e["timestamp"]).date() == date
+        )
+    
+    def get_cost_by_model(self):
+        """Break down costs by model."""
+        from collections import defaultdict
+        by_model = defaultdict(float)
+        for entry in self.usage_log:
+            by_model[entry["model"]] += entry["cost_usd"]
+        return dict(by_model)</code></pre>
+
+                    <h3>2. Latency Metrics</h3>
+<pre><code>import time
+
+class LatencyTracker:
+    def __init__(self):
+        self.measurements = []
+    
+    def measure(self, func, *args, **kwargs):
+        """Measure execution time of an LLM call."""
+        start = time.time()
+        result = func(*args, **kwargs)
+        end = time.time()
+        
+        # Extract timing from response if available
+        ttft = getattr(result, 'ttft', None)  # Time to first token
+        total_time = end - start
+        
+        self.measurements.append({
+            "timestamp": datetime.now().isoformat(),
+            "total_seconds": total_time,
+            "ttft_seconds": ttft,
+            "model": kwargs.get('model', 'unknown')
+        })
+        
+        return result
+    
+    def get_percentiles(self):
+        """Get latency percentiles."""
+        times = [m["total_seconds"] for m in self.measurements]
+        if not times:
+            return {}
+        
+        times.sort()
+        return {
+            "p50": times[int(len(times) * 0.5)],
+            "p95": times[int(len(times) * 0.95)],
+            "p99": times[int(len(times) * 0.99)],
+        }</code></pre>
+
+                    <h3>3. Quality Metrics</h3>
+<pre><code>class QualityTracker:
+    def __init__(self, client):
+        self.client = client
+        self.scores = []
+    
+    def evaluate_response(self, prompt, response, expected=None):
+        """Evaluate response quality using multiple methods."""
+        metrics = {}
+        
+        # 1. Length check (responses too short/long may indicate problems)
+        metrics["length"] = len(response)
+        metrics["length_ok"] = 50 < len(response) < 4000
+        
+        # 2. Format compliance (if structured output expected)
+        if expected and isinstance(expected, dict):
+            try:
+                parsed = json.loads(response)
+                metrics["format_match"] = all(k in parsed for k in expected.keys())
+            except json.JSONDecodeError:
+                metrics["format_match"] = False
+        
+        # 3. Relevance score (using embeddings)
+        prompt_emb = self._embed(prompt)
+        response_emb = self._embed(response)
+        metrics["relevance"] = self._cosine_similarity(prompt_emb, response_emb)
+        
+        # 4. Self-evaluation (ask model to score itself)
+        if len(response) > 100:
+            eval_prompt = f"Rate this response quality 1-10: {response[:500]}"
+            eval_response = self.client.chat.completions.create(
+                model="gpt-5.4-mini",
+                messages=[{"role": "user", "content": eval_prompt}],
+                max_tokens=10
+            )
+            try:
+                metrics["self_score"] = int(eval_response.choices[0].message.content.strip())
+            except ValueError:
+                metrics["self_score"] = None
+        
+        self.scores.append(metrics)
+        return metrics
+    
+    def _embed(self, text):
+        response = self.client.embeddings.create(
+            model="text-embedding-3-small", input=text[:8000]
+        )
+        return response.data[0].embedding</code></pre>
+
+                    <h2 id="tracing">LLM Tracing and Debugging</h2>
+                    <p>When something goes wrong, you need to see the full chain of LLM calls, tool executions, and context:</p>
+
+                    <h3>Manual Tracing Implementation</h3>
+<pre><code>import uuid
+from contextvars import ContextVar
+
+current_trace = ContextVar('current_trace', default=None)
+
+class LLMTracer:
+    def __init__(self):
+        self.traces = {}
+    
+    def start_trace(self, name, metadata=None):
+        """Start a new trace."""
+        trace_id = str(uuid.uuid4())
+        trace = {
+            "id": trace_id,
+            "name": name,
+            "start_time": datetime.now().isoformat(),
+            "spans": [],
+            "metadata": metadata or {}
+        }
+        self.traces[trace_id] = trace
+        current_trace.set(trace_id)
+        return trace_id
+    
+    def add_span(self, name, span_type="llm", inputs=None, outputs=None, 
+                 latency_ms=None, tokens=None, error=None):
+        """Add a span to the current trace."""
+        trace_id = current_trace.get()
+        if not trace_id or trace_id not in self.traces:
+            return
+        
+        span = {
+            "id": str(uuid.uuid4()),
+            "name": name,
+            "type": span_type,
+            "start_time": datetime.now().isoformat(),
+            "inputs": self._truncate(inputs),
+            "outputs": self._truncate(outputs),
+            "latency_ms": latency_ms,
+            "tokens": tokens,
+            "error": error
+        }
+        self.traces[trace_id]["spans"].append(span)
+        return span["id"]
+    
+    def end_trace(self, trace_id, status="success"):
+        """End a trace."""
+        if trace_id in self.traces:
+            self.traces[trace_id]["end_time"] = datetime.now().isoformat()
+            self.traces[trace_id]["status"] = status
+    
+    def _truncate(self, obj, max_length=1000):
+        """Truncate for storage."""
+        text = str(obj)
+        return text[:max_length] + "..." if len(text) > max_length else text
+
+# Usage
+tracer = LLMTracer()
+
+def generate_with_tracing(prompt, model="gpt-5.4"):
+    trace_id = tracer.start_trace("chat_generation", {"user_id": "123"})
+    
+    start = time.time()
+    try:
+        response = client.chat.completions.create(
+            model=model,
+            messages=[{"role": "user", "content": prompt}]
+        )
+        latency = (time.time() - start) * 1000
+        
+        tracer.add_span(
+            name="llm_call",
+            span_type="llm",
+            inputs={"prompt": prompt, "model": model},
+            outputs={"response": response.choices[0].message.content},
+            latency_ms=latency,
+            tokens={
+                "input": response.usage.prompt_tokens,
+                "output": response.usage.completion_tokens
+            }
+        )
+        
+        tracer.end_trace(trace_id, "success")
+        return response
+        
+    except Exception as e:
+        tracer.add_span(name="llm_call", span_type="llm", error=str(e))
+        tracer.end_trace(trace_id, "error")
+        raise</code></pre>
+
+                    <h2 id="observability-platforms">Observability Platforms</h2>
+                    <p>Several platforms specialize in AI observability:</p>
+                    <table>
+                        <thead>
+                            <tr><th>Platform</th><th>Best For</th><th>Pricing</th><th>Open Source</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>LangSmith</td><td>LangChain apps</td><td>Pay per trace</td><td>No</td></tr>
+                            <tr><td>Langfuse</td><td>General LLM tracing</td><td>Self-host or cloud</td><td>Yes</td></tr>
+                            <tr><td>Weights &amp; Biases</td><td>Experiment tracking</td><td>Pay per user</td><td>No</td></tr>
+                            <tr><td>Phoenix (Arize)</td><td>Evaluation + tracing</td><td>Free tier</td><td>Yes</td></tr>
+                            <tr><td>OpenTelemetry</td><td>Vendor-neutral tracing</td><td>Free</td><td>Yes</td></tr>
+                        </tbody>
+                    </table>
+
+                    <h3>Langfuse Integration</h3>
+<pre><code>from langfuse import Langfuse
+
+langfuse = Langfuse(
+    public_key="pk-lf-...",
+    secret_key="sk-lf-...",
+    host="https://cloud.langfuse.com"
+)
+
+# Automatic tracing
+@langfuse.observe()
+def generate_response(prompt):
+    return client.chat.completions.create(
+        model="gpt-5.4",
+        messages=[{"role": "user", "content": prompt}]
+    )
+
+# Manual tracing
+trace = langfuse.trace(name="user-chat", user_id="user_123")
+
+span = trace.span(name="retrieval")
+# ... run retrieval ...
+span.end()
+
+span = trace.span(name="generation")
+response = generate_response(prompt)
+span.generation(
+    model="gpt-5.4",
+    input=prompt,
+    output=response.choices[0].message.content,
+    usage={
+        "input": response.usage.prompt_tokens,
+        "output": response.usage.completion_tokens
+    }
+)
+span.end()
+
+trace.score(name="quality", value=0.9)</code></pre>
+
+                    <h2 id="prompt-versioning">Prompt Versioning</h2>
+                    <p>Prompts change frequently. Track versions to understand what changed and when:</p>
+<pre><code>class PromptRegistry:
+    """Version-controlled prompt management."""
+    
+    def __init__(self):
+        self.prompts = {}  # name -> list of versions
+    
+    def register(self, name, template, metadata=None):
+        """Register a new prompt version."""
+        import hashlib
+        version = hashlib.sha256(template.encode()).hexdigest()[:8]
+        
+        if name not in self.prompts:
+            self.prompts[name] = []
+        
+        entry = {
+            "version": version,
+            "template": template,
+            "created_at": datetime.now().isoformat(),
+            "metadata": metadata or {}
+        }
+        self.prompts[name].append(entry)
+        return version
+    
+    def get(self, name, version=None):
+        """Get a prompt by name and optional version."""
+        if name not in self.prompts:
+            raise KeyError(f"Prompt '{name}' not found")
+        
+        versions = self.prompts[name]
+        if version is None:
+            return versions[-1]  # Latest
+        
+        for v in versions:
+            if v["version"] == version:
+                return v
+        raise KeyError(f"Version '{version}' not found for prompt '{name}'")
+    
+    def list_versions(self, name):
+        """List all versions of a prompt."""
+        return [(v["version"], v["created_at"]) for v in self.prompts.get(name, [])]
+
+# Usage
+registry = PromptRegistry()
+
+# Register initial version
+v1 = registry.register("summarize", 
+    "Summarize the following text in 3 sentences: {text}")
+
+# Register improved version
+v2 = registry.register("summarize",
+    "Summarize the following text in 3 sentences. Focus on key facts: {text}",
+    metadata={"improvement": "Added focus instruction"})
+
+# Use specific version
+prompt = registry.get("summarize", version=v1)
+
+# Compare versions
+print(registry.list_versions("summarize"))
+# [("abc123de", "2026-05-15T10:00:00"), ("fgh456ij", "2026-05-15T11:00:00")]</code></pre>
+
+                    <h2 id="drift-detection">Drift Detection</h2>
+                    <p>Model outputs can drift over time — due to model updates, prompt changes, or data shifts:</p>
+<pre><code>class DriftDetector:
+    def __init__(self, window_size=100):
+        self.window_size = window_size
+        self.baseline_scores = []
+        self.current_scores = []
+    
+    def add_baseline(self, score):
+        """Add scores from known-good period."""
+        self.baseline_scores.append(score)
+        if len(self.baseline_scores) > self.window_size:
+            self.baseline_scores.pop(0)
+    
+    def add_current(self, score):
+        """Add current production scores."""
+        self.current_scores.append(score)
+        if len(self.current_scores) > self.window_size:
+            self.current_scores.pop(0)
+    
+    def detect_drift(self, threshold=2.0):
+        """Detect drift using z-score."""
+        if len(self.baseline_scores) < 30 or len(self.current_scores) < 30:
+            return {"drift_detected": False, "reason": "Insufficient data"}
+        
+        import numpy as np
+        baseline_mean = np.mean(self.baseline_scores)
+        baseline_std = np.std(self.baseline_scores)
+        current_mean = np.mean(self.current_scores)
+        
+        if baseline_std == 0:
+            return {"drift_detected": False, "reason": "No variance in baseline"}
+        
+        z_score = abs(current_mean - baseline_mean) / baseline_std
+        
+        return {
+            "drift_detected": z_score > threshold,
+            "z_score": z_score,
+            "baseline_mean": baseline_mean,
+            "current_mean": current_mean,
+            "threshold": threshold
+        }
+
+# Usage
+detector = DriftDetector()
+
+# Collect baseline during testing
+for score in test_scores:
+    detector.add_baseline(score)
+
+# Monitor production
+for score in production_scores:
+    detector.add_current(score)
+    result = detector.detect_drift()
+    if result["drift_detected"]:
+        alert(f"Drift detected! Z-score: {result['z_score']:.2f}")</code></pre>
+
+                    <h2 id="alerting">Alerting Patterns</h2>
+<pre><code>class AIObservabilityAlerts:
+    def __init__(self):
+        self.rules = []
+    
+    def add_rule(self, name, condition, severity="warning"):
+        self.rules.append({"name": name, "condition": condition, "severity": severity})
+    
+    def check(self, metrics):
+        alerts = []
+        for rule in self.rules:
+            if rule["condition"](metrics):
+                alerts.append({
+                    "rule": rule["name"],
+                    "severity": rule["severity"],
+                    "metrics": metrics
+                })
+        return alerts
+
+# Setup alerts
+alerts = AIObservabilityAlerts()
+
+alerts.add_rule(
+    "high_latency",
+    lambda m: m.get("p99_latency", 0) > 5000,  # 5 seconds
+    severity="critical"
+)
+
+alerts.add_rule(
+    "cost_spike",
+    lambda m: m.get("hourly_cost", 0) > m.get("expected_hourly_cost", 10) * 2,
+    severity="warning"
+)
+
+alerts.add_rule(
+    "error_rate",
+    lambda m: m.get("error_rate", 0) > 0.05,  # 5%
+    severity="critical"
+)
+
+alerts.add_rule(
+    "quality_degradation",
+    lambda m: m.get("avg_quality_score", 1) < 0.7,
+    severity="warning"
+)
+
+# Check metrics
+metrics = {
+    "p99_latency": 6200,
+    "hourly_cost": 25.0,
+    "expected_hourly_cost": 10.0,
+    "error_rate": 0.02,
+    "avg_quality_score": 0.85
+}
+
+for alert in alerts.check(metrics):
+    print(f"[{alert['severity'].upper()}] {alert['rule']}")
+# [CRITICAL] high_latency
+# [WARNING] cost_spike</code></pre>
+
+                    <h2 id="dashboards">Building Dashboards</h2>
+                    <p>Key visualizations for AI operations:</p>
+                    <ul>
+                        <li><strong>Cost over time</strong> — Daily/hourly spend by model and user</li>
+                        <li><strong>Latency distribution</strong> — Histogram with p50/p95/p99 markers</li>
+                        <li><strong>Token usage</strong> — Input vs output tokens over time</li>
+                        <li><strong>Quality trends</strong> — Average quality score over time</li>
+                        <li><strong>Error breakdown</strong> — By error type (timeout, rate limit, bad output)</li>
+                        <li><strong>Model comparison</strong> — Cost vs quality for different models</li>
+                    </ul>
+
+                    <h2 id="common-pitfalls">Common Pitfalls</h2>
+                    <ol>
+                        <li><strong>Not logging prompts</strong> — You can't debug what you can't see. Log full prompts, not just summaries</li>
+                        <li><strong>Ignoring token costs in development</strong> — Test with the cheapest model that gives acceptable quality</li>
+                        <li><strong>No quality metrics</strong> — Tracking cost and latency without quality is optimizing the wrong thing</li>
+                        <li><strong>Alert fatigue</strong> — Too many alerts leads to ignored alerts. Use graduated severity</li>
+                        <li><strong>Not versioning prompts</strong> — When quality changes, you need to know which prompt version caused it</li>
+                        <li><strong>Storing PII in traces</strong> — Sanitize traces before sending to third-party observability platforms</li>
+                    </ol>
+
+                    <h2 id="conclusion">Conclusion</h2>
+                    <p>AI observability is not optional in production. Start with cost and latency tracking — these are the easiest to implement and the first things that will surprise you. Add tracing when you need to debug complex multi-step flows. Implement quality metrics before you optimize for cost — there's no point in saving money if your outputs become unusable.</p>
+                    <p>The minimum viable observability stack: log every LLM call with model, tokens, cost, and latency; track daily spend; set alerts for cost spikes and error rates; version your prompts. Everything else is optimization.</p>
+
+                    <div class="mt-8 p-4 bg-emerald-50 rounded-lg border border-emerald-200">
+                        <p class="text-sm text-emerald-800"><strong>Related Guides:</strong> <a href="ai-evaluation-testing-guide-2026.html" class="text-emerald-600 hover:underline">Evaluation &amp; Testing Guide</a> · <a href="ai-cost-optimization-2026.html" class="text-emerald-600 hover:underline">Cost Optimization</a> · <a href="ai-batch-processing-async-api-guide-2026.html" class="text-emerald-600 hover:underline">Batch Processing Guide</a></p>
+                    </div>
+
+                </div>
+            </div>
+        </article>
+    </main>
+    <footer class="bg-gray-900 text-gray-400 py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p>&copy; 2026 DevTools. Built for developers.</p>
+        </div>
+    </footer>
+    <script>
+        function likeArticle() {
+            const btn = event.currentTarget;
+            btn.innerHTML = '<i class="fas fa-thumbs-up text-xl text-green-500"></i>';
+            btn.disabled = true;
+        }
+    </script>
+</body>
+</html>
