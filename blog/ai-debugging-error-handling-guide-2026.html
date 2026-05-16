@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Debugging &amp; Error Handling Guide 2026 - Fix LLM Applications in Production</title>
+    <meta name="description" content="Complete guide to debugging and error handling for AI applications in 2026. LLM error patterns, retry strategies, circuit breakers, and production recovery patterns.">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "AI Debugging & Error Handling Guide 2026 - Fix LLM Applications in Production",
+      "description": "Complete guide to debugging and error handling for AI applications in 2026. LLM error patterns, retry strategies, circuit breakers, and production recovery patterns.",
+      "author": { "@type": "Organization", "name": "DevTools" },
+      "datePublished": "2026-05-16",
+      "dateModified": "2026-05-16T10:00:00+08:00",
+      "publisher": { "@type": "Organization", "name": "DevTools", "url": "https://aitechtools.top" },
+      "mainEntityOfPage": { "@type": "WebPage", "@id": "https://aitechtools.top/blog/ai-debugging-error-handling-guide-2026.html" }
+    }
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>tailwind.config = { theme: { extend: { colors: { primary: '#3b82f6', secondary: '#64748b' } } } }</script>
+    <style>
+        .prose { max-width: 65ch; }
+        .prose h2 { margin-top: 2rem; margin-bottom: 1rem; }
+        .prose h3 { margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        .prose p { margin-bottom: 1rem; }
+        .prose ul, .prose ol { margin-bottom: 1rem; padding-left: 1.5rem; }
+        .prose li { margin-bottom: 0.5rem; }
+        .prose pre { background: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; margin-bottom: 1rem; }
+        .prose code { background: #f1f5f9; padding: 0.125rem 0.25rem; border-radius: 0.25rem; font-size: 0.875rem; }
+        .prose pre code { background: none; padding: 0; }
+        .prose table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+        .prose th, .prose td { border: 1px solid #e5e7eb; padding: 0.5rem 1rem; text-align: left; }
+        .prose th { background: #f9fafb; font-weight: 600; }
+        .prose blockquote { border-left: 4px solid #f59e0b; padding-left: 1rem; margin: 1.5rem 0; color: #4b5563; font-style: italic; }
+    </style>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VVLR9NKKXE"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-VVLR9NKKXE');
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="../index.html" class="flex items-center">
+                    <i class="fas fa-tools text-primary text-2xl mr-3"></i>
+                    <h1 class="text-xl font-bold text-gray-900">DevTools</h1>
+                </a>
+                <nav class="hidden md:flex items-center space-x-6">
+                    <a href="../index.html" class="text-gray-600 hover:text-primary font-medium">Home</a>
+                    <a href="index.html" class="text-primary font-medium">Blog</a>
+                    <a href="../ai-toolkit/" class="text-gray-600 hover:text-primary font-medium">AI Toolkit</a>
+                </nav>
+                <a href="https://github.com/sunplus-1208/devtools" target="_blank" class="text-gray-500 hover:text-gray-700"><i class="fab fa-github text-xl"></i></a>
+            </div>
+        </div>
+    </header>
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <article>
+            <div class="bg-gradient-to-r from-amber-500 to-orange-600 rounded-xl p-8 mb-8 text-white">
+                <div class="flex items-center text-sm mb-4">
+                    <span class="bg-amber-100 text-amber-700 px-3 py-1 rounded-full font-medium">Guide</span>
+                    <span class="ml-3">May 16, 2026</span>
+                </div>
+                <h1 class="text-3xl font-bold mb-3">AI Debugging &amp; Error Handling Guide 2026</h1>
+                <p class="text-lg opacity-90">Fix LLM applications in production. Error patterns, retry strategies, circuit breakers, and recovery patterns for resilient AI systems.</p>
+                <div class="mt-4">
+                    <i class="fas fa-bug text-5xl opacity-30"></i>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm p-8">
+                <div class="prose text-gray-700">
+
+                    <p>LLM applications fail differently from traditional software. A database query either returns data or throws an error. An LLM call might return malformed JSON, hallucinate facts, refuse valid requests, or simply time out after 30 seconds. Debugging these failures requires understanding the unique error patterns of AI systems — from API-level errors to model-level failures to prompt-level issues. This guide covers every failure mode you'll encounter and how to handle each one.</p>
+
+                    <h2 id="error-taxonomy">LLM Error Taxonomy</h2>
+                    <p>Errors happen at multiple layers:</p>
+                    <table>
+                        <thead>
+                            <tr><th>Layer</th><th>Error Type</th><th>Example</th><th>Handling Strategy</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Network</td><td>Timeout, connection reset</td><td>Request hangs for 30s</td><td>Retry with backoff</td></tr>
+                            <tr><td>API</td><td>Rate limit, auth, validation</td><td>429 Too Many Requests</td><td>Exponential backoff</td></tr>
+                            <tr><td>Model</td><td>Refusal, hallucination</td><td>"I cannot answer that"</td><td>Prompt engineering</td></tr>
+                            <tr><td>Output</td><td>Malformed, wrong format</td><td>Invalid JSON</td><td>Parse + retry</td></tr>
+                            <tr><td>Business</td><td>Wrong answer, bias</td><td>Incorrect calculation</td><td>Validation layer</td></tr>
+                        </tbody>
+                    </table>
+
+                    <h2 id="api-errors">API-Level Errors</h2>
+                    <p>These are the most common and easiest to handle:</p>
+
+                    <h3>1. Rate Limits (429)</h3>
+<pre><code>import time
+import random
+
+def call_with_retry(func, max_retries=5):
+    """Call an LLM function with exponential backoff."""
+    for attempt in range(max_retries):
+        try:
+            return func()
+        except Exception as e:
+            error_str = str(e).lower()
+            
+            if "429" in error_str or "rate limit" in error_str:
+                # Exponential backoff with jitter
+                wait = (2 ** attempt) + random.uniform(0, 1)
+                print(f"Rate limited. Waiting {wait:.1f}s (attempt {attempt + 1})")
+                time.sleep(wait)
+            elif "500" in error_str or "503" in error_str:
+                # Server error - shorter retry
+                wait = 1 + random.uniform(0, 1)
+                time.sleep(wait)
+            else:
+                # Don't retry other errors
+                raise
+    
+    raise Exception(f"Failed after {max_retries} retries")
+
+# Usage
+response = call_with_retry(
+    lambda: client.chat.completions.create(
+        model="gpt-5.4",
+        messages=[{"role": "user", "content": "Hello"}]
+    )
+)</code></pre>
+
+                    <h3>2. Token Limit Errors (413/400)</h3>
+<pre><code>def safe_llm_call(client, messages, model="gpt-5.4", max_tokens=4000):
+    """Call LLM with automatic token management."""
+    try:
+        return client.chat.completions.create(
+            model=model,
+            messages=messages,
+            max_tokens=max_tokens
+        )
+    except Exception as e:
+        error_str = str(e).lower()
+        
+        if "context length" in error_str or "too long" in error_str:
+            # Truncate messages and retry
+            truncated = truncate_messages(messages, max_chars=8000)
+            return client.chat.completions.create(
+                model=model,
+                messages=truncated,
+                max_tokens=max_tokens
+            )
+        
+        raise
+
+def truncate_messages(messages, max_chars=8000):
+    """Truncate message history to fit context window."""
+    total = sum(len(m.get("content", "")) for m in messages)
+    
+    if total <= max_chars:
+        return messages
+    
+    # Keep system message, truncate history
+    result = [m for m in messages if m.get("role") == "system"]
+    history = [m for m in messages if m.get("role") != "system"]
+    
+    # Keep most recent messages
+    while history and sum(len(m.get("content", "")) for m in result + history) > max_chars:
+        history.pop(0)
+    
+    return result + history</code></pre>
+
+                    <h3>3. Authentication Errors (401)</h3>
+<pre><code>class APIKeyRotator:
+    """Rotate between multiple API keys for resilience."""
+    
+    def __init__(self, keys):
+        self.keys = keys
+        self.current = 0
+        self.failed_keys = set()
+    
+    def get_key(self):
+        """Get next available key."""
+        available = [k for i, k in enumerate(self.keys) 
+                    if i not in self.failed_keys]
+        
+        if not available:
+            raise Exception("All API keys failed")
+        
+        return available[self.current % len(available)]
+    
+    def mark_failed(self, key):
+        """Mark a key as failed."""
+        if key in self.keys:
+            self.failed_keys.add(self.keys.index(key))
+    
+    def call_with_fallback(self, func):
+        """Call with automatic key fallback."""
+        for _ in range(len(self.keys)):
+            key = self.get_key()
+            try:
+                return func(key)
+            except Exception as e:
+                if "401" in str(e) or "auth" in str(e).lower():
+                    self.mark_failed(key)
+                else:
+                    raise
+        
+        raise Exception("All API keys exhausted")</code></pre>
+
+                    <h2 id="output-errors">Output-Level Errors</h2>
+                    <p>These are trickier — the API call succeeds but the output is wrong:</p>
+
+                    <h3>1. Malformed JSON</h3>
+<pre><code>import json
+import re
+
+def safe_json_parse(text, max_retries=2):
+    """Parse JSON from LLM output with recovery."""
+    
+    # Try direct parse first
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        pass
+    
+    # Extract JSON from markdown code blocks
+    patterns = [
+        r'```json\s*(.*?)\s*```',
+        r'```\s*(.*?)\s*```',
+        r'\{.*\}',
+    ]
+    
+    for pattern in patterns:
+        matches = re.findall(pattern, text, re.DOTALL)
+        for match in matches:
+            try:
+                return json.loads(match)
+            except json.JSONDecodeError:
+                continue
+    
+    # Last resort: ask LLM to fix it
+    if max_retries > 0:
+        fixed = client.chat.completions.create(
+            model="gpt-5.4-mini",
+            messages=[
+                {"role": "system", "content": "Fix this JSON. Return only valid JSON."},
+                {"role": "user", "content": text}
+            ]
+        )
+        return safe_json_parse(
+            fixed.choices[0].message.content, 
+            max_retries - 1
+        )
+    
+    raise ValueError(f"Could not parse JSON from: {text[:200]}")
+
+# Usage
+response = client.chat.completions.create(
+    model="gpt-5.4",
+    messages=[{"role": "user", "content": "Return a JSON object with name and age"}]
+)
+
+try:
+    data = safe_json_parse(response.choices[0].message.content)
+except ValueError as e:
+    # Log and handle gracefully
+    data = {"name": "unknown", "age": 0}</code></pre>
+
+                    <h3>2. Refusal Detection</h3>
+<pre><code>REFUSAL_PATTERNS = [
+    "i cannot",
+    "i'm sorry",
+    "i apologize",
+    "i can't",
+    "not appropriate",
+    "against my",
+    "unable to",
+    "cannot fulfill",
+]
+
+def is_refusal(text):
+    """Detect if the model refused the request."""
+    text_lower = text.lower()
+    return any(pattern in text_lower for pattern in REFUSAL_PATTERNS)
+
+def generate_with_fallback(prompt, models=["gpt-5.4", "gpt-5.5", "claude-3-7-sonnet-20261001"]):
+    """Try multiple models if one refuses."""
+    for model in models:
+        response = client.chat.completions.create(
+            model=model,
+            messages=[{"role": "user", "content": prompt}]
+        )
+        
+        text = response.choices[0].message.content
+        
+        if not is_refusal(text):
+            return text
+        
+        print(f"Model {model} refused, trying next...")
+    
+    raise Exception("All models refused the request")
+
+# Usage
+try:
+    result = generate_with_fallback("Summarize this medical text")
+except Exception:
+    result = "[Content could not be generated]"</code></pre>
+
+                    <h3>3. Hallucination Detection</h3>
+<pre><code>def detect_hallucination(response, context, threshold=0.7):
+    """Detect potential hallucinations using embeddings."""
+    
+    # Split response into claims
+    claims = [s.strip() for s in response.split('.') if len(s.strip()) > 20]
+    
+    if not claims:
+        return {"hallucination_score": 0, "claims": []}
+    
+    # Embed context and claims
+    context_emb = get_embedding(context)
+    
+    suspicious_claims = []
+    for claim in claims:
+        claim_emb = get_embedding(claim)
+        similarity = cosine_similarity(context_emb, claim_emb)
+        
+        if similarity < threshold:
+            suspicious_claims.append({
+                "claim": claim,
+                "similarity": similarity
+            })
+    
+    score = len(suspicious_claims) / len(claims)
+    
+    return {
+        "hallucination_score": score,
+        "suspicious_claims": suspicious_claims
+    }
+
+# Usage in a RAG pipeline
+result = generate_answer(query, documents)
+validation = detect_hallucination(result, "\n".join(documents))
+
+if validation["hallucination_score"] > 0.3:
+    # Regenerate with stronger grounding instruction
+    result = generate_answer(
+        query, 
+        documents,
+        instruction="Only use information from the provided documents."
+    )</code></pre>
+
+                    <h2 id="circuit-breakers">Circuit Breakers</h2>
+                    <p>Prevent cascade failures when a service is struggling:</p>
+<pre><code>import time
+from enum import Enum
+
+class CircuitState(Enum):
+    CLOSED = "closed"      # Normal operation
+    OPEN = "open"          # Failing fast
+    HALF_OPEN = "half_open"  # Testing recovery
+
+class CircuitBreaker:
+    """Circuit breaker for LLM API calls."""
+    
+    def __init__(self, failure_threshold=5, recovery_timeout=30):
+        self.failure_threshold = failure_threshold
+        self.recovery_timeout = recovery_timeout
+        self.state = CircuitState.CLOSED
+        self.failures = 0
+        self.last_failure_time = None
+    
+    def call(self, func, *args, **kwargs):
+        """Call function with circuit breaker protection."""
+        
+        if self.state == CircuitState.OPEN:
+            if time.time() - self.last_failure_time > self.recovery_timeout:
+                self.state = CircuitState.HALF_OPEN
+                print("Circuit breaker: testing recovery")
+            else:
+                raise Exception("Circuit breaker is OPEN")
+        
+        try:
+            result = func(*args, **kwargs)
+            self._on_success()
+            return result
+        except Exception as e:
+            self._on_failure()
+            raise
+    
+    def _on_success(self):
+        """Handle successful call."""
+        self.failures = 0
+        self.state = CircuitState.CLOSED
+    
+    def _on_failure(self):
+        """Handle failed call."""
+        self.failures += 1
+        self.last_failure_time = time.time()
+        
+        if self.failures >= self.failure_threshold:
+            self.state = CircuitState.OPEN
+            print(f"Circuit breaker OPEN after {self.failures} failures")
+
+# Usage
+breaker = CircuitBreaker(failure_threshold=3, recovery_timeout=60)
+
+def generate_text(prompt):
+    return breaker.call(
+        client.chat.completions.create,
+        model="gpt-5.4",
+        messages=[{"role": "user", "content": prompt}]
+    )</code></pre>
+
+                    <h2 id="fallback-strategies">Fallback Strategies</h2>
+                    <p>When the primary approach fails, have alternatives:</p>
+<pre><code>class LLMFallbackChain:
+    """Chain of fallbacks for LLM calls."""
+    
+    def __init__(self, strategies):
+        """
+        strategies: list of dicts with 'name', 'func', 'condition'
+        """
+        self.strategies = strategies
+    
+    def execute(self, *args, **kwargs):
+        """Execute strategies in order until one succeeds."""
+        errors = []
+        
+        for strategy in self.strategies:
+            try:
+                result = strategy["func"](*args, **kwargs)
+                
+                # Check if result meets quality condition
+                if strategy.get("condition"):
+                    if strategy["condition"](result):
+                        return {
+                            "result": result,
+                            "strategy": strategy["name"],
+                            "errors": errors
+                        }
+                else:
+                    return {
+                        "result": result,
+                        "strategy": strategy["name"],
+                        "errors": errors
+                    }
+                    
+            except Exception as e:
+                errors.append({
+                    "strategy": strategy["name"],
+                    "error": str(e)
+                })
+        
+        raise Exception(f"All strategies failed: {errors}")
+
+# Define fallback chain
+chain = LLMFallbackChain([
+    {
+        "name": "primary_gpt5.5",
+        "func": lambda prompt: call_gpt(prompt, model="gpt-5.5"),
+        "condition": lambda r: len(r) > 50
+    },
+    {
+        "name": "fallback_gpt5.4",
+        "func": lambda prompt: call_gpt(prompt, model="gpt-5.4"),
+        "condition": lambda r: len(r) > 50
+    },
+    {
+        "name": "cheap_gpt5.4_mini",
+        "func": lambda prompt: call_gpt(prompt, model="gpt-5.4-mini"),
+    },
+    {
+        "name": "cached_response",
+        "func": lambda prompt: get_cached_response(prompt),
+    }
+])
+
+# Usage
+result = chain.execute("Summarize this article")
+print(f"Used strategy: {result['strategy']}")</code></pre>
+
+                    <h2 id="debugging-techniques">Debugging Techniques</h2>
+
+                    <h3>1. Prompt Diffing</h3>
+<pre><code>def debug_prompt_change(old_prompt, new_prompt, test_cases):
+    """Compare outputs before and after a prompt change."""
+    results = []
+    
+    for test in test_cases:
+        old_output = call_llm(old_prompt.format(**test))
+        new_output = call_llm(new_prompt.format(**test))
+        
+        results.append({
+            "input": test,
+            "old_output": old_output,
+            "new_output": new_output,
+            "changed": old_output != new_output,
+            "old_length": len(old_output),
+            "new_length": len(new_output)
+        })
+    
+    # Summary
+    changed = sum(1 for r in results if r["changed"])
+    print(f"Outputs changed for {changed}/{len(results)} test cases")
+    
+    return results</code></pre>
+
+                    <h3>2. Request Replay</h3>
+<pre><code>import pickle
+
+class RequestRecorder:
+    """Record and replay LLM requests for debugging."""
+    
+    def __init__(self, log_dir="./llm_logs"):
+        self.log_dir = log_dir
+        import os
+        os.makedirs(log_dir, exist_ok=True)
+    
+    def record(self, request_id, request, response, error=None):
+        """Record a request/response pair."""
+        entry = {
+            "timestamp": datetime.now().isoformat(),
+            "request": request,
+            "response": response,
+            "error": error
+        }
+        
+        filepath = f"{self.log_dir}/{request_id}.pkl"
+        with open(filepath, 'wb') as f:
+            pickle.dump(entry, f)
+    
+    def replay(self, request_id):
+        """Replay a recorded request."""
+        filepath = f"{self.log_dir}/{request_id}.pkl"
+        
+        with open(filepath, 'rb') as f:
+            entry = pickle.load(f)
+        
+        # Re-run the request
+        return client.chat.completions.create(**entry["request"])
+
+# Usage
+recorder = RequestRecorder()
+
+# In production
+request_id = str(uuid.uuid4())
+try:
+    response = client.chat.completions.create(...)
+    recorder.record(request_id, request, response)
+except Exception as e:
+    recorder.record(request_id, request, None, error=e)
+    
+    # Later: replay to debug
+    # recorder.replay(request_id)</code></pre>
+
+                    <h2 id="logging-best-practices">Logging Best Practices</h2>
+<pre><code>import logging
+import json
+
+class LLMLogger:
+    """Structured logging for LLM applications."""
+    
+    def __init__(self, name="llm_app"):
+        self.logger = logging.getLogger(name)
+        self.logger.setLevel(logging.INFO)
+    
+    def log_request(self, model, prompt, response, latency, tokens, error=None):
+        """Log a complete request/response cycle."""
+        entry = {
+            "event": "llm_request",
+            "timestamp": datetime.now().isoformat(),
+            "model": model,
+            "prompt_length": len(prompt),
+            "response_length": len(response) if response else 0,
+            "latency_ms": latency,
+            "input_tokens": tokens.get("input"),
+            "output_tokens": tokens.get("output"),
+            "error": error
+        }
+        
+        if error:
+            self.logger.error(json.dumps(entry))
+        else:
+            self.logger.info(json.dumps(entry))
+    
+    def log_quality_issue(self, prompt, response, issue_type, details):
+        """Log a quality issue for later analysis."""
+        entry = {
+            "event": "quality_issue",
+            "timestamp": datetime.now().isoformat(),
+            "issue_type": issue_type,
+            "details": details,
+            "prompt_preview": prompt[:200],
+            "response_preview": response[:200]
+        }
+        self.logger.warning(json.dumps(entry))</code></pre>
+
+                    <h2 id="common-pitfalls">Common Pitfalls</h2>
+                    <ol>
+                        <li><strong>Infinite retries</strong> — Always cap retries. A failing service won't fix itself if you hammer it harder</li>
+                        <li><strong>No fallback for critical paths</strong> — If LLM generation is required, have a cached or rule-based fallback</li>
+                        <li><strong>Silent failures</strong> — Malformed JSON that parses as None is worse than an explicit error. Validate outputs</li>
+                        <li><strong>Not logging enough context</strong> — When debugging, you need the full prompt, not a summary. Log everything</li>
+                        <li><strong>Ignoring model refusals</strong> — Refusals are errors too. Handle them gracefully instead of showing users "I'm sorry"</li>
+                        <li><strong>No circuit breaker</strong> — Without circuit breakers, one slow LLM call can cascade to timeout your entire app</li>
+                    </ol>
+
+                    <h2 id="conclusion">Conclusion</h2>
+                    <p>Resilient LLM applications assume failure at every layer. Retry API errors with backoff, validate and parse outputs defensively, detect refusals and hallucinations, and use circuit breakers to prevent cascade failures. The most important principle: never let an LLM error bubble up to the user as a raw stack trace. Wrap everything in user-friendly fallbacks.</p>
+                    <p>Debugging LLM apps is harder than traditional software because failures are probabilistic, not deterministic. The same prompt might work 99 times and fail once. Log everything, measure quality continuously, and build systems that degrade gracefully rather than failing catastrophically.</p>
+
+                    <div class="mt-8 p-4 bg-amber-50 rounded-lg border border-amber-200">
+                        <p class="text-sm text-amber-800"><strong>Related Guides:</strong> <a href="ai-observability-monitoring-guide-2026.html" class="text-amber-600 hover:underline">Observability &amp; Monitoring</a> · <a href="ai-api-rate-limits-error-handling-2026.html" class="text-amber-600 hover:underline">Rate Limits Guide</a> · <a href="ai-agent-development-guide-2026.html" class="text-amber-600 hover:underline">Agent Development</a></p>
+                    </div>
+
+                </div>
+            </div>
+        </article>
+    </main>
+    <footer class="bg-gray-900 text-gray-400 py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p>&copy; 2026 DevTools. Built for developers.</p>
+        </div>
+    </footer>
+    <script>
+        function likeArticle() {
+            const btn = event.currentTarget;
+            btn.innerHTML = '<i class="fas fa-thumbs-up text-xl text-green-500"></i>';
+            btn.disabled = true;
+        }
+    </script>
+</body>
+</html>

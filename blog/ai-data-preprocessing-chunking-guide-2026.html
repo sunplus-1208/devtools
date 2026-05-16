@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Data Preprocessing &amp; Chunking Guide 2026 - Optimize Documents for LLMs</title>
+    <meta name="description" content="Complete guide to data preprocessing and text chunking for LLMs in 2026. Document splitting strategies, chunk size optimization, overlap techniques, and production patterns for RAG pipelines.">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "AI Data Preprocessing & Chunking Guide 2026 - Optimize Documents for LLMs",
+      "description": "Complete guide to data preprocessing and text chunking for LLMs in 2026. Document splitting strategies, chunk size optimization, overlap techniques, and production patterns for RAG pipelines.",
+      "author": { "@type": "Organization", "name": "DevTools" },
+      "datePublished": "2026-05-16",
+      "dateModified": "2026-05-16T10:00:00+08:00",
+      "publisher": { "@type": "Organization", "name": "DevTools", "url": "https://aitechtools.top" },
+      "mainEntityOfPage": { "@type": "WebPage", "@id": "https://aitechtools.top/blog/ai-data-preprocessing-chunking-guide-2026.html" }
+    }
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>tailwind.config = { theme: { extend: { colors: { primary: '#3b82f6', secondary: '#64748b' } } } }</script>
+    <style>
+        .prose { max-width: 65ch; }
+        .prose h2 { margin-top: 2rem; margin-bottom: 1rem; }
+        .prose h3 { margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        .prose p { margin-bottom: 1rem; }
+        .prose ul, .prose ol { margin-bottom: 1rem; padding-left: 1.5rem; }
+        .prose li { margin-bottom: 0.5rem; }
+        .prose pre { background: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; margin-bottom: 1rem; }
+        .prose code { background: #f1f5f9; padding: 0.125rem 0.25rem; border-radius: 0.25rem; font-size: 0.875rem; }
+        .prose pre code { background: none; padding: 0; }
+        .prose table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+        .prose th, .prose td { border: 1px solid #e5e7eb; padding: 0.5rem 1rem; text-align: left; }
+        .prose th { background: #f9fafb; font-weight: 600; }
+        .prose blockquote { border-left: 4px solid #8b5cf6; padding-left: 1rem; margin: 1.5rem 0; color: #4b5563; font-style: italic; }
+    </style>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VVLR9NKKXE"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-VVLR9NKKXE');
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="../index.html" class="flex items-center">
+                    <i class="fas fa-tools text-primary text-2xl mr-3"></i>
+                    <h1 class="text-xl font-bold text-gray-900">DevTools</h1>
+                </a>
+                <nav class="hidden md:flex items-center space-x-6">
+                    <a href="../index.html" class="text-gray-600 hover:text-primary font-medium">Home</a>
+                    <a href="index.html" class="text-primary font-medium">Blog</a>
+                    <a href="../ai-toolkit/" class="text-gray-600 hover:text-primary font-medium">AI Toolkit</a>
+                </nav>
+                <a href="https://github.com/sunplus-1208/devtools" target="_blank" class="text-gray-500 hover:text-gray-700"><i class="fab fa-github text-xl"></i></a>
+            </div>
+        </div>
+    </header>
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <article>
+            <div class="bg-gradient-to-r from-violet-500 to-purple-600 rounded-xl p-8 mb-8 text-white">
+                <div class="flex items-center text-sm mb-4">
+                    <span class="bg-violet-100 text-violet-700 px-3 py-1 rounded-full font-medium">Guide</span>
+                    <span class="ml-3">May 16, 2026</span>
+                </div>
+                <h1 class="text-3xl font-bold mb-3">AI Data Preprocessing &amp; Chunking Guide 2026</h1>
+                <p class="text-lg opacity-90">Optimize documents for LLMs. Text splitting strategies, chunk size optimization, overlap techniques, and production patterns for RAG pipelines.</p>
+                <div class="mt-4">
+                    <i class="fas fa-cut text-5xl opacity-30"></i>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm p-8">
+                <div class="prose text-gray-700">
+
+                    <p>The quality of your RAG system depends more on how you chunk documents than on which embedding model you use. A 1000-page PDF dumped into a vector database as 100-character chunks will produce incoherent, out-of-context retrievals. A well-chunked document with semantic boundaries, appropriate overlap, and metadata enrichment will produce precise, contextual answers. This guide covers every chunking strategy available in 2026, with code and decision frameworks.</p>
+
+                    <h2 id="why-chunking-matters">Why Chunking Matters</h2>
+                    <p>LLMs have context limits. Even with 200K+ token windows, you can't feed an entire document corpus into every query. Chunking breaks documents into retrievable units, but bad chunking creates problems:</p>
+                    <ul>
+                        <li><strong>Too small:</strong> Chunks lack context. "The president signed the bill" — which president? Which bill?</li>
+                        <li><strong>Too large:</strong> Chunks exceed context limits or dilute relevance with irrelevant content</li>
+                        <li><strong>Wrong boundaries:</strong> Splitting mid-sentence or mid-paragraph destroys meaning</li>
+                        <li><strong>No overlap:</strong> Context at chunk boundaries is lost</li>
+                        <li><strong>No metadata:</strong> Can't filter by source, date, or document type</li>
+                    </ul>
+
+                    <h2 id="chunking-strategies">Chunking Strategies Compared</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Strategy</th><th>How It Works</th><th>Best For</th><th>Trade-off</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Fixed size</td><td>Every N characters/tokens</td><td>Simple docs, speed</td><td>May split sentences</td></tr>
+                            <tr><td>Recursive</td><td>Split by hierarchy (paragraphs → sentences → words)</td><td>Most text</td><td>Slower, better quality</td></tr>
+                            <tr><td>Semantic</td><td>Split when embedding similarity drops</td><td>Complex documents</td><td>Most accurate, slowest</td></tr>
+                            <tr><td>Agentic</td><td>LLM decides chunk boundaries</td><td>High-value content</td><td>Expensive, best quality</td></tr>
+                            <tr><td>Markdown-aware</td><td>Respects headers, lists, code blocks</td><td>Technical docs</td><td>Format-dependent</td></tr>
+                        </tbody>
+                    </table>
+
+                    <h2 id="fixed-size">Fixed-Size Chunking</h2>
+                    <p>The simplest approach. Fast but naive:</p>
+<pre><code>def fixed_size_chunks(text, chunk_size=1000, overlap=200):
+    """Split text into fixed-size chunks with overlap."""
+    chunks = []
+    start = 0
+    
+    while start < len(text):
+        end = start + chunk_size
+        chunk = text[start:end]
+        
+        # Add metadata
+        chunks.append({
+            "text": chunk,
+            "start": start,
+            "end": end,
+            "index": len(chunks)
+        })
+        
+        # Move forward by chunk_size - overlap
+        start += chunk_size - overlap
+    
+    return chunks
+
+# Usage
+document = open("article.txt").read()
+chunks = fixed_size_chunks(document, chunk_size=1500, overlap=300)
+print(f"Created {len(chunks)} chunks")
+
+# Store in vector DB
+for chunk in chunks:
+    vector_db.add(
+        text=chunk["text"],
+        metadata={
+            "source": "article.txt",
+            "chunk_index": chunk["index"],
+            "start_char": chunk["start"]
+        }
+    )</code></pre>
+                    <p><strong>Pros:</strong> Simple, fast, predictable chunk sizes<br><strong>Cons:</strong> Ignores semantic boundaries, may split sentences mid-word</p>
+
+                    <h2 id="recursive-chunking">Recursive Chunking</h2>
+                    <p>Split by natural boundaries first, only falling back to smaller units when necessary:</p>
+<pre><code>import re
+
+def recursive_chunks(text, chunk_size=1000, overlap=200):
+    """Recursively split text by natural boundaries."""
+    
+    # Level 1: Split by paragraphs
+    paragraphs = text.split('\n\n')
+    
+    chunks = []
+    current_chunk = []
+    current_size = 0
+    
+    for paragraph in paragraphs:
+        paragraph = paragraph.strip()
+        if not paragraph:
+            continue
+        
+        # If adding this paragraph exceeds chunk_size, finalize current chunk
+        if current_size + len(paragraph) > chunk_size and current_chunk:
+            chunks.append('\n\n'.join(current_chunk))
+            
+            # Keep overlap paragraphs for context
+            overlap_text = '\n\n'.join(current_chunk[-2:]) if len(current_chunk) > 1 else current_chunk[-1]
+            current_chunk = [overlap_text] if len(overlap_text) < overlap else []
+            current_size = sum(len(p) for p in current_chunk)
+        
+        current_chunk.append(paragraph)
+        current_size += len(paragraph)
+    
+    # Don't forget the last chunk
+    if current_chunk:
+        chunks.append('\n\n'.join(current_chunk))
+    
+    return chunks
+
+# Better version with sentence fallback
+def recursive_chunks_v2(text, chunk_size=1000, overlap=200):
+    """Split by paragraphs, then sentences if paragraphs are too long."""
+    
+    separators = ['\n\n', '\n', '. ', '? ', '! ']
+    
+    def split_by_separator(text, separator):
+        return [s.strip() for s in text.split(separator) if s.strip()]
+    
+    chunks = []
+    current_chunk = []
+    current_size = 0
+    
+    paragraphs = split_by_separator(text, '\n\n')
+    
+    for paragraph in paragraphs:
+        # If paragraph itself is too long, split by sentences
+        if len(paragraph) > chunk_size:
+            sentences = split_by_separator(paragraph, '. ')
+            for sentence in sentences:
+                if current_size + len(sentence) > chunk_size and current_chunk:
+                    chunks.append(' '.join(current_chunk))
+                    current_chunk = current_chunk[-2:]  # overlap
+                    current_size = sum(len(s) for s in current_chunk)
+                
+                current_chunk.append(sentence)
+                current_size += len(sentence)
+        else:
+            if current_size + len(paragraph) > chunk_size and current_chunk:
+                chunks.append('\n\n'.join(current_chunk))
+                current_chunk = current_chunk[-1:]
+                current_size = len(current_chunk[0]) if current_chunk else 0
+            
+            current_chunk.append(paragraph)
+            current_size += len(paragraph)
+    
+    if current_chunk:
+        chunks.append('\n\n'.join(current_chunk))
+    
+    return chunks</code></pre>
+
+                    <h2 id="semantic-chunking">Semantic Chunking</h2>
+                    <p>Split when the meaning changes, not at arbitrary character counts:</p>
+<pre><code>import numpy as np
+
+def semantic_chunks(text, client, max_chunk_size=1500, similarity_threshold=0.85):
+    """Split text where semantic similarity between sentences drops."""
+    
+    # Split into sentences
+    sentences = [s.strip() for s in re.split(r'(?<=[.!?])\s+', text) if s.strip()]
+    
+    if len(sentences) <= 1:
+        return [text]
+    
+    # Get embeddings for each sentence
+    embeddings = []
+    for sentence in sentences:
+        response = client.embeddings.create(
+            model="text-embedding-3-small",
+            input=sentence[:8000]
+        )
+        embeddings.append(response.data[0].embedding)
+    
+    chunks = []
+    current_chunk = [sentences[0]]
+    current_embeddings = [embeddings[0]]
+    
+    for i in range(1, len(sentences)):
+        # Compare current sentence to average of current chunk
+        chunk_avg = np.mean(current_embeddings, axis=0)
+        similarity = cosine_similarity(embeddings[i], chunk_avg)
+        
+        # Split if similarity drops or chunk too large
+        chunk_text = ' '.join(current_chunk)
+        if similarity < similarity_threshold or len(chunk_text) > max_chunk_size:
+            chunks.append({
+                "text": chunk_text,
+                "sentences": len(current_chunk),
+                "avg_similarity": float(np.mean([
+                    cosine_similarity(e, chunk_avg) 
+                    for e in current_embeddings
+                ]))
+            })
+            current_chunk = [sentences[i]]
+            current_embeddings = [embeddings[i]]
+        else:
+            current_chunk.append(sentences[i])
+            current_embeddings.append(embeddings[i])
+    
+    # Final chunk
+    if current_chunk:
+        chunks.append({
+            "text": ' '.join(current_chunk),
+            "sentences": len(current_chunk)
+        })
+    
+    return chunks
+
+def cosine_similarity(a, b):
+    return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))</code></pre>
+
+                    <h2 id="markdown-aware">Markdown-Aware Chunking</h2>
+                    <p>Preserve document structure for technical documentation:</p>
+<pre><code>import re
+
+def markdown_chunks(text, chunk_size=1500):
+    """Split markdown while preserving headers and structure."""
+    
+    # Split by headers
+    header_pattern = r'^(#{1,6}\s.+)$'
+    sections = re.split(f'(?m){header_pattern}', text)
+    
+    chunks = []
+    current_header = ""
+    current_content = []
+    current_size = 0
+    
+    for section in sections:
+        if not section.strip():
+            continue
+        
+        # Check if this is a header
+        if re.match(header_pattern, section.strip()):
+            # Save previous section
+            if current_content:
+                chunks.append({
+                    "header": current_header,
+                    "text": '\n'.join(current_content),
+                    "level": current_header.count('#') if current_header else 0
+                })
+            
+            current_header = section.strip()
+            current_content = []
+            current_size = 0
+        else:
+            # Split long sections by paragraphs
+            paragraphs = section.split('\n\n')
+            
+            for paragraph in paragraphs:
+                if current_size + len(paragraph) > chunk_size and current_content:
+                    chunks.append({
+                        "header": current_header,
+                        "text": '\n\n'.join(current_content),
+                        "level": current_header.count('#') if current_header else 0
+                    })
+                    current_content = []
+                    current_size = 0
+                
+                current_content.append(paragraph)
+                current_size += len(paragraph)
+    
+    # Final section
+    if current_content:
+        chunks.append({
+            "header": current_header,
+            "text": '\n\n'.join(current_content),
+            "level": current_header.count('#') if current_header else 0
+        })
+    
+    return chunks
+
+# Usage with metadata
+for chunk in markdown_chunks(document):
+    vector_db.add(
+        text=chunk["text"],
+        metadata={
+            "header": chunk["header"],
+            "header_level": chunk["level"],
+            "type": "documentation"
+        }
+    )</code></pre>
+
+                    <h2 id="chunk-size-optimization">Chunk Size Optimization</h2>
+                    <p>There's no universal best chunk size. It depends on your use case:</p>
+                    <table>
+                        <thead>
+                            <tr><th>Use Case</th><th>Chunk Size</th><th>Overlap</th><th>Reason</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>FAQ / Q&A</td><td>200-500</td><td>0-50</td><td>Each chunk is self-contained</td></tr>
+                            <tr><td>Technical docs</td><td>500-1000</td><td>100-200</td><td>Need surrounding context</td></tr>
+                            <tr><td>Legal documents</td><td>1000-2000</td><td>200-400</td><td>Complex cross-references</td></tr>
+                            <tr><td>Code repositories</td><td>Function-level</td><td>0</td><td>Functions are natural units</td></tr>
+                            <tr><td>Books / long-form</td><td>1500-3000</td><td>300-500</td><td>Narrative flow matters</td></tr>
+                        </tbody>
+                    </table>
+
+                    <h3>Evaluating Chunk Quality</h3>
+<pre><code>def evaluate_chunks(chunks, test_queries, client):
+    """Evaluate chunking strategy using retrieval quality."""
+    
+    scores = []
+    
+    for query in test_queries:
+        # Embed query
+        query_emb = client.embeddings.create(
+            model="text-embedding-3-small",
+            input=query
+        ).data[0].embedding
+        
+        # Find best matching chunk
+        best_score = 0
+        best_chunk = None
+        
+        for chunk in chunks:
+            chunk_emb = client.embeddings.create(
+                model="text-embedding-3-small",
+                input=chunk["text"][:8000]
+            ).data[0].embedding
+            
+            similarity = cosine_similarity(query_emb, chunk_emb)
+            if similarity > best_score:
+                best_score = similarity
+                best_chunk = chunk
+        
+        # Check if answer is actually in the chunk
+        has_answer = check_answer_in_chunk(query, best_chunk["text"])
+        
+        scores.append({
+            "query": query,
+            "retrieval_score": best_score,
+            "has_answer": has_answer,
+            "chunk_length": len(best_chunk["text"])
+        })
+    
+    # Summary metrics
+    avg_score = sum(s["retrieval_score"] for s in scores) / len(scores)
+    answer_rate = sum(1 for s in scores if s["has_answer"]) / len(scores)
+    
+    return {
+        "avg_retrieval_score": avg_score,
+        "answer_containment_rate": answer_rate,
+        "details": scores
+    }
+
+# Run evaluation
+results = evaluate_chunks(chunks, test_queries, client)
+print(f"Answer containment: {results['answer_containment_rate']:.1%}")
+print(f"Avg retrieval score: {results['avg_retrieval_score']:.3f}")</code></pre>
+
+                    <h2 id="metadata-enrichment">Metadata Enrichment</h2>
+                    <p>Chunks without metadata are hard to filter and rank:</p>
+<pre><code>def enrich_chunks(chunks, source_doc):
+    """Add metadata to chunks for better retrieval."""
+    
+    enriched = []
+    
+    for i, chunk in enumerate(chunks):
+        # Basic metadata
+        metadata = {
+            "source": source_doc["filename"],
+            "chunk_index": i,
+            "total_chunks": len(chunks),
+            "char_count": len(chunk["text"]),
+            "word_count": len(chunk["text"].split()),
+        }
+        
+        # Extract keywords (simple TF-based)
+        words = chunk["text"].lower().split()
+        word_freq = {}
+        for word in words:
+            if len(word) > 4 and word.isalpha():
+                word_freq[word] = word_freq.get(word, 0) + 1
+        
+        top_keywords = sorted(word_freq.items(), key=lambda x: x[1], reverse=True)[:5]
+        metadata["keywords"] = [k for k, _ in top_keywords]
+        
+        # Document-level metadata
+        if "title" in source_doc:
+            metadata["document_title"] = source_doc["title"]
+        if "date" in source_doc:
+            metadata["document_date"] = source_doc["date"]
+        if "category" in source_doc:
+            metadata["category"] = source_doc["category"]
+        
+        # Position metadata (beginning/middle/end)
+        position = i / len(chunks)
+        if position < 0.2:
+            metadata["position"] = "beginning"
+        elif position > 0.8:
+            metadata["position"] = "end"
+        else:
+            metadata["position"] = "middle"
+        
+        enriched.append({
+            "text": chunk["text"],
+            "metadata": metadata
+        })
+    
+    return enriched</code></pre>
+
+                    <h2 id="production-pipeline">Production Pipeline</h2>
+<pre><code>class DocumentProcessor:
+    """End-to-end document processing for RAG."""
+    
+    def __init__(self, client, chunk_size=1000, overlap=200):
+        self.client = client
+        self.chunk_size = chunk_size
+        self.overlap = overlap
+    
+    def process(self, document):
+        """Process a document through the full pipeline."""
+        
+        # 1. Clean text
+        cleaned = self._clean(document["text"])
+        
+        # 2. Chunk
+        if document.get("format") == "markdown":
+            chunks = markdown_chunks(cleaned, self.chunk_size)
+        else:
+            chunks = recursive_chunks_v2(cleaned, self.chunk_size, self.overlap)
+        
+        # 3. Enrich with metadata
+        enriched = enrich_chunks(chunks, document)
+        
+        # 4. Generate embeddings
+        for chunk in enriched:
+            response = self.client.embeddings.create(
+                model="text-embedding-3-small",
+                input=chunk["text"][:8000]
+            )
+            chunk["embedding"] = response.data[0].embedding
+        
+        return enriched
+    
+    def _clean(self, text):
+        """Clean and normalize text."""
+        # Remove extra whitespace
+        text = re.sub(r'\s+', ' ', text)
+        
+        # Remove control characters
+        text = re.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f]', '', text)
+        
+        # Normalize unicode
+        import unicodedata
+        text = unicodedata.normalize('NFKC', text)
+        
+        return text.strip()
+
+# Usage
+processor = DocumentProcessor(client, chunk_size=1500, overlap=300)
+
+document = {
+    "filename": "api-docs.md",
+    "title": "API Documentation",
+    "text": open("api-docs.md").read(),
+    "format": "markdown",
+    "category": "technical"
+}
+
+chunks = processor.process(document)
+print(f"Processed into {len(chunks)} chunks")
+
+# Store in vector DB
+for chunk in chunks:
+    vector_db.add(
+        document=chunk["text"],
+        embedding=chunk["embedding"],
+        metadata=chunk["metadata"]
+    )</code></pre>
+
+                    <h2 id="common-pitfalls">Common Pitfalls</h2>
+                    <ol>
+                        <li><strong>One-size-fits-all chunking</strong> — Different document types need different strategies. Don't chunk code the same way as legal text</li>
+                        <li><strong>No overlap</strong> — Context at chunk boundaries is lost. Always include 10-20% overlap</li>
+                        <li><strong>Ignoring document structure</strong> — Headers, sections, and lists carry semantic meaning. Preserve them</li>
+                        <li><strong>Not cleaning input</strong> — Control characters, excessive whitespace, and encoding issues break embeddings</li>
+                        <li><strong>Missing metadata</strong> — Without source attribution, users can't verify answers. Always include document metadata</li>
+                        <li><strong>Not evaluating</strong> — Measure retrieval quality with test queries. Bad chunking won't be obvious until you test</li>
+                    </ol>
+
+                    <h2 id="conclusion">Conclusion</h2>
+                    <p>Chunking is the foundation of effective RAG. Start with recursive chunking for most text, use semantic chunking when retrieval quality is critical, and always add metadata. The best chunk size is the one that contains complete answers to your users' questions — test with real queries to find it.</p>
+                    <p>Remember: chunking is not a one-time decision. As your document corpus grows and user queries evolve, revisit your chunking strategy. The goal is not perfect chunks, but chunks that enable accurate retrieval.</p>
+
+                    <div class="mt-8 p-4 bg-violet-50 rounded-lg border border-violet-200">
+                        <p class="text-sm text-violet-800"><strong>Related Guides:</strong> <a href="rag-implementation-guide.html" class="text-violet-600 hover:underline">RAG Implementation Guide</a> · <a href="ai-embedding-models-comparison-2026.html" class="text-violet-600 hover:underline">Embedding Models Comparison</a> · <a href="ai-vector-databases-guide-2026.html" class="text-violet-600 hover:underline">Vector Databases Guide</a></p>
+                    </div>
+
+                </div>
+            </div>
+        </article>
+    </main>
+    <footer class="bg-gray-900 text-gray-400 py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p>&copy; 2026 DevTools. Built for developers.</p>
+        </div>
+    </footer>
+    <script>
+        function likeArticle() {
+            const btn = event.currentTarget;
+            btn.innerHTML = '<i class="fas fa-thumbs-up text-xl text-green-500"></i>';
+            btn.disabled = true;
+        }
+    </script>
+</body>
+</html>
