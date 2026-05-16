@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://devtools-ten-tau.vercel.app/sitemap.xml
+Sitemap: https://devtools-ai.vercel.app/sitemap.xml
