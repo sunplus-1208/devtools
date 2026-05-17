@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Model Distillation &amp; Compression Guide 2026 - Shrink LLMs Without Losing Quality</title>
+    <meta name="description" content="Complete guide to model distillation and compression for LLMs in 2026. Knowledge distillation, quantization, pruning, and deployment patterns for efficient AI systems.">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "AI Model Distillation & Compression Guide 2026 - Shrink LLMs Without Losing Quality",
+      "description": "Complete guide to model distillation and compression for LLMs in 2026. Knowledge distillation, quantization, pruning, and deployment patterns for efficient AI systems.",
+      "author": { "@type": "Organization", "name": "DevTools" },
+      "datePublished": "2026-05-17",
+      "dateModified": "2026-05-17T10:00:00+08:00",
+      "publisher": { "@type": "Organization", "name": "DevTools", "url": "https://aitechtools.top" },
+      "mainEntityOfPage": { "@type": "WebPage", "@id": "https://aitechtools.top/blog/ai-model-distillation-compression-guide-2026.html" }
+    }
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>tailwind.config = { theme: { extend: { colors: { primary: '#3b82f6', secondary: '#64748b' } } } }</script>
+    <style>
+        .prose { max-width: 65ch; }
+        .prose h2 { margin-top: 2rem; margin-bottom: 1rem; }
+        .prose h3 { margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        .prose p { margin-bottom: 1rem; }
+        .prose ul, .prose ol { margin-bottom: 1rem; padding-left: 1.5rem; }
+        .prose li { margin-bottom: 0.5rem; }
+        .prose pre { background: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; margin-bottom: 1rem; }
+        .prose code { background: #f1f5f9; padding: 0.125rem 0.25rem; border-radius: 0.25rem; font-size: 0.875rem; }
+        .prose pre code { background: none; padding: 0; }
+        .prose table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+        .prose th, .prose td { border: 1px solid #e5e7eb; padding: 0.5rem 1rem; text-align: left; }
+        .prose th { background: #f9fafb; font-weight: 600; }
+        .prose blockquote { border-left: 4px solid #10b981; padding-left: 1rem; margin: 1.5rem 0; color: #4b5563; font-style: italic; }
+    </style>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VVLR9NKKXE"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-VVLR9NKKXE');
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="../index.html" class="flex items-center">
+                    <i class="fas fa-tools text-primary text-2xl mr-3"></i>
+                    <h1 class="text-xl font-bold text-gray-900">DevTools</h1>
+                </a>
+                <nav class="hidden md:flex items-center space-x-6">
+                    <a href="../index.html" class="text-gray-600 hover:text-primary font-medium">Home</a>
+                    <a href="index.html" class="text-primary font-medium">Blog</a>
+                    <a href="../ai-toolkit/" class="text-gray-600 hover:text-primary font-medium">AI Toolkit</a>
+                </nav>
+                <a href="https://github.com/sunplus-1208/devtools" target="_blank" class="text-gray-500 hover:text-gray-700"><i class="fab fa-github text-xl"></i></a>
+            </div>
+        </div>
+    </header>
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <article>
+            <div class="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl p-8 mb-8 text-white">
+                <div class="flex items-center text-sm mb-4">
+                    <span class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full font-medium">Guide</span>
+                    <span class="ml-3">May 17, 2026</span>
+                </div>
+                <h1 class="text-3xl font-bold mb-3">AI Model Distillation &amp; Compression Guide 2026</h1>
+                <p class="text-lg opacity-90">Shrink LLMs without losing quality. Knowledge distillation, quantization, pruning, and deployment patterns for efficient AI systems.</p>
+                <div class="mt-4">
+                    <i class="fas fa-compress-arrows-alt text-5xl opacity-30"></i>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm p-8">
+                <div class="prose text-gray-700">
+
+                    <p>Running GPT-5.5 costs $5 per million input tokens. Running a distilled 7B model costs $0.10. For many applications — classification, summarization, structured extraction — the smaller model performs nearly as well while being 50x cheaper and 10x faster. Model distillation and compression are no longer research curiosities. They're production necessities. This guide covers every technique to make large models small without making them stupid.</p>
+
+                    <h2 id="why-compress">Why Compress Models?</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Factor</th><th>Full Model</th><th>Compressed Model</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Inference cost</td><td>$5-30 / 1M tokens</td><td>$0.10-1 / 1M tokens</td></tr>
+                            <tr><td>Latency</td><td>2-5 seconds</td><td>200-500ms</td></tr>
+                            <tr><td>Memory (GPU)</td><td>40-80 GB</td><td>4-16 GB</td></tr>
+                            <tr><td>Power consumption</td><td>300-700W</td><td>50-150W</td></tr>
+                            <tr><td>On-device deployment</td><td>Impossible</td><td>Feasible</td></tr>
+                        </tbody>
+                    </table>
+
+                    <h2 id="distillation">Knowledge Distillation</h2>
+                    <p>Distillation trains a small "student" model to mimic a large "teacher" model. The student learns not just from ground-truth labels but from the teacher's probability distribution — including its uncertainty.</p>
+
+                    <h3>Basic Distillation</h3>
+<pre><code>import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+class DistillationLoss(nn.Module):
+    """Combine hard labels with soft teacher predictions."""
+    
+    def __init__(self, temperature=2.0, alpha=0.5):
+        super().__init__()
+        self.temperature = temperature
+        self.alpha = alpha  # Weight for distillation vs hard labels
+    
+    def forward(self, student_logits, teacher_logits, labels):
+        # Soft targets from teacher
+        soft_targets = F.softmax(teacher_logits / self.temperature, dim=1)
+        soft_predictions = F.log_softmax(student_logits / self.temperature, dim=1)
+        
+        # KL divergence for distillation
+        distillation_loss = F.kl_div(
+            soft_predictions, soft_targets, reduction='batchmean'
+        ) * (self.temperature ** 2)
+        
+        # Standard cross-entropy with hard labels
+        hard_loss = F.cross_entropy(student_logits, labels)
+        
+        return self.alpha * distillation_loss + (1 - self.alpha) * hard_loss
+
+# Training loop
+teacher = load_large_model().eval()  # Frozen
+student = SmallModel()
+optimizer = torch.optim.AdamW(student.parameters(), lr=1e-4)
+criterion = DistillationLoss(temperature=2.0, alpha=0.7)
+
+for batch in dataloader:
+    inputs, labels = batch
+    
+    with torch.no_grad():
+        teacher_logits = teacher(inputs)
+    
+    student_logits = student(inputs)
+    loss = criterion(student_logits, teacher_logits, labels)
+    
+    loss.backward()
+    optimizer.step()
+    optimizer.zero_grad()</code></pre>
+
+                    <h3>Chain-of-Thought Distillation</h3>
+                    <p>For reasoning tasks, distill the teacher's reasoning process, not just its final answer:</p>
+<pre><code>def generate_training_data(teacher, questions):
+    """Generate reasoning traces from teacher for distillation."""
+    training_data = []
+    
+    for question in questions:
+        # Get teacher's reasoning
+        response = teacher.generate(
+            f"Solve this step by step: {question}",
+            max_tokens=500,
+            temperature=0.3
+        )
+        
+        # Parse reasoning and answer
+        reasoning, answer = parse_reasoning(response)
+        
+        training_data.append({
+            "question": question,
+            "reasoning": reasoning,
+            "answer": answer
+        })
+    
+    return training_data
+
+# Train student on reasoning traces
+def train_reasoning_student(student, training_data):
+    for example in training_data:
+        prompt = f"Question: {example['question']}\nReasoning:"
+        target = f" {example['reasoning']}\nAnswer: {example['answer']}"
+        
+        # Standard language modeling loss
+        loss = compute_lm_loss(student, prompt, target)
+        loss.backward()
+        optimizer.step()</code></pre>
+
+                    <h2 id="quantization">Quantization</h2>
+                    <p>Quantization reduces the precision of model weights. FP32 → FP16 → INT8 → INT4. Each step halves memory and often speeds up inference.</p>
+
+                    <h3>Post-Training Quantization (PTQ)</h3>
+<pre><code># Using llama.cpp for GGUF quantization
+# Convert and quantize in one step
+
+python convert_hf_to_gguf.py \
+    --model-dir ./my-model \
+    --outfile ./my-model-q4.gguf \
+    --outtype q4_k_m
+
+# Quantization types:
+# q4_0 - 4-bit, fast, lower quality
+# q4_k_m - 4-bit with mixed precision, balanced
+# q5_k_m - 5-bit, better quality
+# q8_0 - 8-bit, near-lossless
+# f16 - 16-bit, no quantization
+
+# Load quantized model
+from llama_cpp import Llama
+
+model = Llama(
+    model_path="./my-model-q4.gguf",
+    n_ctx=4096,
+    n_threads=8
+)
+
+output = model("Explain quantum computing:", max_tokens=200)</code></pre>
+
+                    <h3>AWQ (Activation-Aware Weight Quantization)</h3>
+<pre><code># AWQ protects salient weights during quantization
+from awq import AutoAWQForCausalLM
+from transformers import AutoTokenizer
+
+model_path = "meta-llama/Llama-3.1-8B"
+quant_path = "llama-3.1-8b-awq"
+
+# Load model
+model = AutoAWQForCausalLM.from_pretrained(model_path)
+tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
+
+# Quantize
+model.quantize(
+    tokenizer,
+    quant_config={
+        "zero_point": True,
+        "q_group_size": 128,
+        "w_bit": 4,
+        "version": "GEMM"
+    }
+)
+
+# Save
+model.save_quantized(quant_path)
+tokenizer.save_pretrained(quant_path)
+
+# 4-bit AWQ typically retains 99%+ of FP16 quality
+# while using 75% less memory</code></pre>
+
+                    <h3>GPTQ (Gradient-Based Post-Training Quantization)</h3>
+<pre><code>from auto_gptq import AutoGPTQForCausalLM, BaseQuantizeConfig
+
+model_id = "meta-llama/Llama-3.1-8B"
+quantize_config = BaseQuantizeConfig(
+    bits=4,
+    group_size=128,
+    desc_act=False,
+)
+
+model = AutoGPTQForCausalLM.from_pretrained(
+    model_id, quantize_config
+)
+
+# Calibrate on sample data
+examples = ["Example text 1", "Example text 2", ...]
+model.quantize(examples)
+
+model.save_quantized("llama-3.1-8b-gptq")</code></pre>
+
+                    <h2 id="pruning">Pruning</h2>
+                    <p>Pruning removes weights that contribute least to the output. Structured pruning removes entire neurons; unstructured pruning removes individual weights.</p>
+
+                    <h3>Magnitude Pruning</h3>
+<pre><code>def magnitude_prune(model, sparsity=0.3):
+    """Remove weights with smallest absolute values."""
+    
+    for name, param in model.named_parameters():
+        if 'weight' in name and len(param.shape) > 1:
+            # Calculate threshold for this layer
+            flat = param.abs().flatten()
+            k = int(sparsity * flat.numel())
+            threshold = torch.kthvalue(flat, k).values
+            
+            # Create mask
+            mask = (param.abs() >= threshold).float()
+            
+            # Apply mask
+            param.data *= mask
+    
+    return model
+
+# Iterative pruning with fine-tuning
+for sparsity in [0.1, 0.2, 0.3, 0.4]:
+    model = magnitude_prune(model, sparsity)
+    
+    # Fine-tune to recover accuracy
+    for epoch in range(3):
+        train(model, dataloader)
+        
+    # Re-apply mask (weights may regrow during training)
+    model = apply_mask(model, masks)</code></pre>
+
+                    <h3>Structured Pruning (Head Pruning)</h3>
+<pre><code>def prune_attention_heads(model, heads_to_prune):
+    """Remove entire attention heads in transformers."""
+    
+    for layer_idx, head_indices in heads_to_prune.items():
+        layer = model.model.layers[layer_idx].self_attn
+        
+        for head_idx in sorted(head_indices, reverse=True):
+            # Zero out this head's query/key/value projections
+            head_size = layer.num_heads // layer.num_key_value_heads
+            
+            # Mask the head in the output projection
+            start = head_idx * head_size
+            end = (head_idx + 1) * head_size
+            layer.o_proj.weight[:, start:end] = 0
+    
+    return model
+
+# Determine which heads to prune based on importance scores
+head_importance = compute_head_importance(model, eval_data)
+heads_to_prune = select_least_important_heads(head_importance, ratio=0.2)</code></pre>
+
+                    <h2 id="comparison">Techniques Compared</h2>
+                    <table>
+                        <thead>
+                            <tr><th>Technique</th><th>Size Reduction</th><th>Quality Loss</th><th>Training Needed</th><th>Best For</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>FP16 conversion</td><td>2x</td><td>None</td><td>No</td><td>Quick win</td></tr>
+                            <tr><td>INT8 (PTQ)</td><td>4x</td><td>&lt;1%</td><td>No</td><td>Production deployment</td></tr>
+                            <tr><td>INT4 (AWQ/GPTQ)</td><td>8x</td><td>1-3%</td><td>No</td><td>Edge devices</td></tr>
+                            <tr><td>Distillation</td><td>10-100x</td><td>2-10%</td><td>Yes</td><td>Task-specific models</td></tr>
+                            <tr><td>Pruning + fine-tune</td><td>2-10x</td><td>1-5%</td><td>Yes</td><td>Known architectures</td></tr>
+                        </tbody>
+                    </table>
+
+                    <h2 id="deployment">Deployment Patterns</h2>
+
+                    <h3>Cascade Architecture</h3>
+<pre><code>class CascadeClassifier:
+    """Use cheap model first, escalate to expensive model only when needed."""
+    
+    def __init__(self):
+        self.fast_model = load_quantized_model("distilled-1b-q4")
+        self.accurate_model = load_api_model("gpt-5.4")
+        self.confidence_threshold = 0.9
+    
+    def classify(self, text):
+        # Try fast model first
+        result = self.fast_model.classify(text)
+        
+        if result.confidence >= self.confidence_threshold:
+            return result
+        
+        # Escalate to accurate model
+        return self.accurate_model.classify(text)
+    
+    def get_stats(self):
+        """Track how often we need the expensive model."""
+        return {
+            "fast_hits": self.fast_calls,
+            "slow_hits": self.slow_calls,
+            "cost_savings": (self.fast_calls * 0.10 + self.slow_calls * 2.50) / 
+                          ((self.fast_calls + self.slow_calls) * 2.50)
+        }</code></pre>
+
+                    <h3>Speculative Decoding</h3>
+<pre><code>def speculative_decode(draft_model, target_model, prompt, max_tokens=100):
+    """Use small model to draft tokens, large model to verify."""
+    
+    tokens = tokenize(prompt)
+    
+    while len(tokens) < max_tokens:
+        # Draft multiple tokens with small model
+        draft_tokens = draft_model.generate(tokens, num_tokens=5)
+        
+        # Verify with large model in parallel
+        target_logits = target_model.forward(tokens + draft_tokens)
+        
+        # Accept tokens until disagreement
+        accepted = 0
+        for i, draft_token in enumerate(draft_tokens):
+            # Check if target model agrees
+            target_probs = softmax(target_logits[i])
+            draft_prob = target_probs[draft_token]
+            
+            if draft_prob > 0.5:  # Threshold for acceptance
+                tokens.append(draft_token)
+                accepted += 1
+            else:
+                # Sample from target model distribution
+                tokens.append(sample(target_probs))
+                break
+        
+        if accepted == 0:
+            # No agreement, just use target model
+            tokens.append(target_model.generate_next(tokens))
+    
+    return detokenize(tokens)</code></pre>
+
+                    <h2 id="evaluation">Evaluating Compressed Models</h2>
+<pre><code>def evaluate_compression(original_model, compressed_model, test_tasks):
+    """Comprehensive evaluation of model compression quality."""
+    
+    results = {
+        "original": {},
+        "compressed": {},
+        "relative": {}
+    }
+    
+    for task_name, task_fn in test_tasks.items():
+        orig_score = task_fn(original_model)
+        comp_score = task_fn(compressed_model)
+        
+        results["original"][task_name] = orig_score
+        results["compressed"][task_name] = comp_score
+        results["relative"][task_name] = comp_score / orig_score
+    
+    # Perplexity comparison
+    results["perplexity"] = {
+        "original": compute_perplexity(original_model, eval_data),
+        "compressed": compute_perplexity(compressed_model, eval_data)
+    }
+    
+    # Speed comparison
+    results["speed"] = {
+        "original": benchmark_speed(original_model),
+        "compressed": benchmark_speed(compressed_model)
+    }
+    
+    # Memory comparison
+    results["memory"] = {
+        "original": get_model_size(original_model),
+        "compressed": get_model_size(compressed_model)
+    }
+    
+    return results
+
+# Usage
+test_tasks = {
+    "classification": lambda m: evaluate_classifier(m, cls_data),
+    "summarization": lambda m: evaluate_rouge(m, sum_data),
+    "qa": lambda m: evaluate_exact_match(m, qa_data)
+}
+
+results = evaluate_compression(teacher, student, test_tasks)
+print(f"Quality retention: {results['relative']['classification']:.1%}")
+print(f"Speedup: {results['speed']['original'] / results['speed']['compressed']:.1f}x")
+print(f"Size reduction: {results['memory']['original'] / results['memory']['compressed']:.1f}x")</code></pre>
+
+                    <h2 id="best-practices">Best Practices</h2>
+                    <ol>
+                        <li><strong>Start with quantization</strong> — PTQ (INT8/INT4) gives 4-8x size reduction with minimal quality loss and no training. Always try this first</li>
+                        <li><strong>Distill for specific tasks</strong> — General-purpose distillation is hard. Task-specific distillation (classification, extraction, summarization) works much better</li>
+                        <li><strong>Use calibration data representative of production</strong> — Quantization quality depends on calibration data distribution. Use real production samples</li>
+                        <li><strong>Measure end-to-end latency, not just model speed</strong> — Tokenization, detokenization, and data transfer often dominate</li>
+                        <li><strong>Consider cascade architectures</strong> — Route 80% of requests to a cheap model and 20% to an expensive one. The savings are massive</li>
+                        <li><strong>Monitor quality degradation over time</strong> — Compressed models may drift as input distributions change. Set up evaluation pipelines</li>
+                    </ol>
+
+                    <h2 id="conclusion">Conclusion</h2>
+                    <p>Model compression is about trading accuracy for efficiency. The key insight: you don't need GPT-5.5 quality for every task. A distilled 7B model can match GPT-5.5 on classification tasks while being 50x cheaper. A quantized 4-bit model can run on a laptop where the full model needs an A100.</p>
+                    <p>The practical workflow: quantize first (free win), then distill if you need more compression for a specific task, then prune if you have a known architecture. Measure everything — compression ratios are meaningless if quality drops below your use case's requirements.</p>
+
+                    <div class="mt-8 p-4 bg-emerald-50 rounded-lg border border-emerald-200">
+                        <p class="text-sm text-emerald-800"><strong>Related Guides:</strong> <a href="ai-compute-infrastructure-deployment-guide-2026.html" class="text-emerald-600 hover:underline">Compute Infrastructure</a> · <a href="ai-fine-tuning-model-customization-guide-2026.html" class="text-emerald-600 hover:underline">Fine-Tuning Guide</a> · <a href="local-llm-setup-guide.html" class="text-emerald-600 hover:underline">Local LLM Setup</a></p>
+                    </div>
+
+                </div>
+            </div>
+        </article>
+    </main>
+    <footer class="bg-gray-900 text-gray-400 py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p>&copy; 2026 DevTools. Built for developers.</p>
+        </div>
+    </footer>
+    <script>
+        function likeArticle() {
+            const btn = event.currentTarget;
+            btn.innerHTML = '<i class="fas fa-thumbs-up text-xl text-green-500"></i>';
+            btn.disabled = true;
+        }
+    </script>
+</body>
+</html>
