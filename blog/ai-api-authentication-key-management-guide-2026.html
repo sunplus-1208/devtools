@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI API Authentication and Key Management Best Practices 2026 - Secure Your AI Applications</title>
+    <meta name="description" content="Complete guide to AI API authentication, API key rotation, secret management, OAuth for LLM services, and production security patterns for AI applications in 2026.">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "AI API Authentication and Key Management Best Practices 2026",
+      "description": "Complete guide to AI API authentication, API key rotation, secret management, OAuth for LLM services, and production security patterns for AI applications.",
+      "author": { "@type": "Organization", "name": "DevTools" },
+      "datePublished": "2026-05-18",
+      "dateModified": "2026-05-18T10:00:00+08:00",
+      "publisher": { "@type": "Organization", "name": "DevTools", "url": "https://aitechtools.top" },
+      "mainEntityOfPage": { "@type": "WebPage", "@id": "https://aitechtools.top/blog/ai-api-authentication-key-management-guide-2026.html" }
+    }
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>tailwind.config = { theme: { extend: { colors: { primary: '#3b82f6', secondary: '#64748b' } } } }</script>
+    <style>
+        .prose { max-width: 65ch; }
+        .prose h2 { margin-top: 2rem; margin-bottom: 1rem; }
+        .prose h3 { margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        .prose p { margin-bottom: 1rem; }
+        .prose ul, .prose ol { margin-bottom: 1rem; padding-left: 1.5rem; }
+        .prose li { margin-bottom: 0.5rem; }
+        .prose pre { background: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; margin-bottom: 1rem; }
+        .prose code { background: #f1f5f9; padding: 0.125rem 0.25rem; border-radius: 0.25rem; font-size: 0.875rem; }
+        .prose pre code { background: none; padding: 0; }
+        .prose table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+        .prose th, .prose td { border: 1px solid #e5e7eb; padding: 0.5rem 1rem; text-align: left; }
+        .prose th { background: #f9fafb; font-weight: 600; }
+        .prose blockquote { border-left: 4px solid #ef4444; padding-left: 1rem; margin: 1.5rem 0; color: #4b5563; font-style: italic; }
+    </style>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VVLR9NKKXE"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-VVLR9NKKXE');
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="../index.html" class="flex items-center">
+                    <i class="fas fa-tools text-primary text-2xl mr-3"></i>
+                    <h1 class="text-xl font-bold text-gray-900">DevTools</h1>
+                </a>
+                <nav class="hidden md:flex items-center space-x-6">
+                    <a href="../index.html" class="text-gray-600 hover:text-primary font-medium">Home</a>
+                    <a href="index.html" class="text-primary font-medium">Blog</a>
+                    <a href="../ai-toolkit/" class="text-gray-600 hover:text-primary font-medium">AI Toolkit</a>
+                </nav>
+                <a href="https://github.com/sunplus-1208/devtools" target="_blank" class="text-gray-500 hover:text-gray-700"><i class="fab fa-github text-xl"></i></a>
+            </div>
+        </div>
+    </header>
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <article>
+            <div class="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl p-8 mb-8 text-white">
+                <div class="flex items-center text-sm mb-4">
+                    <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-medium">Guide</span>
+                    <span class="ml-3">May 18, 2026</span>
+                </div>
+                <h1 class="text-3xl font-bold mb-3">AI API Authentication and Key Management Best Practices 2026</h1>
+                <p class="text-lg opacity-90">Complete guide to AI API authentication, API key rotation, secret management, OAuth for LLM services, and production security patterns for AI applications.</p>
+                <div class="mt-4">
+                    <i class="fas fa-key text-5xl opacity-30"></i>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm p-8">
+                <div class="prose text-gray-700">
+
+<h2>Why API Key Management Matters in 2026</h2>
+<p>As AI applications move from prototype to production, API key security has become one of the most critical yet overlooked aspects of AI engineering. A single exposed API key can result in unauthorized usage charges, data breaches, and service disruptions. In 2026, with AI API spending reaching unprecedented levels, proper authentication and key management is not optional - it is a fundamental requirement for any production AI system.</p>
+<p>This comprehensive guide covers everything you need to secure your AI APIs: authentication methods, key rotation strategies, secret management tools, multi-tenant isolation patterns, and a complete production security checklist. Whether you are building a consumer app or an enterprise AI platform, these best practices will help you protect your API credentials and your users.</p>
+
+<h2>Understanding AI API Authentication Methods</h2>
+<p>AI API providers offer several authentication methods, each with different security characteristics and use cases. Understanding these options is the first step toward building a secure AI application.</p>
+
+<h3>API Key Authentication</h3>
+<p>The most common and straightforward method. API keys are long random strings that authenticate requests. They are simple to implement but require careful management.</p>
+<pre><code># OpenAI API Key Authentication
+import openai
+
+client = OpenAI(api_key="sk-proj-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+
+response = client.chat.completions.create(
+    model="gpt-5.5",
+    messages=[{"role": "user", "content": "Hello!"}]
+)</code></pre>
+
+<h3>Bearer Token Authentication</h3>
+<p>Many providers support OAuth 2.0 Bearer tokens, which expire periodically and can be revoked. This method is more secure than static API keys because tokens have limited lifespans.</p>
+<pre><code># Anthropic Bearer Token Authentication
+import anthropic
+
+client = anthropic.Anthropic(
+    auth_token="sk-ant-api03-xxxxxxxxxxxxxxxxxxxxxxxx"
+)
+
+message = client.messages.create(
+    model="claude-sonnet-4-20250511",
+    max_tokens=1024,
+    messages=[{"role": "user", "content": "Hello!"}]
+)</code></pre>
+
+<h3>OAuth 2.0 for Multi-Tenant Applications</h3>
+<p>For platforms serving multiple customers, OAuth 2.0 provides per-tenant authentication. Each tenant gets their own credentials, enabling usage tracking and granular access control.</p>
+<pre><code># OAuth 2.0 Token Request (Node.js)
+import axios from 'axios';
+
+async function getAccessToken(clientId, clientSecret, tokenUrl) {
+    const response = await axios.post(tokenUrl, {
+        grant_type: 'client_credentials',
+        client_id: clientId,
+        client_secret: clientSecret,
+    });
+    return response.data.access_token;
+}
+
+// Usage
+const token = await getAccessToken(
+    'your-client-id',
+    'your-client-secret',
+    'https://api.openai.com/oauth/token'
+);</code></pre>
+
+<h2>API Key Management Best Practices</h2>
+<p>Effective API key management requires a multi-layered approach combining technical controls, operational processes, and monitoring.</p>
+
+<h3>Never Hardcode API Keys</h3>
+<p>The most common security violation is hardcoding API keys in source code. This exposes keys to version control, CI/CD logs, and anyone with code access. Always use environment variables or secret management services.</p>
+<pre><code># Environment Variable Approach (Python)
+import os
+
+api_key = os.environ.get('OPENAI_API_KEY')
+if not api_key:
+    raise ValueError("OPENAI_API_KEY environment variable not set")
+
+client = OpenAI(api_key=api_key)</code></pre>
+<pre><code># Environment Variable Approach (Node.js)
+import dotenv from 'dotenv';
+dotenv.config();
+
+const apiKey = process.env.OPENAI_API_KEY;
+if (!apiKey) {
+    throw new Error('OPENAI_API_KEY environment variable not set');
+}
+
+const client = new OpenAI({ apiKey });</code></pre>
+
+<h3>Use Separate Keys per Environment</h3>
+<p>Never use the same API key for development, staging, and production. Create separate keys for each environment. This limits the blast radius if a key is compromised and prevents development traffic from affecting production costs.</p>
+<ul>
+<li><strong>Development keys</strong>: Low limits, restricted to developer IPs</li>
+<li><strong>Staging keys</strong>: Medium limits, monitoring enabled</li>
+<li><strong>Production keys</strong>: Full limits, full monitoring and alerts</li>
+</ul>
+
+<h3>Implement Key Expiration</h3>
+<p>Set expiration dates on all API keys. Even if a key is compromised, the damage is limited to the expiration window. Most providers support key expiration at creation time.</p>
+
+<h3>Restrict Key Permissions</h3>
+<p>Use provider-specific permission scoping. OpenAI allows restricting keys to specific models, endpoints, or permission levels. Grant only the minimum permissions required.</p>
+
+<h2>Secret Management Tools</h2>
+<p>For production applications, environment variables are not enough. Secret management tools provide centralized, secure storage with audit logs, access controls, and automated rotation.</p>
+
+<h3>HashiCorp Vault</h3>
+<p>Vault is the industry standard for secret management. It provides dynamic secrets, encryption as a service, and detailed audit logs.</p>
+<pre><code># HashiCorp Vault Integration (Python)
+import hvac
+
+client = hvac.Client(url='https://vault.example.com', token='vault-token')
+
+# Read secret
+secret = client.secrets.kv.v2.read_secret_version(path='ai-api/openai')
+
+api_key = secret['data']['data']['api_key']
+
+# Dynamic secret example (rotates automatically)
+creds = client.generateCredential(path='database/creds')</code></pre>
+<pre><code># HashiCorp Vault Integration (Node.js)
+import vault from 'node-vault';
+
+const client = vault({
+    endpoint: 'https://vault.example.com',
+    token: 'vault-token',
+});
+
+// Read secret
+const secret = await client.read('ai-api/openai');
+const apiKey = secret.data.data.api_key;</code></pre>
+
+<h3>AWS Secrets Manager</h3>
+<p>AWS Secrets Manager integrates natively with AWS services and is ideal for AWS-based AI deployments.</p>
+<pre><code># AWS Secrets Manager (Python)
+import boto3
+import json
+
+def get_secret(secret_name):
+    client = boto3.client('secretsmanager')
+    response = client.get_secret_value(SecretId=secret_name)
+    return json.loads(response['SecretString'])
+
+# Usage
+secret = get_secret('ai-api/openai')
+api_key = secret['api_key']</code></pre>
+
+<h3>Doppler</h3>
+<p>Doppler provides a developer-friendly secret management platform with automatic rotation, webhook triggers, and GitOps integration. It is particularly popular for teams using Vercel, Netlify, and other cloud platforms.</p>
+<pre><code># Doppler Integration (Python)
+import os
+import doppler
+
+# Set secrets as environment variables
+doppler.secrets().inject()
+
+# Usage - secrets available in os.environ
+api_key = os.environ['OPENAI_API_KEY']</code></pre>
+
+<h3>Tool Comparison</h3>
+<table>
+<thead><tr><th>Tool</th><th>Best For</th><th>Self-Hosted</th><th>Auto-Rotation</th><th>Cost</th></tr></thead>
+<tbody>
+<tr><td>HashiCorp Vault</td><td>Enterprise, full control</td><td>Yes</td><td>Yes</td><td>Free (self-hosted)</td></tr>
+<tr><td>AWS Secrets Manager</td><td>AWS workloads</td><td>No</td><td>Yes</td><td>$0.40/secret/month</td></tr>
+<tr><td>Google Secret Manager</td><td>GCP workloads</td><td>No</td><td>Yes</td><td>$0.06/secret/month</td></tr>
+<tr><td>Doppler</td><td>Dev teams, GitOps</td><td>No</td><td>Yes</td><td>$25/user/month</td></tr>
+<tr><td>Azure Key Vault</td><td>Azure workloads</td><td>Yes</td><td>Yes</td><td>$0.03/transaction</td></tr>
+</tbody>
+</table>
+
+<h2>Key Rotation Strategies</h2>
+<p>Regular key rotation limits the impact of compromised credentials. In 2026, automated rotation is the standard for production systems.</p>
+
+<h3>Manual Rotation</h3>
+<p>For small projects or initial setup, manual rotation involves:</p>
+<ol>
+<li>Creating a new API key in the provider dashboard</li>
+<li>Updating the secret in your management tool</li>
+<li>Verifying the new key works</li>
+<li>Revoking the old key</li>
+<li>Confirming revocation</li>
+</ol>
+
+<h3>Automated Rotation with Vault</h3>
+<p>HashiCorp Vault can automatically rotate API keys on a schedule, eliminating human error.</p>
+<pre><code># Vault Kubernetes Auth with Automatic Rotation
+# vault-config.yaml
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vault-agent
+spec:
+  template:
+    spec:
+      serviceAccountName: vault-auth
+      containers:
+      - name: vault-agent
+        image: hashicorp/vault:1.15
+        env:
+        - name: VAULT_ADDR
+          value: "https://vault.example.com"
+        - name: VAULT_SECRET_PATH
+          value: "ai-api/keys"
+
+# Kubernetes secret injection
+# Note: Vault agent injects secrets directly into pods</code></pre>
+
+<h3>Rolling Keys with Zero Downtime</h3>
+<p>For critical systems, implement dual-key support during rotation:</p>
+<pre><code># Dual-Key Support Implementation (Python)
+import os
+from openai import OpenAI
+
+# Support both old and new keys during transition
+primary_key = os.environ.get('OPENAI_API_KEY_PRIMARY')
+backup_key = os.environ.get('OPENAI_API_KEY_BACKUP')
+
+class RotatingOpenAIClient:
+    def __init__(self):
+        self.clients = [
+            OpenAI(api_key=primary_key),
+            OpenAI(api_key=backup_key)
+        ] if backup_key else [OpenAI(api_key=primary_key)]
+        self.current = 0
+    
+    def call(self, *args, **kwargs):
+        for i in range(len(self.clients)):
+            try:
+                client = self.clients[(self.current + i) % len(self.clients)]
+                return client.chat.completions.create(*args, **kwargs)
+            except Exception as e:
+                if 'authentication' in str(e).lower():
+                    self.current = (self.current + 1) % len(self.clients)
+                    continue
+                raise
+        raise Exception("All API keys failed")
+
+# Usage
+client = RotatingOpenAIClient()
+response = client.call(model="gpt-5.5", messages=[{"role": "user", "content": "Hello"}])</code></pre>
+
+<h2>Multi-Tenant Key Isolation</h2>
+<p>For platforms serving multiple customers, each tenant must have isolated credentials to prevent cross-tenant access and enable usage tracking.</p>
+
+<h3>Per-Tenant API Keys</h3>
+<p>The simplest approach: each tenant gets their own API key from the provider. The platform manages key distribution.</p>
+<pre><code># Per-Tenant Key Distribution
+class TenantKeyManager:
+    def __init__(self, db):
+        self.db = db
+    
+    async def get_tenant_key(self, tenant_id: str) -> str:
+        tenant = await self.db.tenants.get(tenant_id)
+        
+        if not tenant.api_key:
+            # Create new key for tenant
+            api_key = await self._create_provider_key(tenant)
+            tenant.api_key = api_key
+            await tenant.save()
+        
+        return tenant.api_key
+    
+    async def _create_provider_key(self, tenant):
+        # Create key with tenant-specific restrictions
+        key = await openai_client.api_keys.create(
+            user=tenant.id,
+            nickname=f"tenant-{tenant.id}",
+            # Restrict to specific scope
+            permissions=['chat_completions'],
+        )
+        return key.secret</code></pre>
+
+<h3>API Key Proxy Pattern</h3>
+<p>For tighter control, route all API calls through a proxy that adds tenant authentication:</p>
+<pre><code># API Key Proxy Server (Node.js/Express)
+import express from 'express';
+import { OpenAI } from 'openai';
+
+const app = express();
+app.use(express.json());
+
+// Tenant key store (use Vault in production)
+const tenantKeys = new Map();
+
+// Middleware to authenticate tenant
+app.use('/v1/*', async (req, res, next) => {
+    const tenantId = req.headers['x-tenant-id'];
+    const apiKey = tenantKeys.get(tenantId);
+    
+    if (!apiKey) {
+        return res.status(401).json({ error: 'Invalid tenant' });
+    }
+    
+    req.tenantApiKey = apiKey;
+    next();
+});
+
+// Proxy Chat Completions
+app.post('/v1/chat/completions', async (req, res) => {
+    const client = new OpenAI({ apiKey: req.tenantApiKey });
+    
+    const response = await client.chat.completions.create({
+        model: req.body.model,
+        messages: req.body.messages,
+        // Add tenant context
+        ...req.body,
+    });
+    
+    // Log for tenant usage tracking
+    await logUsage(req.headers['x-tenant-id'], response);
+    
+    res.json(response);
+});</code></pre>
+
+<h3>Tenant Usage Tracking</h3>
+<p>Always track API usage per tenant for billing and monitoring:</p>
+<pre><code># Tenant Usage Tracking (Python)
+from datetime import datetime
+import stripe
+
+class TenantUsageTracker:
+    def __init__(self, db, stripe_client):
+        self.db = db
+        self.stripe = stripe_client
+    
+    async def track_usage(self, tenant_id: str, model: str, tokens: int):
+        tenant = await self.db.tenants.get(tenant_id)
+        
+        # Record usage
+        usage = TenantUsage(
+            tenant_id=tenant_id,
+            model=model,
+            tokens=tokens,
+            timestamp=datetime.utcnow()
+        )
+        await usage.save()
+        
+        # Check limits
+        if tokens >= tenant.monthly_limit:
+            await self._notify_limit_exceeded(tenant)
+    
+    async def get_tenant_usage(self, tenant_id: str, month: datetime) -> dict:
+        usages = await self.db.usages.filter(
+            tenant_id=tenant_id,
+            timestamp__gte=month
+        ).all()
+        
+        return {
+            'total_tokens': sum(u.tokens for u in usages),
+            'by_model': {}
+        }</code></pre>
+
+<h2>Rate Limit Headers and Monitoring</h2>
+<p>Understanding and monitoring rate limits is essential for production stability. All major providers return rate limit information in response headers.</p>
+
+<h3>Reading Rate Limit Headers</h3>
+<pre><code># Reading Rate Limit Headers (Python)
+import os
+from openai import OpenAI
+
+client = OpenAI(api_key=os.environ.get('OPENAI_API_KEY'))
+
+response = client.chat.completions.create(
+    model="gpt-5.5",
+    messages=[{"role": "user", "content": "Hello"}],
+    # Include extra headers to see limits
+    extra_headers={
+        "stream": "false"
+    }
+)
+
+# Read rate limit headers from response
+headers = response._headers
+remaining_requests = headers.get('x-ratelimit-remaining-requests')
+remaining_tokens = headers.get('x-ratelimit-remaining-tokens')
+limit_requests = headers.get('x-ratelimit-limit-requests')
+limit_tokens = headers.get('x-ratelimit-limit-tokens')
+
+print(f"Requests: {remaining_requests}/{limit_requests}")
+print(f"Tokens: {remaining_tokens}/{limit_tokens}")</code></pre>
+
+<h3>Rate Limit Monitoring Dashboard</h3>
+<pre><code># Prometheus Metrics for Rate Limits
+from prometheus_client import Counter, Gauge, start_http_server
+
+requests_limit = Gauge('ai_api_requests_limit', 'API request limit', ['provider'])
+requests_remaining = Gauge('ai_api_requests_remaining', 'Remaining requests', ['provider'])
+tokens_limit = Gauge('ai_api_tokens_limit', 'API token limit', ['provider'])
+tokens_remaining = Gauge('ai_api_tokens_remaining', 'Remaining tokens', ['provider'])
+
+def update_metrics(provider: str, headers: dict):
+    requests_limit.labels(provider).set(int(headers.get('x-ratelimit-limit-requests', 0)))
+    requests_remaining.labels(provider).set(int(headers.get('x-ratelimit-remaining-requests', 0)))
+    tokens_limit.labels(provider).set(int(headers.get('x-ratelimit-limit-tokens', 0)))
+    tokens_remaining.labels(provider).set(int(headers.get('x-ratelimit-remaining-tokens', 0)))</code></pre>
+
+<h2>Security Checklist for Production</h2>
+<p>Use this checklist to verify your AI API security before production deployment.</p>
+
+<h3>Authentication Checklist</h3>
+<ul>
+<li>[ ] No API keys hardcoded in source code</li>
+<li>[ ] API keys stored in secret management tool (Vault, AWS SM, Doppler)</li>
+<li>[ ] Environment variables used at runtime</li>
+<li>[ ] Separate keys per environment (dev, staging, prod)</li>
+<li>[ ] Keys have expiration dates set</li>
+<li>[ ] Keys have minimum required permissions</li>
+</ul>
+
+<h3>Infrastructure Checklist</h3>
+<ul>
+<li>[ ] API calls come from trusted IPs/networks only</li>
+<li>[ ] Network segmentation in place</li>
+<li>[ ] TLS 1.2+ for all API calls</li>
+<li>[ ] API keys excluded from logs</li>
+<li>[ ] Request/response sanitized for PII</li>
+<li>[ ] Secrets excluded from error messages</li>
+</ul>
+
+<h3>Operations Checklist</h3>
+<ul>
+<li>[ ] Key rotation scheduled (30-90 days recommended)</li>
+<li>[ ] Automated rotation tested and working</li>
+<li>[ ] Manual rotation procedure documented</li>
+<li>[ ] Key revocation procedure tested</li>
+<li>[ ] Incident response procedure documented</li>
+<li>[ ] On-call team has access to revoke keys</li>
+</ul>
+
+<h3>Monitoring Checklist</h3>
+<ul>
+<li>[ ] Real-time usage alerts configured</li>
+<li>[ ] Unusual usage patterns detected</li>
+<li>[ ] Rate limit approaching alerts</li>
+<li>[ ] Cost anomaly detection</li>
+<li>[ ] Audit logs for key access</li>
+<li>[ ] Dashboard for key inventory</li>
+</ul>
+
+<h3>Compliance Checklist</h3>
+<ul>
+<li>[ ] Key access logged for compliance</li>
+<li>[ ] Key changes require approval</li>
+<li>[ ] Regular security audits scheduled</li>
+<li>[ ] Penetration testing includes API auth</li>
+<li>[ ] Encryption at rest verified</li>
+<li>[ ] Encryption in transit verified</li>
+</ul>
+
+<h2>Conclusion</h2>
+<p>API key security is not a feature to add later - it is a foundation to build in from day one. In 2026, with AI API costs reaching significant levels and security threats becoming more sophisticated, proper authentication and key management is essential for any AI application.</p>
+<p>The key principles are simple: never hardcode keys, use secret management tools, implement automated rotation, monitor usage, and plan for incidents. By following the practices in this guide, you can build AI applications that are secure by default and ready for production scale.</p>
+<p>Start with the security checklist and implement one improvement at a time. The investment in proper key management will pay dividends in reduced risk, easier compliance, and peace of mind.</p>
+
+</div>
+            </div>
+        </article>
+    </main>
+    <footer class="bg-white border-t mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <i class="fas fa-tools text-primary text-xl mr-3"></i>
+                    <span class="text-gray-600">DevTools - AI Developer Resources</span>
+                </div>
+                <div class="flex space-x-6 text-gray-500">
+                    <a href="../index.html" class="hover:text-primary">Home</a>
+                    <a href="index.html" class="hover:text-primary">Blog</a>
+                    <a href="../ai-toolkit/" class="hover:text-primary">AI Toolkit</a>
+                    <a href="https://github.com/sunplus-1208/devtools" target="_blank" class="hover:text-primary"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
