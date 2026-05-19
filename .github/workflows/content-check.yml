@@ -43,3 +43,21 @@ jobs:
             fi
           done
           echo "✅ Required elements check complete"
+      
+      - name: Auto-generate sitemap
+        run: |
+          node scripts/generate-sitemap.js
+          echo "✅ Sitemap generated"
+      
+      - name: Commit sitemap if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add sitemap.xml
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: auto-update sitemap [skip ci]"
+            git push
+            echo "✅ Sitemap updated and pushed"
+          else
+            echo "✅ Sitemap already up to date"
+          fi

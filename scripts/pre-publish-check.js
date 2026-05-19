@@ -73,6 +73,15 @@ checks.forEach(c => console.log(c));
 const pct = Math.round((score / maxScore) * 100);
 console.log(`\nScore: ${score}/${maxScore} (${pct}%)`);
 
+// === Auto-generate sitemap ===
+try {
+  const { execSync } = require('child_process');
+  execSync('node scripts/generate-sitemap.js', { stdio: 'inherit', cwd: path.resolve(__dirname, '..') });
+  console.log('✅ Sitemap auto-updated');
+} catch (e) {
+  console.log('⚠️  Sitemap generation failed (non-blocking)');
+}
+
 if (pct >= 80) {
   console.log('✅ PASSED — Ready to publish');
   process.exit(0);
