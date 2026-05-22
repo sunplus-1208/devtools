@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prompt Template Library - DevTools</title>
+    <meta name="description" content="Collection of proven AI prompt templates for coding, writing, analysis, and more. Copy and customize for your projects.">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { primary: '#3b82f6' }
+                }
+            }
+        }
+    </script>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VVLR9NKKXE"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-VVLR9NKKXE');
+    </script>
+    <style>
+        .template-card { transition: all 0.3s ease; }
+        .template-card:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .code-block { font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; }
+        .copy-btn { transition: all 0.2s ease; }
+        .copy-btn:hover { transform: scale(1.05); }
+        .category-btn { transition: all 0.2s ease; }
+        .category-btn:hover { background-color: #eff6ff; }
+        .category-btn.active { background-color: #3b82f6; color: white; }
+        .search-highlight { background-color: #fef08a; padding: 0 2px; border-radius: 2px; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="../index.html" class="flex items-center">
+                        <i class="fas fa-arrow-left text-gray-500 mr-3 hover:text-gray-700"></i>
+                        <i class="fas fa-tools text-primary text-2xl mr-3"></i>
+                        <h1 class="text-xl font-bold text-gray-900">DevTools</h1>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="lang-zh" class="px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium" onclick="switchLang('zh')">中文</button>
+                    <button id="lang-en" class="px-3 py-1 rounded-md bg-primary text-white text-sm font-medium" onclick="switchLang('en')">EN</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Header -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold text-gray-900">Prompt Template Library</h2>
+            <p class="text-gray-600 mt-1">Proven AI prompt templates for common tasks. Click to copy and customize.</p>
+        </div>
+
+        <!-- Search & Filter -->
+        <div class="bg-white rounded-xl shadow-md border border-gray-100 p-4 mb-6">
+            <div class="flex flex-col md:flex-row gap-4">
+                <div class="flex-1">
+                    <div class="relative">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" id="searchInput" placeholder="Search templates..." 
+                               class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-primary"
+                               oninput="filterTemplates()">
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button class="category-btn active px-4 py-2 rounded-lg text-sm font-medium border border-gray-200" data-category="all" onclick="filterByCategory('all')">All</button>
+                    <button class="category-btn px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 text-gray-600" data-category="coding" onclick="filterByCategory('coding')">
+                        <i class="fas fa-code mr-1"></i>Coding
+                    </button>
+                    <button class="category-btn px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 text-gray-600" data-category="writing" onclick="filterByCategory('writing')">
+                        <i class="fas fa-pen mr-1"></i>Writing
+                    </button>
+                    <button class="category-btn px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 text-gray-600" data-category="analysis" onclick="filterByCategory('analysis')">
+                        <i class="fas fa-chart-bar mr-1"></i>Analysis
+                    </button>
+                    <button class="category-btn px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 text-gray-600" data-category="review" onclick="filterByCategory('review')">
+                        <i class="fas fa-check-double mr-1"></i>Review
+                    </button>
+                    <button class="category-btn px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 text-gray-600" data-category="explanation" onclick="filterByCategory('explanation')">
+                        <i class="fas fa-lightbulb mr-1"></i>Explain
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Templates Grid -->
+        <div id="templatesGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Filled by JS -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="hidden text-center py-16">
+            <i class="fas fa-search text-gray-300 text-5xl mb-4"></i>
+            <p class="text-gray-500">No templates found matching your search.</p>
+        </div>
+
+        <!-- Usage Tips -->
+        <div class="mt-12 bg-white rounded-xl shadow-md border border-gray-100 p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                <i class="fas fa-info-circle text-primary mr-2"></i>Tips for Better Results
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="p-4 bg-blue-50 rounded-lg">
+                    <h4 class="font-medium text-gray-900 mb-2">1. Be Specific</h4>
+                    <p class="text-sm text-gray-600">Include context, format preferences, and constraints in your prompts.</p>
+                </div>
+                <div class="p-4 bg-green-50 rounded-lg">
+                    <h4 class="font-medium text-gray-900 mb-2">2. Use Examples</h4>
+                    <p class="text-sm text-gray-600">Add sample inputs/outputs to guide the AI's response format.</p>
+                </div>
+                <div class="p-4 bg-purple-50 rounded-lg">
+                    <h4 class="font-medium text-gray-900 mb-2">3. Chain Prompts</h4>
+                    <p class="text-sm text-gray-600">Break complex tasks into multiple focused prompts for better results.</p>
+                </div>
+                <div class="p-4 bg-orange-50 rounded-lg">
+                    <h4 class="font-medium text-gray-900 mb-2">4. Iterate & Refine</h4>
+                    <p class="text-sm text-gray-600">Adjust templates based on outputs. What works for one may need tweaking.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Copy Modal -->
+    <div id="copyModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-2xl w-full max-h-[80vh] overflow-hidden">
+            <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+                <h3 id="modalTitle" class="font-semibold text-gray-900">Copy Template</h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="p-4 overflow-y-auto max-h-[60vh]">
+                <pre id="modalContent" class="code-block bg-gray-900 text-gray-100 p-4 rounded-lg text-sm whitespace-pre-wrap overflow-x-auto"></pre>
+            </div>
+            <div class="p-4 border-t border-gray-200 flex justify-end gap-3">
+                <button onclick="closeModal()" class="px-4 py-2 text-gray-600 hover:text-gray-800">Cancel</button>
+                <button onclick="copyFromModal()" class="copy-btn px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600">
+                    <i class="fas fa-copy mr-2"></i>Copy
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const templates = [
+            {
+                id: 'code-review',
+                title: 'Code Review',
+                category: 'review',
+                icon: 'fa-code',
+                iconColor: 'bg-blue-100 text-blue-600',
+                description: 'Comprehensive code review with security, performance, and best practices checks.',
+                prompt: `Review the following code and provide feedback:
+
+\`\`\`[LANGUAGE]
+[CODE_HERE]
+\`\`\`
+
+Please analyze:
+1. **Security**: Are there any vulnerabilities (injection, XSS, SQL injection, etc.)?
+2. **Performance**: Any inefficient operations or memory issues?
+3. **Best Practices**: Does it follow language conventions and design patterns?
+4. **Error Handling**: Are errors properly caught and handled?
+5. **Testing**: Is the code testable? Any missing edge cases?
+
+Provide specific suggestions with code examples where helpful.`
+            },
+            {
+                id: 'debug-assist',
+                title: 'Debug Assistant',
+                category: 'coding',
+                icon: 'fa-bug',
+                iconColor: 'bg-red-100 text-red-600',
+                description: 'Systematic debugging with root cause analysis and solutions.',
+                prompt: `Help me debug this code:
+
+**Error Message:**
+\`\`\`
+[ERROR_MESSAGE]
+\`\`\`
+
+**Code:**
+\`\`\`[LANGUAGE]
+[CODE_HERE]
+\`\`\`
+
+**What I've Tried:**
+- [ATTEMPT_1]
+- [ATTEMPT_2]
+
+Please:
+1. Identify the most likely root cause
+2. Explain why this error occurs
+3. Provide a fix with explanation
+4. Suggest how to prevent similar issues`
+            },
+            {
+                id: 'write-tests',
+                title: 'Write Tests',
+                category: 'coding',
+                icon: 'fa-check-circle',
+                iconColor: 'bg-green-100 text-green-600',
+                description: 'Generate comprehensive test cases for your code.',
+                prompt: `Write comprehensive tests for this code:
+
+\`\`\`[LANGUAGE]
+[CODE_HERE]
+\`\`\`
+
+Requirements:
+- Use [TESTING_FRAMEWORK] (e.g., Jest, pytest, JUnit)
+- Cover happy path and edge cases
+- Include table-driven tests where appropriate
+- Add descriptive test names
+- Mock external dependencies
+- Aim for >80% code coverage
+
+Format the output as runnable test code.`
+            },
+            {
+                id: 'refactor-code',
+                title: 'Refactor Code',
+                category: 'coding',
+                icon: 'fa-sync',
+                iconColor: 'bg-purple-100 text-purple-600',
+                description: 'Improve code structure while maintaining functionality.',
+                prompt: `Refactor this code to improve:
+
+\`\`\`[LANGUAGE]
+[CODE_HERE]
+\`\`\`
+
+Goals:
+- Improve readability and maintainability
+- Follow SOLID principles
+- Reduce complexity
+- Keep the same functionality
+
+Please provide:
+1. Explanation of changes
+2. Before/after comparison
+3. Runnable refactored code
+4. Any trade-offs or considerations`
+            },
+            {
+                id: 'explain-code',
+                title: 'Explain Code',
+                category: 'explanation',
+                icon: 'fa-lightbulb',
+                iconColor: 'bg-yellow-100 text-yellow-600',
+                description: 'Clear explanation of complex code logic.',
+                prompt: `Explain this code in simple terms:
+
+\`\`\`[LANGUAGE]
+[CODE_HERE]
+\`\`\`
+
+Please:
+1. Give a high-level overview of what this code does
+2. Break down each major section
+3. Explain any complex algorithms or patterns
+4. Define any technical terms used
+5. Create a simple diagram or flowchart if helpful
+
+Target audience: [JUNIOR/INTERMEDIATE/SENIOR]_level developer`
+            },
+            {
+                id: 'api-design',
+                title: 'API Design',
+                category: 'coding',
+                icon: 'fa-server',
+                iconColor: 'bg-indigo-100 text-indigo-600',
+                description: 'Design RESTful APIs with proper structure and documentation.',
+                prompt: `Design a RESTful API for [USE_CASE/APPLICATION].
+
+Requirements:
+- [REQUIREMENT_1]
+- [REQUIREMENT_2]
+- [REQUIREMENT_3]
+
+Please provide:
+1. **Endpoint List**: All routes with HTTP methods
+2. **Request/Response Schemas**: JSON structure for each endpoint
+3. **Status Codes**: When to return each code
+4. **Error Handling**: Standard error format
+5. **Authentication**: Recommended auth method
+6. **Example Requests**: curl or fetch examples
+
+Format as OpenAPI/Swagger compatible specification.`
+            },
+            {
+                id: 'blog-post',
+                title: 'Blog Post',
+                category: 'writing',
+                icon: 'fa-blog',
+                iconColor: 'bg-pink-100 text-pink-600',
+                description: 'Structured technical blog post with SEO optimization.',
+                prompt: `Write a technical blog post about: [TOPIC]
+
+Target audience: [AUDIENCE]
+Length: [SHORT/MEDIUM/LONG] (~[NUMBER] words)
+Tone: [CONVERSATIONAL/TECHNICAL/FORMAL]
+
+Structure:
+1. Hook opening - grab attention with a problem or stat
+2. Introduction - why this matters now
+3. Main content - [NUMBER] key sections with headers
+4. Code examples (if applicable)
+5. Conclusion - key takeaways and next steps
+
+SEO Requirements:
+- Include keyword: [PRIMARY_KEYWORD]
+- Secondary keywords: [KEYWORD_1], [KEYWORD_2]
+- Meta description: [DESCRIPTION]
+
+Format with Markdown headers and include a table of contents.`
+            },
+            {
+                id: 'email-response',
+                title: 'Professional Email',
+                category: 'writing',
+                icon: 'fa-envelope',
+                iconColor: 'bg-teal-100 text-teal-600',
+                description: 'Polished business emails for various scenarios.',
+                prompt: `Write a professional email for this situation:
+
+**Context:**
+- Purpose: [RESPOND_TO/REQUEST/FOLLOW_UP/APOLOGIZE/ESCALATE]
+- Sender: [YOUR_ROLE/RELATIONSHIP]
+- Recipient: [RECIPIENT_ROLE]
+- Tone: [FRIENDLY/PROFESSIONAL/FORMAL]
+
+**Key Points to Include:**
+1. [POINT_1]
+2. [POINT_2]
+3. [POINT_3]
+
+**Call to Action:**
+[WHAT_DO_YOU_WANT_RECIPIENT_TO_DO]
+
+Keep it concise (under 200 words for body).`
+            },
+            {
+                id: 'meeting-notes',
+                title: 'Meeting Notes',
+                category: 'writing',
+                icon: 'fa-clipboard-list',
+                iconColor: 'bg-cyan-100 text-cyan-600',
+                description: 'Transform meeting transcript into actionable notes.',
+                prompt: `Transform this meeting transcript into structured notes:
+
+**Meeting Topic:** [TOPIC]
+**Date:** [DATE]
+**Attendees:** [NAMES/ROLES]
+
+**Transcript:**
+[TEXT_HERE]
+
+Format output as:
+
+## Meeting Summary
+[Brief 2-3 sentence overview]
+
+## Key Decisions Made
+- [DECISION_1]
+- [DECISION_2]
+
+## Action Items
+| Task | Owner | Due Date |
+|------|-------|----------|
+| [TASK] | [NAME] | [DATE] |
+
+## Open Questions
+- [QUESTION_1]
+- [QUESTION_2]
+
+## Next Steps
+[WHAT_HAPPENS_NEXT]`
+            },
+            {
+                id: 'data-analysis',
+                title: 'Data Analysis',
+                category: 'analysis',
+                icon: 'fa-chart-line',
+                iconColor: 'bg-emerald-100 text-emerald-600',
+                description: 'Analyze datasets and generate insights.',
+                prompt: `Analyze this dataset and provide insights:
+
+**Data Source:** [SOURCE/NAME]
+**Columns:** [COLUMN_1], [COLUMN_2], [COLUMN_3], etc.
+**Size:** [ROWS] rows
+
+**Data Sample:**
+[TABLE_OR_DATA_PREVIEW]
+
+Please provide:
+1. **Data Quality Assessment**: Missing values, duplicates, outliers
+2. **Statistical Summary**: Key metrics and distributions
+3. **Patterns & Trends**: Notable observations
+4. **Correlations**: Relationships between variables
+5. **Recommendations**: Actionable insights based on data
+6. **Follow-up Questions**: What else would help deeper analysis?
+
+Include visualizations suggestions if helpful.`
+            },
+            {
+                id: 'compare-options',
+                title: 'Compare Options',
+                category: 'analysis',
+                icon: 'fa-balance-scale',
+                iconColor: 'bg-orange-100 text-orange-600',
+                description: 'Compare products, tools, or approaches with scoring.',
+                prompt: `Compare these options for [USE_CASE]:
+
+**Option A:** [TOOL/PRODUCT/APPROACH_A]
+- Pros: [PRO_1], [PRO_2]
+- Cons: [CON_1], [CON_2]
+- Cost: [COST_A]
+- Key Features: [FEATURES]
+
+**Option B:** [TOOL/PRODUCT/APPROACH_B]
+- Pros: [PRO_1], [PRO_2]
+- Cons: [CON_1], [CON_2]
+- Cost: [COST_B]
+- Key Features: [FEATURES]
+
+**Option C:** [TOOL/PRODUCT/APPROACH_C]
+- Pros: [PRO_1], [PRO_2]
+- Cons: [CON_1], [CON_2]
+- Cost: [COST_C]
+- Key Features: [FEATURES]
+
+Evaluation Criteria:
+1. [CRITERIA_1] (Weight: [X]%)
+2. [CRITERIA_2] (Weight: [X]%)
+3. [CRITERIA_3] (Weight: [X]%)
+
+Provide weighted scoring, pros/cons summary, and recommendation.`
+            },
+            {
+                id: 'security-audit',
+                title: 'Security Audit',
+                category: 'review',
+                icon: 'fa-shield-alt',
+                iconColor: 'bg-red-100 text-red-600',
+                description: 'Identify security vulnerabilities in code or architecture.',
+                prompt: `Conduct a security audit for this [CODE/ARCHITECTURE]:
+
+\`\`\`[LANGUAGE/STRUCTURE]
+[CODE_HERE]
+\`\`\`
+
+Please check for:
+1. **OWASP Top 10**: Injection, broken auth, sensitive data exposure
+2. **Authentication**: Secure auth implementation, password handling
+3. **Authorization**: Proper access control, least privilege
+4. **Input Validation**: All user input sanitized and validated
+5. **Cryptography**: Proper encryption, secure key management
+6. **API Security**: Rate limiting, CORS, API keys
+7. **Dependencies**: Known vulnerabilities in packages
+8. **Logging**: Appropriate logging without sensitive data
+
+Provide severity ratings (Critical/High/Medium/Low) and remediation steps.`
+            },
+            {
+                id: 'architecture-design',
+                title: 'System Architecture',
+                category: 'coding',
+                icon: 'fa-project-diagram',
+                iconColor: 'bg-violet-100 text-violet-600',
+                description: 'Design scalable system architecture with diagrams.',
+                prompt: `Design a system architecture for [APPLICATION/USE_CASE].
+
+Requirements:
+- Scale: [STARTUP/ENTERPRISE/MILLION_USERS]
+- Tech Stack Preference: [LANGUAGES/FRAMEWORKS]
+- Budget: [BUDGET_RANGE]
+- Compliance: [REQUIREMENTS]
+
+Please provide:
+1. **High-Level Architecture**: Components and their interactions
+2. **Technology Choices**: Why each technology was selected
+3. **Data Flow**: How data moves through the system
+4. **Database Design**: Schema recommendations
+5. **API Gateway**: Request handling and routing
+6. **Caching Strategy**: Where and what to cache
+7. **Scalability**: How to handle growth
+8. **Deployment**: CI/CD and infrastructure
+9. **Cost Estimate**: Monthly infrastructure costs
+
+Include ASCII architecture diagrams.`
+            },
+            {
+                id: 'learning-plan',
+                title: 'Learning Plan',
+                category: 'explanation',
+                icon: 'fa-graduation-cap',
+                iconColor: 'bg-blue-100 text-blue-600',
+                description: 'Create structured learning paths for new skills.',
+                prompt: `Create a learning plan for: [SKILL/TECHNOLOGY]
+
+Current Level: [BEGINNER/INTERMEDIATE/ADVANCED]
+Target Timeline: [X_WEEKS/MONTHS]
+Daily Time Available: [X_HOURS]
+Goal: [SPECIFIC_GOAL]
+
+Please provide:
+1. **Prerequisites**: What to learn first
+2. **Weekly Breakdown**: Structured curriculum
+3. **Resources**: Official docs, courses, books, projects
+4. **Practice Projects**: Hands-on exercises
+5. **Milestones**: Key achievements to track progress
+6. **Assessment**: How to measure mastery
+
+Focus on practical skills over theory.`
+            },
+            {
+                id: 'troubleshoot-guide',
+                title: 'Troubleshooting Guide',
+                category: 'analysis',
+                icon: 'fa-tools',
+                iconColor: 'bg-gray-100 text-gray-600',
+                description: 'Create step-by-step troubleshooting documentation.',
+                prompt: `Create a troubleshooting guide for: [ISSUE/SYSTEM]
+
+**Problem Description:**
+[WHAT_IS_BROKEN_OR_SLOW]
+
+**Environment:**
+- OS: [OS]
+- Version: [VERSION]
+- Related Systems: [DEPENDENCIES]
+
+**Symptoms:**
+- [SYMPTOM_1]
+- [SYMPTOM_2]
+- [SYMPTOM_3]
+
+Please provide:
+1. **Quick Checks**: Fast diagnostic commands
+2. **Common Causes**: Most frequent reasons for this issue
+3. **Step-by-Step Solutions**: Clear numbered fixes
+4. **Verification**: How to confirm the fix worked
+5. **Prevention**: How to avoid this issue in the future
+6. **Escalation**: When to ask for help
+
+Include terminal commands and expected outputs.`
+            },
+            {
+                id: 'sql-optimization',
+                title: 'SQL Optimization',
+                category: 'coding',
+                icon: 'fa-database',
+                iconColor: 'bg-sky-100 text-sky-600',
+                description: 'Optimize slow SQL queries for better performance.',
+                prompt: `Optimize this SQL query:
+
+\`\`\`sql
+[SLOW_QUERY]
+\`\`\`
+
+**Database:** [MYSQL/POSTGRESQL/MSSQL/MONGODB]
+**Table Size:** ~[NUMBER] rows
+**Current Performance:** [EXECUTION_TIME]
+**Index Strategy:** [EXISTING_INDEXES]
+
+Please provide:
+1. **Analysis**: Why the query is slow
+2. **EXPLAIN Output**: What the query plan shows
+3. **Optimized Query**: Improved version
+4. **New Indexes**: Recommended indexes (if any)
+5. **Alternative Approaches**: Different SQL patterns
+6. **Benchmarks**: Expected performance improvement
+
+Explain each change and its impact.`
+            },
+            {
+                id: 'README',
+                title: 'README Generator',
+                category: 'writing',
+                icon: 'fa-file-alt',
+                iconColor: 'bg-lime-100 text-lime-600',
+                description: 'Create professional project documentation.',
+                prompt: `Create a professional README for this project:
+
+**Project Name:** [NAME]
+**Type:** [WEB_APP/LIBRARY/CLI_TOOL/API]
+**Description:** [WHAT_IT_DOES]
+**Tech Stack:** [TECHNOLOGIES]
+
+**Features:**
+- [FEATURE_1]
+- [FEATURE_2]
+- [FEATURE_3]
+
+**GitHub Repo:** [REPO_URL] (optional)
+
+Please include:
+1. **Badges**: CI status, license, version
+2. **Quick Start**: Installation and first use
+3. **Features Overview**: What makes it special
+4. **Installation**: Detailed setup steps
+5. **Usage**: Code examples and screenshots
+6. **Configuration**: Environment variables
+7. **API Reference**: If applicable
+8. **Contributing**: How to help
+9. **License & Credits**
+
+Format with Markdown and maintain consistency.`
+            },
+            {
+                id: 'commit-messages',
+                title: 'Git Commit Messages',
+                category: 'writing',
+                icon: 'fa-code-branch',
+                iconColor: 'bg-amber-100 text-amber-600',
+                description: 'Generate conventional commit messages.',
+                prompt: `Generate conventional commit messages for these changes:
+
+**Changed Files:**
+\`\`\`
+[FILE_1]
+[FILE_2]
+[FILE_3]
+\`\`\`
+
+**Changes Summary:**
+[WHAT_WAS_CHANGED]
+
+**Context:**
+- Type: [FEATURE/BUGFIX/REFACTOR/DOCS/TEST]
+- Scope: [AFFECTED_MODULE]
+
+Please provide:
+1. **Conventional Commit Format**: type(scope): description
+2. **Detailed Description**: What changed and why
+3. **Breaking Changes**: If any
+4. **Related Issues**: Issue numbers (if any)
+
+Examples:
+\`\`\`
+feat(auth): add OAuth2 login support
+fix(api): correct response format for list endpoint
+docs(readme): update installation instructions
+\`\`\``
+            },
+            {
+                id: 'error-messages',
+                title: 'User-Friendly Errors',
+                category: 'coding',
+                icon: 'fa-exclamation-triangle',
+                iconColor: 'bg-rose-100 text-rose-600',
+                description: 'Convert technical errors into user-friendly messages.',
+                prompt: `Convert these technical errors into user-friendly messages:
+
+**Technical Errors:**
+1. [ERROR_CODE]: [TECHNICAL_MESSAGE]
+2. [ERROR_CODE]: [TECHNICAL_MESSAGE]
+3. [ERROR_CODE]: [TECHNICAL_MESSAGE]
+
+**Context:**
+- Application Type: [WEB/MOBILE/DESKTOP]
+- User Tech Level: [NOVICE/INTERMEDIATE/POWER]
+
+Please provide:
+1. **User Message**: Clear, non-technical explanation
+2. **What Happened**: Simple cause
+3. **What to Do**: Actionable next steps
+4. **Technical Details**: Hidden details for support/dev
+5. **Support Link**: Where to get help
+
+Keep messages helpful, not scary. Avoid blame language.`
+            },
+            {
+                id: 'PR-description',
+                title: 'PR Description',
+                category: 'writing',
+                icon: 'fa-git-pull-request',
+                iconColor: 'bg-green-100 text-green-600',
+                description: 'Create comprehensive pull request descriptions.',
+                prompt: `Create a pull request description for this change:
+
+**Branch:** [BRANCH_NAME]
+**Base:** [MAIN/MASTER/DEVELOP]
+
+**Summary:**
+[Brief description of changes]
+
+**Changes:**
+- [CHANGE_1]
+- [CHANGE_2]
+
+**Related Issues:**
+- Closes #[ISSUE_NUMBER]
+
+**Type:**
+- [ ] New feature
+- [ ] Bug fix
+- [ ] Refactoring
+- [ ] Documentation
+- [ ] Breaking change
+
+Please provide:
+1. **Summary**: What and why (2-3 sentences)
+2. **Changes**: Detailed list with code references
+3. **Testing**: How you tested the changes
+4. **Screenshots**: Before/after if UI changes
+5. **Migration**: If database or API changes
+6. **Checklist**: Testing items for reviewers
+
+Follow project's PR template if one exists.`
+            }
+        ];
+
+        let currentCategory = 'all';
+        let currentSearch = '';
+        let modalContent = '';
+
+        function renderTemplates(templatesToRender) {
+            const grid = document.getElementById('templatesGrid');
+            const emptyState = document.getElementById('emptyState');
+
+            if (templatesToRender.length === 0) {
+                grid.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            grid.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+
+            grid.innerHTML = templatesToRender.map(t => `
+                <div class="template-card bg-white rounded-xl shadow-md border border-gray-100 p-6 cursor-pointer" 
+                     onclick="openModal('${t.id}')" data-category="${t.category}">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 ${t.iconColor} rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas ${t.icon}"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-1">${highlightText(t.title)}</h3>
+                            <p class="text-sm text-gray-600 mb-3">${highlightText(t.description)}</p>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded capitalize">${t.category}</span>
+                                <span class="text-xs text-primary hover:underline">View template →</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function highlightText(text) {
+            if (!currentSearch) return text;
+            const regex = new RegExp(`(${escapeRegex(currentSearch)})`, 'gi');
+            return text.replace(regex, '<span class="search-highlight">$1</span>');
+        }
+
+        function escapeRegex(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        function filterByCategory(category) {
+            currentCategory = category;
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.category === category) {
+                    btn.classList.add('active');
+                }
+            });
+            filterTemplates();
+        }
+
+        function filterTemplates() {
+            currentSearch = document.getElementById('searchInput').value.toLowerCase().trim();
+            let filtered = templates;
+
+            if (currentCategory !== 'all') {
+                filtered = filtered.filter(t => t.category === currentCategory);
+            }
+
+            if (currentSearch) {
+                filtered = filtered.filter(t => 
+                    t.title.toLowerCase().includes(currentSearch) ||
+                    t.description.toLowerCase().includes(currentSearch) ||
+                    t.prompt.toLowerCase().includes(currentSearch)
+                );
+            }
+
+            renderTemplates(filtered);
+        }
+
+        function openModal(id) {
+            const template = templates.find(t => t.id === id);
+            if (!template) return;
+
+            modalContent = template.prompt;
+            document.getElementById('modalTitle').textContent = template.title;
+            document.getElementById('modalContent').textContent = template.prompt;
+            document.getElementById('copyModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('copyModal').classList.add('hidden');
+            document.body.style.overflow = '';
+            modalContent = '';
+        }
+
+        async function copyFromModal() {
+            try {
+                await navigator.clipboard.writeText(modalContent);
+                const btn = document.querySelector('#copyModal button:last-child');
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check mr-2"></i>Copied!';
+                btn.classList.add('bg-green-500');
+                btn.classList.remove('bg-primary');
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.classList.remove('bg-green-500');
+                    btn.classList.add('bg-primary');
+                }, 1500);
+            } catch (err) {
+                alert('Failed to copy. Please select and copy manually.');
+            }
+        }
+
+        function switchLang(lang) {
+            document.getElementById('lang-zh').className = lang === 'zh' 
+                ? 'px-3 py-1 rounded-md bg-primary text-white text-sm font-medium'
+                : 'px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium';
+            document.getElementById('lang-en').className = lang === 'en'
+                ? 'px-3 py-1 rounded-md bg-primary text-white text-sm font-medium'
+                : 'px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium';
+            localStorage.setItem('devtools-lang', lang);
+        }
+
+        // Close modal on outside click
+        document.getElementById('copyModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // Init
+        const savedLang = localStorage.getItem('devtools-lang') || 'en';
+        switchLang(savedLang);
+        renderTemplates(templates);
+    </script>
+</body>
+</html>
