@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Schema Validator - DevTools</title>
+    <meta name="description" content="Validate JSON data against JSON Schema. Test and debug your schemas online for free.">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/ajv@8.12.0/dist/ajv7.bundle.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { primary: '#3b82f6' }
+                }
+            }
+        }
+    </script>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VVLR9NKKXE"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-VVLR9NKKXE');
+    </script>
+    <style>
+        .editor-textarea { font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; }
+        .result-success { background-color: #ecfdf5; border-color: #10b981; }
+        .result-error { background-color: #fef2f2; border-color: #ef4444; }
+        .tab-active { border-bottom: 2px solid #3b82f6; color: #3b82f6; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="../index.html" class="flex items-center">
+                        <i class="fas fa-arrow-left text-gray-500 mr-3 hover:text-gray-700"></i>
+                        <i class="fas fa-tools text-primary text-2xl mr-3"></i>
+                        <h1 class="text-xl font-bold text-gray-900">DevTools</h1>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="lang-zh" class="px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium" onclick="switchLang('zh')">中文</button>
+                    <button id="lang-en" class="px-3 py-1 rounded-md bg-primary text-white text-sm font-medium" onclick="switchLang('en')">EN</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="mb-6">
+            <h2 class="text-2xl font-bold text-gray-900">JSON Schema Validator</h2>
+            <p class="text-gray-600 mt-1">Validate JSON data against JSON Schema using Ajv (JSON Schema validator)</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Schema Editor -->
+            <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <label class="block text-sm font-medium text-gray-700">
+                        <i class="fas fa-code mr-1 text-primary"></i>JSON Schema
+                    </label>
+                    <div class="flex space-x-2">
+                        <button onclick="loadSchemaExample()" class="px-3 py-1 text-xs text-primary hover:text-blue-700 border border-primary rounded-md">
+                            <i class="fas fa-lightbulb mr-1"></i>Example
+                        </button>
+                        <button onclick="formatSchema()" class="px-3 py-1 text-xs text-gray-500 hover:text-gray-700 border border-gray-200 rounded-md">
+                            <i class="fas fa-indent mr-1"></i>Format
+                        </button>
+                    </div>
+                </div>
+                <textarea id="schemaEditor" class="editor-textarea w-full h-80 p-4 border border-gray-200 rounded-lg text-sm resize-none focus:outline-none focus:border-primary" placeholder="Enter JSON Schema here..." oninput="debouncedValidate()"></textarea>
+                <div id="schemaError" class="hidden mt-2 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600"></div>
+            </div>
+
+            <!-- Data Editor -->
+            <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <label class="block text-sm font-medium text-gray-700">
+                        <i class="fas fa-database mr-1 text-green-600"></i>JSON Data
+                    </label>
+                    <div class="flex space-x-2">
+                        <button onclick="loadDataExample()" class="px-3 py-1 text-xs text-primary hover:text-blue-700 border border-primary rounded-md">
+                            <i class="fas fa-lightbulb mr-1"></i>Example
+                        </button>
+                        <button onclick="formatData()" class="px-3 py-1 text-xs text-gray-500 hover:text-gray-700 border border-gray-200 rounded-md">
+                            <i class="fas fa-indent mr-1"></i>Format
+                        </button>
+                    </div>
+                </div>
+                <textarea id="dataEditor" class="editor-textarea w-full h-80 p-4 border border-gray-200 rounded-lg text-sm resize-none focus:outline-none focus:border-primary" placeholder="Enter JSON data to validate..." oninput="debouncedValidate()"></textarea>
+                <div id="dataError" class="hidden mt-2 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600"></div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="mt-6 flex justify-center gap-4">
+            <button onclick="validate()" class="px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-blue-600 transition-colors">
+                <i class="fas fa-check-circle mr-2"></i>Validate
+            </button>
+            <button onclick="clearAll()" class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors">
+                <i class="fas fa-trash mr-2"></i>Clear All
+            </button>
+        </div>
+
+        <!-- Result Section -->
+        <div id="resultSection" class="mt-6 hidden">
+            <div id="resultCard" class="rounded-xl shadow-md border-2 p-6">
+                <div class="flex items-center mb-4">
+                    <div id="resultIcon" class="w-12 h-12 rounded-full flex items-center justify-center mr-4">
+                        <!-- Icon inserted by JS -->
+                    </div>
+                    <div>
+                        <h3 id="resultTitle" class="text-lg font-semibold"></h3>
+                        <p id="resultMessage" class="text-sm"></p>
+                    </div>
+                </div>
+                <div id="validationDetails" class="hidden mt-4 p-4 bg-white rounded-lg border border-gray-200">
+                    <h4 class="font-medium text-gray-900 mb-2">Validation Details</h4>
+                    <pre id="detailsContent" class="text-sm text-gray-600 overflow-x-auto"></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Reference -->
+        <div class="mt-8 bg-white rounded-xl shadow-md border border-gray-100 p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                <i class="fas fa-book text-primary mr-2"></i>JSON Schema Quick Reference
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+                <div class="p-3 bg-gray-50 rounded-lg">
+                    <code class="text-purple-600 font-mono">type</code>
+                    <p class="text-gray-600 mt-1">string, number, integer, boolean, array, object, null</p>
+                </div>
+                <div class="p-3 bg-gray-50 rounded-lg">
+                    <code class="text-purple-600 font-mono">required</code>
+                    <p class="text-gray-600 mt-1">Array of required property names</p>
+                </div>
+                <div class="p-3 bg-gray-50 rounded-lg">
+                    <code class="text-purple-600 font-mono">properties</code>
+                    <p class="text-gray-600 mt-1">Object defining properties and their schemas</p>
+                </div>
+                <div class="p-3 bg-gray-50 rounded-lg">
+                    <code class="text-purple-600 font-mono">enum</code>
+                    <p class="text-gray-600 mt-1">Allowed values array</p>
+                </div>
+                <div class="p-3 bg-gray-50 rounded-lg">
+                    <code class="text-purple-600 font-mono">minimum / maximum</code>
+                    <p class="text-gray-600 mt-1">Numeric constraints</p>
+                </div>
+                <div class="p-3 bg-gray-50 rounded-lg">
+                    <code class="text-purple-600 font-mono">pattern</code>
+                    <p class="text-gray-600 mt-1">Regex pattern for strings</p>
+                </div>
+                <div class="p-3 bg-gray-50 rounded-lg">
+                    <code class="text-purple-600 font-mono">minLength / maxLength</code>
+                    <p class="text-gray-600 mt-1">String length constraints</p>
+                </div>
+                <div class="p-3 bg-gray-50 rounded-lg">
+                    <code class="text-purple-600 font-mono">items</code>
+                    <p class="text-gray-600 mt-1">Schema for array items</p>
+                </div>
+                <div class="p-3 bg-gray-50 rounded-lg">
+                    <code class="text-purple-600 font-mono">$ref</code>
+                    <p class="text-gray-600 mt-1">Reference to another schema</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let ajv;
+        
+        // Initialize Ajv
+        try {
+            ajv = new window.ajv7.default({ allErrors: true, verbose: true });
+        } catch (e) {
+            console.error('Failed to initialize Ajv:', e);
+        }
+
+        let validateTimeout;
+
+        function debouncedValidate() {
+            clearTimeout(validateTimeout);
+            validateTimeout = setTimeout(validate, 500);
+        }
+
+        function validate() {
+            const schemaText = document.getElementById('schemaEditor').value.trim();
+            const dataText = document.getElementById('dataEditor').value.trim();
+            const schemaError = document.getElementById('schemaError');
+            const dataError = document.getElementById('dataError');
+            const resultSection = document.getElementById('resultSection');
+
+            // Reset errors
+            schemaError.classList.add('hidden');
+            dataError.classList.add('hidden');
+            resultSection.classList.add('hidden');
+
+            // Check empty inputs
+            if (!schemaText) {
+                schemaError.textContent = 'Please enter a JSON Schema';
+                schemaError.classList.remove('hidden');
+                return;
+            }
+
+            if (!dataText) {
+                dataError.textContent = 'Please enter JSON data to validate';
+                dataError.classList.remove('hidden');
+                return;
+            }
+
+            // Parse schema
+            let schema;
+            try {
+                schema = JSON.parse(schemaText);
+            } catch (e) {
+                schemaError.textContent = 'Invalid JSON Schema: ' + e.message;
+                schemaError.classList.remove('hidden');
+                showResult(false, 'Invalid Schema', 'JSON Schema syntax error');
+                return;
+            }
+
+            // Parse data
+            let data;
+            try {
+                data = JSON.parse(dataText);
+            } catch (e) {
+                dataError.textContent = 'Invalid JSON Data: ' + e.message;
+                dataError.classList.remove('hidden');
+                showResult(false, 'Invalid JSON', 'JSON data syntax error');
+                return;
+            }
+
+            // Compile and validate
+            try {
+                const validateFn = ajv.compile(schema);
+                const valid = validateFn(data);
+
+                if (valid) {
+                    showResult(true, 'Valid!', 'JSON data matches the schema');
+                } else {
+                    const errors = validateFn.errors || [];
+                    showResult(false, 'Invalid', `${errors.length} validation error(s) found`, errors);
+                }
+            } catch (e) {
+                schemaError.textContent = 'Schema compilation error: ' + e.message;
+                schemaError.classList.remove('hidden');
+                showResult(false, 'Schema Error', e.message);
+            }
+        }
+
+        function showResult(success, title, message, errors = []) {
+            const resultSection = document.getElementById('resultSection');
+            const resultCard = document.getElementById('resultCard');
+            const resultIcon = document.getElementById('resultIcon');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultMessage = document.getElementById('resultMessage');
+            const detailsDiv = document.getElementById('validationDetails');
+            const detailsContent = document.getElementById('detailsContent');
+
+            resultSection.classList.remove('hidden');
+            
+            if (success) {
+                resultCard.className = 'result-success rounded-xl shadow-md border-2 p-6';
+                resultIcon.className = 'w-12 h-12 rounded-full flex items-center justify-center mr-4 bg-green-100';
+                resultIcon.innerHTML = '<i class="fas fa-check text-green-600 text-xl"></i>';
+                detailsDiv.classList.add('hidden');
+            } else {
+                resultCard.className = 'result-error rounded-xl shadow-md border-2 p-6';
+                resultIcon.className = 'w-12 h-12 rounded-full flex items-center justify-center mr-4 bg-red-100';
+                resultIcon.innerHTML = '<i class="fas fa-times text-red-600 text-xl"></i>';
+                
+                if (errors.length > 0) {
+                    detailsDiv.classList.remove('hidden');
+                    detailsContent.textContent = JSON.stringify(errors, null, 2);
+                }
+            }
+
+            resultTitle.textContent = title;
+            resultMessage.textContent = message;
+        }
+
+        function formatSchema() {
+            formatEditor('schemaEditor');
+        }
+
+        function formatData() {
+            formatEditor('dataEditor');
+        }
+
+        function formatEditor(editorId) {
+            const editor = document.getElementById(editorId);
+            const errorDiv = document.getElementById(editorId.replace('Editor', 'Error'));
+            
+            try {
+                const parsed = JSON.parse(editor.value);
+                editor.value = JSON.stringify(parsed, null, 2);
+                if (errorDiv) errorDiv.classList.add('hidden');
+            } catch (e) {
+                if (errorDiv) {
+                    errorDiv.textContent = 'Invalid JSON: ' + e.message;
+                    errorDiv.classList.remove('hidden');
+                }
+            }
+        }
+
+        function clearAll() {
+            document.getElementById('schemaEditor').value = '';
+            document.getElementById('dataEditor').value = '';
+            document.getElementById('schemaError').classList.add('hidden');
+            document.getElementById('dataError').classList.add('hidden');
+            document.getElementById('resultSection').classList.add('hidden');
+        }
+
+        function loadSchemaExample() {
+            const example = `{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "email": {
+      "type": "string",
+      "format": "email"
+    },
+    "age": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 150
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "maxItems": 10
+    },
+    "isActive": {
+      "type": "boolean"
+    }
+  },
+  "required": ["name", "email"]
+}`;
+            document.getElementById('schemaEditor').value = example;
+            debouncedValidate();
+        }
+
+        function loadDataExample() {
+            const example = `{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "age": 30,
+  "tags": ["developer", "designer"],
+  "isActive": true
+}`;
+            document.getElementById('dataEditor').value = example;
+            debouncedValidate();
+        }
+
+        function switchLang(lang) {
+            document.getElementById('lang-zh').className = lang === 'zh' 
+                ? 'px-3 py-1 rounded-md bg-primary text-white text-sm font-medium'
+                : 'px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium';
+            document.getElementById('lang-en').className = lang === 'en'
+                ? 'px-3 py-1 rounded-md bg-primary text-white text-sm font-medium'
+                : 'px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 text-sm font-medium';
+            localStorage.setItem('devtools-lang', lang);
+        }
+
+        // Init
+        const savedLang = localStorage.getItem('devtools-lang') || 'en';
+        switchLang(savedLang);
+    </script>
+</body>
+</html>
