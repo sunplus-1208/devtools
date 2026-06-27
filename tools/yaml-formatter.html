@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YAML Formatter & Validator - Free Online YAML Tools</title>
+    <meta name="description" content="Format, validate, and convert YAML online. Pretty print, minify, convert YAML to JSON and JSON to YAML. Free developer tool.">
+    <meta name="google-site-verification" content="9SXfWmHKPTDRSHsNqe2KsTnAp22a1i1FQ46RPmZHKho" />
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#64748b',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .tool-card:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        textarea { font-family: 'Fira Code', 'Cascadia Code', 'Consolas', monospace; }
+        .error-line { background-color: #fee2e2; border-left: 3px solid #ef4444; }
+        .success-line { border-left: 3px solid #22c55e; }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VVLR9NKKXE"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-VVLR9NKKXE');
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+            <a href="../index.html" class="flex items-center space-x-2 text-gray-700 hover:text-primary transition">
+                <i class="fas fa-arrow-left"></i>
+                <span>← Back to DevTools</span>
+            </a>
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-code text-primary text-xl"></i>
+                <span class="font-semibold text-gray-800">YAML Formatter & Validator</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Status Bar -->
+        <div id="statusBar" class="mb-4 p-3 rounded-lg bg-green-50 border border-green-200 text-green-800 text-sm flex items-center gap-2">
+            <i class="fas fa-check-circle"></i>
+            <span id="statusText">Valid YAML — Ready to use</span>
+        </div>
+
+        <!-- Editor + Actions -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6">
+            <div class="flex items-center justify-between mb-3">
+                <label class="font-medium text-gray-700 flex items-center gap-2">
+                    <i class="fas fa-edit text-primary"></i> YAML Input
+                </label>
+                <div class="flex gap-2">
+                    <button onclick="loadSample()" class="text-xs px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-md transition">Load Sample</button>
+                    <button onclick="clearAll()" class="text-xs px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-md transition">Clear</button>
+                </div>
+            </div>
+            <textarea id="yamlInput" rows="16" class="w-full p-4 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary resize-y" placeholder="Paste your YAML here..."></textarea>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-wrap gap-3 mb-6">
+            <button onclick="formatYAML()" class="px-5 py-2.5 bg-primary text-white rounded-lg font-medium hover:bg-blue-600 transition flex items-center gap-2">
+                <i class="fas fa-align-left"></i> Format
+            </button>
+            <button onclick="minifyYAML()" class="px-5 py-2.5 bg-gray-700 text-white rounded-lg font-medium hover:bg-gray-800 transition flex items-center gap-2">
+                <i class="fas fa-compress-alt"></i> Minify
+            </button>
+            <button onclick="validateYAML()" class="px-5 py-2.5 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition flex items-center gap-2">
+                <i class="fas fa-check"></i> Validate
+            </button>
+            <button onclick="yamlToJson()" class="px-5 py-2.5 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition flex items-center gap-2">
+                <i class="fas fa-exchange-alt"></i> YAML → JSON
+            </button>
+            <button onclick="copyOutput()" class="px-5 py-2.5 bg-gray-600 text-white rounded-lg font-medium hover:bg-gray-700 transition flex items-center gap-2">
+                <i class="fas fa-copy"></i> Copy Output
+            </button>
+            <button onclick="downloadYaml()" class="px-5 py-2.5 bg-orange-600 text-white rounded-lg font-medium hover:bg-orange-700 transition flex items-center gap-2">
+                <i class="fas fa-download"></i> Download .yaml
+            </button>
+        </div>
+
+        <!-- Output Section -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6">
+            <div class="flex items-center justify-between mb-3">
+                <label class="font-medium text-gray-700 flex items-center gap-2">
+                    <i class="fas fa-code text-primary"></i> Output
+                </label>
+                <span id="lineCount" class="text-xs text-gray-400">0 lines</span>
+            </div>
+            <textarea id="outputArea" rows="16" class="w-full p-4 border border-gray-200 rounded-lg text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary resize-y font-mono" readonly placeholder="Output will appear here..."></textarea>
+        </div>
+
+        <!-- Error Details -->
+        <div id="errorPanel" class="hidden bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
+            <h3 class="font-semibold text-red-800 mb-2 flex items-center gap-2">
+                <i class="fas fa-exclamation-triangle"></i> Validation Error
+            </h3>
+            <div id="errorContent" class="text-sm text-red-700 font-mono"></div>
+        </div>
+
+        <!-- Info Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-check-double text-primary"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-800">Validate</h3>
+                </div>
+                <p class="text-sm text-gray-600">Check YAML syntax instantly. Detailed error messages with line numbers for quick debugging.</p>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-exchange-alt text-green-600"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-800">Convert</h3>
+                </div>
+                <p class="text-sm text-gray-600">Convert between YAML and JSON formats with one click. Perfect for config migrations.</p>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-magic text-purple-600"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-800">Format & Minify</h3>
+                </div>
+                <p class="text-sm text-gray-600">Pretty print with proper indentation or compress to a single line. Toggle as needed.</p>
+            </div>
+        </div>
+
+        <!-- SEO Content -->
+        <div class="mt-12 text-sm text-gray-500 border-t border-gray-200 pt-8">
+            <p>Free YAML formatter and validator. Format YAML, validate YAML syntax, convert YAML to JSON and JSON to YAML online.</p>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 mt-12 py-6 text-center text-sm text-gray-500">
+        <p>© 2026 <a href="https://aitechtools.top" class="text-primary hover:underline">AI Tech Tools</a> — Free developer tools for AI workflows</p>
+    </footer>
+
+    <script>
+        const yamlInput = document.getElementById('yamlInput');
+        const outputArea = document.getElementById('outputArea');
+        const statusBar = document.getElementById('statusBar');
+        const statusText = document.getElementById('statusText');
+        const errorPanel = document.getElementById('errorPanel');
+        const errorContent = document.getElementById('errorContent');
+        const lineCount = document.getElementById('lineCount');
+
+        function updateStatus(valid, message, type) {
+            const types = {
+                success: { bg: 'bg-green-50', border: 'border-green-200', text: 'text-green-800', icon: 'fa-check-circle' },
+                error: { bg: 'bg-red-50', border: 'border-red-200', text: 'text-red-800', icon: 'fa-times-circle' },
+                info: { bg: 'bg-blue-50', border: 'border-blue-200', text: 'text-blue-800', icon: 'fa-info-circle' }
+            };
+            const t = types[type] || types.info;
+            statusBar.className = `mb-4 p-3 rounded-lg border text-sm flex items-center gap-2 ${t.bg} ${t.border} ${t.text}`;
+            statusBar.innerHTML = `<i class="fas ${t.icon}"></i><span>${message}</span>`;
+        }
+
+        function parseInput() {
+            const input = yamlInput.value.trim();
+            if (!input) return { valid: false, error: 'Input is empty', data: null };
+            try {
+                const data = jsyaml.load(input, { schema: jsyaml.DEFAULT_SCHEMA, json: false });
+                return { valid: true, data, error: null };
+            } catch (e) {
+                return { valid: false, error: e.message, data: null };
+            }
+        }
+
+        function formatYAML() {
+            const result = parseInput();
+            if (!result.valid) {
+                showError(result.error);
+                return;
+            }
+            errorPanel.classList.add('hidden');
+            const formatted = jsyaml.dump(result.data, { indent: 2, lineWidth: -1, noRefs: true, sortKeys: false });
+            outputArea.value = formatted;
+            lineCount.textContent = formatted.split('\n').length + ' lines';
+            updateStatus(true, 'YAML formatted successfully — ' + outputArea.value.split('\n').length + ' lines', 'success');
+            gtag('event', 'format_yaml', { event_category: 'tool', event_label: 'yaml-formatter' });
+        }
+
+        function minifyYAML() {
+            const result = parseInput();
+            if (!result.valid) {
+                showError(result.error);
+                return;
+            }
+            errorPanel.classList.add('hidden');
+            const jsonStr = JSON.stringify(result.data);
+            outputArea.value = jsonStr;
+            lineCount.textContent = '1 line (JSON minified)';
+            updateStatus(true, 'YAML converted to minified JSON', 'info');
+            gtag('event', 'minify_yaml', { event_category: 'tool', event_label: 'yaml-formatter' });
+        }
+
+        function validateYAML() {
+            const result = parseInput();
+            if (result.valid) {
+                errorPanel.classList.add('hidden');
+                updateStatus(true, '✓ Valid YAML — No syntax errors found', 'success');
+                outputArea.value = jsyaml.dump(result.data, { indent: 2, lineWidth: -1, noRefs: true });
+                lineCount.textContent = outputArea.value.split('\n').length + ' lines';
+                gtag('event', 'validate_yaml', { event_category: 'tool', event_label: 'yaml-formatter' });
+            } else {
+                showError(result.error);
+            }
+        }
+
+        function yamlToJson() {
+            const result = parseInput();
+            if (!result.valid) {
+                showError(result.error);
+                return;
+            }
+            errorPanel.classList.add('hidden');
+            const jsonStr = JSON.stringify(result.data, null, 2);
+            outputArea.value = jsonStr;
+            lineCount.textContent = jsonStr.split('\n').length + ' lines';
+            updateStatus(true, 'Converted to JSON — ' + jsonStr.split('\n').length + ' lines', 'info');
+            gtag('event', 'yaml_to_json', { event_category: 'tool', event_label: 'yaml-formatter' });
+        }
+
+        function showError(msg) {
+            errorPanel.classList.remove('hidden');
+            errorContent.textContent = msg;
+            updateStatus(false, '✗ Invalid YAML — ' + msg, 'error');
+        }
+
+        function copyOutput() {
+            if (!outputArea.value) return;
+            navigator.clipboard.writeText(outputArea.value).then(() => {
+                const btn = event.target.closest('button');
+                const orig = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                setTimeout(() => btn.innerHTML = orig, 1500);
+            });
+            gtag('event', 'copy_yaml_output', { event_category: 'tool', event_label: 'yaml-formatter' });
+        }
+
+        function downloadYaml() {
+            const text = outputArea.value || yamlInput.value;
+            if (!text.trim()) return;
+            const blob = new Blob([text], { type: 'text/yaml' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'output.yaml';
+            a.click();
+            URL.revokeObjectURL(url);
+            gtag('event', 'download_yaml', { event_category: 'tool', event_label: 'yaml-formatter' });
+        }
+
+        function clearAll() {
+            yamlInput.value = '';
+            outputArea.value = '';
+            errorPanel.classList.add('hidden');
+            lineCount.textContent = '0 lines';
+            updateStatus(true, 'Ready to use', 'info');
+        }
+
+        function loadSample() {
+            yamlInput.value = `# AI Agent Configuration
+agent:
+  name: claude-assistant
+  version: "2.0"
+  capabilities:
+    - text-generation
+    - code-analysis
+    - reasoning
+  max_tokens: 4096
+  temperature: 0.7
+
+tools:
+  - name: web-search
+    enabled: true
+    rate_limit: 60
+  - name: calculator
+    enabled: true
+    precision: 4
+
+memory:
+  type: semantic
+  vector_db: chroma
+  chunk_size: 512
+  overlap: 50
+
+prompts:
+  system: "You are a helpful AI assistant..."
+  user_template: "Help me with {task}..."
+`;
+            updateStatus(true, 'Sample loaded — Click Format or Validate', 'info');
+            gtag('event', 'load_sample_yaml', { event_category: 'tool', event_label: 'yaml-formatter' });
+        }
+
+        // Auto-validate on input change (debounced)
+        let debounceTimer;
+        yamlInput.addEventListener('input', () => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                if (!yamlInput.value.trim()) {
+                    updateStatus(true, 'Ready to use', 'info');
+                    errorPanel.classList.add('hidden');
+                    return;
+                }
+                const result = parseInput();
+                if (result.valid) {
+                    errorPanel.classList.add('hidden');
+                    updateStatus(true, '✓ Valid YAML — Auto-detected', 'success');
+                } else {
+                    showError(result.error);
+                }
+            }, 600);
+        });
+
+        updateStatus(true, 'Ready to use — Paste YAML and click Format or Validate', 'info');
+    </script>
+</body>
+</html>
